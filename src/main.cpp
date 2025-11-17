@@ -130,7 +130,7 @@ int main() {
         }
         //std::cout << chosenLevel << std::endl;
         if (chosenLevel != -1) {
-            MainGame game(512, 512, chosenLevel);
+            MainGame game(700, 512, 512, 512, chosenLevel);
             game.run();
             getIsClosed = !game.getWindowClosedState();
             if (game.gameWon()) {

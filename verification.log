@@ -1,0 +1,22 @@
+"Include verification:" 
+"FAIL: curl/curl.h not found"  
+ Volume in drive C is SISTEM
+ Volume Serial Number is CAF8-8FC6
+
+ Directory of C:\Users\KORISNIK\Desktop\LaserTankVSCode\deps\curl\include
+
+11/14/2025  07:55 PM    <DIR>          .
+11/14/2025  07:55 PM    <DIR>          ..
+               0 File(s)              0 bytes
+               2 Dir(s)  55,034,118,144 bytes free
+"Library verification:" 
+"FAIL: No CURL library found"  
+ Volume in drive C is SISTEM
+ Volume Serial Number is CAF8-8FC6
+
+ Directory of C:\Users\KORISNIK\Desktop\LaserTankVSCode\deps\curl\lib
+
+11/14/2025  07:55 PM    <DIR>          .
+11/14/2025  07:55 PM    <DIR>          ..
+               0 File(s)              0 bytes
+               2 Dir(s)  55,034,114,048 bytes free

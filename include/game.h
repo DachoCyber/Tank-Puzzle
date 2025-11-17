@@ -11,7 +11,7 @@
 
 class MainGame {
 public:
-    MainGame(int windowSizeX, int windowSizeY, int level);
+    MainGame(int screenSizeX, int screenSizeY, int constwindowSizeY, int constwindowSizeX, int level);
     ~MainGame() = default;
     void run();
     
@@ -23,8 +23,13 @@ public:
     
     int getMovesCount() { return movesPlayed; }
 private:
+    void drawPadding();
+    void initPadding();
+    
     void loadGoblet();
     void drawGoblet();
+
+    void undoMove();
 
 
 
@@ -62,6 +67,7 @@ private:
     const int tileSize = 32;
     bool moveQueued = false;
     int windowSizeX, windowSizeY;
+    int screenSizeX, screenSizeY;
 
     bool killPlayer = false;
     bool bulletFired = false;
@@ -102,5 +108,10 @@ private:
     const sf::Time windowEnableRepMovTime = sf::seconds(0.5f);
     bool isRepeatMovEnabled = false;
     int movesPlayed = 0;
+
+    sf::RectangleShape padding;
+    sf::RectangleShape topPad, bottomPad, leftPad, rightPad;
+
+    bool undoMoveEndGame = false;
 };
 

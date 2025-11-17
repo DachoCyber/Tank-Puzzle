@@ -1,19 +1,25 @@
 #include "../include/game.h"
 #include "../include/playerInteraction.h"
 #include "../include/loadSound.h"
+#include "../include/gameLost.h"
 
 
-MainGame::MainGame(int windowSizeX, int windowSizeY, int level) :
+MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int constwindowSizeY, int level) :
     window(std::make_unique<sf::RenderWindow>(
-        sf::VideoMode(windowSizeX, windowSizeY),
-        "Laser Tank",
+        sf::VideoMode(screenSizeX, screenSizeY),
+        "LaserTank",
         sf::Style::Close | sf::Style::Resize)),
     tileMap(level),
-    player(tileMap.getPlayerPositionX(), tileMap.getPlayerPositionY(), windowSizeX, windowSizeY),
-    windowSizeX(windowSizeX),
-    windowSizeY(windowSizeY),
-    bullets(0, nullptr)
+    player(tileMap.getPlayerPositionX(), tileMap.getPlayerPositionY(), constwindowSizeX, constwindowSizeY),
+    windowSizeX(constwindowSizeX),
+    windowSizeY(constwindowSizeY),
+    bullets(0, nullptr),
+    padding(sf::Vector2f(static_cast<float>(screenSizeX - constwindowSizeX), static_cast<float>(screenSizeY)))
 {
+    this -> screenSizeX = screenSizeX;
+    this -> screenSizeY = screenSizeY;
+    padding.setPosition(constwindowSizeX*1.f, 0.f);
+    initPadding();
     loadMirrorBubbleSound("sounds/bubble.mp3");
     loadHitWallSoundBuffer("sounds/hitTankSoundAndBrickSound.mp3");
     auto image = sf::Image{};
@@ -44,6 +50,7 @@ void MainGame::run() {
 
     bool waterToggle = false;
     while (window->isOpen()) {
+        undoMoveEndGame = false;
         if (!gameEnd()) {
 
             if (windowEnableRepeatMovement.getElapsedTime() >= windowEnableRepMovTime) {
@@ -93,7 +100,7 @@ void MainGame::run() {
 
             sf::Time gameEndShownTime = sf::seconds(3);
             sf::Clock clock;
-            while (window->isOpen()) {
+            while (window->isOpen() && !undoMoveEndGame) {
                 sf::Event event;
                 while (window->pollEvent(event)) {
                     if (event.type == sf::Event::Closed)
@@ -105,16 +112,59 @@ void MainGame::run() {
                     drawGoblet();
                 }
                 else if (gameLost()) {
-                    window->draw(gameOverText);
-                }
-                if (clock.getElapsedTime() >= gameEndShownTime) {
-                    window->close();
+                    GameLostWindow gameLostWindow;
+                    gameLostWindow.loop();
+                    if(gameLostWindow.getUndoMove()) {
+                        killPlayer = false;
+                        player.setDontKillPlayer();
+                        undoMove();
+                        undoMoveEndGame = true;
+                        for(int i = 0; i < bullets.size(); i++) {
+                            bullets.erase(bullets.begin() + i);
+                        }
+                    }
+                    if(gameLostWindow.getRestartGame()) {
+                        window->close();
+                    }
                 }
                 window->display();
             }
         }
     }
 }
+
+void MainGame::undoMove() {
+    if (movesPlayed > 0) {
+
+        movesPlayed--;
+    }
+
+    if (!tankMovedOrBulletShot.empty()) {
+        std::string lastAction = tankMovedOrBulletShot.back();
+
+        if (lastAction == "bullet shot") {
+                
+            if (!mapStates.empty()) {
+                
+                tileMap.undoMove(&mapStates.back());
+                
+                mapStates.pop_back();
+            }
+        } 
+        else if (lastAction == "tank moved") {
+            
+            if (!player.getPlayerStates().empty()) {
+                player.setGridPosition(player.getPlayerStates().back().playerPos);
+                player.setDir(player.getPlayerStates().back().dir);
+                player.getPlayerStates().pop_back();
+                
+            }
+        }
+            
+        tankMovedOrBulletShot.pop_back();
+    }
+}
+
 bool MainGame::playerKilledByEnemy() {
     for (const auto& bullet : bullets) {
 
@@ -186,36 +236,7 @@ void MainGame::handleInput() {
     {
     
         
-        if (movesPlayed > 0) {
-
-            movesPlayed--;
-        }
-
-        if (!tankMovedOrBulletShot.empty()) {
-            std::string lastAction = tankMovedOrBulletShot.back();
-
-            if (lastAction == "bullet shot") {
-                    
-                if (!mapStates.empty()) {
-                    
-                    tileMap.undoMove(&mapStates.back());
-                    
-                    mapStates.pop_back();
-                }
-            } 
-            else if (lastAction == "tank moved") {
-                
-                if (!player.getPlayerStates().empty()) {
-                    player.setGridPosition(player.getPlayerStates().back().playerPos);
-                    player.setDir(player.getPlayerStates().back().dir);
-                    player.getPlayerStates().pop_back();
-                    
-                }
-            }
-
-                
-            tankMovedOrBulletShot.pop_back();
-        }
+        undoMove();
 
         return;
     }
@@ -270,13 +291,45 @@ void MainGame::update() {
                 killPlayer = true;
                 
             }
-            if (bullets[i]->getPosition().x < 0 || bullets[i]->getPosition().x > windowSizeX ||
+            if (bullets[i]->getPosition().x < 0 || bullets[i]->getPosition().x > 512 ||
                 bullets[i]->getPosition().y < 0 || bullets[i]->getPosition().y > windowSizeY) {
                 bullets.erase(bullets.begin() + i);
             }
         }
 
     }
+}
+
+void MainGame :: drawPadding() {
+    window->draw(topPad);
+    window->draw(bottomPad);
+    window->draw(leftPad);
+    window->draw(rightPad);
+}
+
+void MainGame :: initPadding() {
+    sf::Color borderColor(180, 180, 180); // light gray
+
+    // Top padding
+    topPad.setSize(sf::Vector2f(screenSizeX, (screenSizeY - windowSizeY) / 2.f));
+    topPad.setFillColor(borderColor);
+    topPad.setPosition(0, 0);
+
+    // Bottom padding
+    bottomPad.setSize(sf::Vector2f(screenSizeX, (screenSizeY - windowSizeY) / 2.f));
+    bottomPad.setFillColor(borderColor);
+    bottomPad.setPosition(0,windowSizeY + (screenSizeY - windowSizeY) / 2.f);
+
+    // Left padding
+    leftPad.setSize(sf::Vector2f((screenSizeX - windowSizeX) / 2.f, windowSizeY));
+    leftPad.setFillColor(borderColor);
+    leftPad.setPosition(0, (screenSizeY - windowSizeY) / 2.f);
+
+    // Right padding
+    rightPad.setSize(sf::Vector2f((screenSizeX - windowSizeX) / 2.f, windowSizeY));
+    rightPad.setFillColor(borderColor);
+    rightPad.setPosition(windowSizeX + (screenSizeX - windowSizeX) / 2.f,
+                         (screenSizeY - windowSizeY) / 2.f);
 }
 
 

@@ -26,6 +26,9 @@ public:
     void setShouldKillPlayer() {
         shouldKillPlayer = true;
     }
+    void setDontKillPlayer() {
+        shouldKillPlayer = false;
+    }
     std::vector<PlayerState>& getPlayerStates() { 
         return playerStates; 
     }

@@ -165,10 +165,10 @@ void Map :: destroyTank(int bulletGridPosX, int bulletGridPosY, int tankType) {
             tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 0, destroyedTankLeftTexture);
             break;
         case 2:
-            tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 1, destroyedTankDownTexture);
+            tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 1, destroyedTankUpTexture);
             break;
         case 3:
-            tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 2, destroyedTankUpTexture);
+            tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 2, destroyedTankDownTexture);
             break;
         case 4:
             tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 3, destroyedTankRightTexture);
@@ -445,13 +445,6 @@ void Map :: moveTile(int newGridPosY, int newGridPosX, int oldGridPosY, int oldG
     }
 
     void Map::undoMove(std::vector<std::vector<int>>* lastMapState) {
-        std::cout << "Pre undo: " << std::endl;
-        for(int y = 0; y < mapHeight; ++y) {
-            for(int x = 0; x < mapWidth; ++x) {
-                if(tileMap[y][x] == 50) 
-                    std::cout << "Na poziciji " << y << ", " << x << " je most." << std::endl;
-            }
-        }
         for (int y = 0; y < mapHeight; ++y) {
             auto& lastRow = (*lastMapState)[y];
             auto& tileRow = tiles[y];
@@ -484,14 +477,6 @@ void Map :: moveTile(int newGridPosY, int newGridPosX, int oldGridPosY, int oldG
 
                 tileRow[x] = std::move(tile);
                 mapRow[x] = code;
-            }
-        }
-        std::cout << "\n\n" << std::endl;
-        std::cout << "Posle undo:" << std::endl;
-        for(int y = 0; y < mapHeight; ++y) {
-            for(int x = 0; x < mapWidth; ++x) {
-                if(tileMap[y][x] == 50) 
-                    std::cout << "Na poziciji " << y << ", " << x << " je most." << std::endl;
             }
         }
     }

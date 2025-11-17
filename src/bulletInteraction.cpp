@@ -263,6 +263,7 @@ if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]
         if(lastBulletGridPosX < bulletGridPosX || (-player.getGridPosition().x + bulletGridPosX == 1 && player.getGridPosition().y == bulletGridPosY)) {
             player.getBullet()->changeVelocity(UP, 3);
             player.getBullet() -> dir = UP;
+            mirrorSound.play();
         }
         // Hit from right - move mirror left
         else if(lastBulletGridPosX > bulletGridPosX || player.getGridPosition().x - bulletGridPosX == 1) {
@@ -282,6 +283,7 @@ if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]
         else if(lastBulletGridPosY < bulletGridPosY || (-player.getGridPosition().y + bulletGridPosY == 1 && player.getGridPosition().x == bulletGridPosX)) {
             player.getBullet()->changeVelocity(LEFT, 3);
             player.getBullet() -> dir = LEFT;
+            mirrorSound.play();
         }
         // Hit from top - move mirror down
         else if(lastBulletGridPosY > bulletGridPosY || player.getGridPosition().y - bulletGridPosY == 1) {

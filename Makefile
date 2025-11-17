@@ -5,7 +5,7 @@
 
 # Compiler and flags
 CXX := g++
-CXXFLAGS := -std=c++17 -g -Wall -O2 -DNDEBUG -DSFML_STATIC -DCURL_STATICLIB -DWIN32 -static -pipe
+CXXFLAGS := -std=c++17 -Wall -O2 -DNDEBUG -DSFML_STATIC -DCURL_STATICLIB -DWIN32 -static -pipe
 
 # Include directories
 INCLUDES := -I"SFML-2.6.2-windows-gcc-13.1.0-mingw-32-bit(1)/SFML-2.6.2/include" \
@@ -14,13 +14,31 @@ INCLUDES := -I"SFML-2.6.2-windows-gcc-13.1.0-mingw-32-bit(1)/SFML-2.6.2/include"
             -Itinyxml2
 
 # Library directories
-LIBS := -L"SFML-2.6.2-windows-gcc-13.1.0-mingw-32-bit(1)/SFML-2.6.2/lib" \
-        -L"CURL/lib" \
-        -lsfml-graphics-s -lsfml-window-s -lsfml-audio-s -lsfml-system-s -lsfml-network-s \
-        -lopengl32 -lfreetype -lwinmm -lgdi32 -lws2_32 -lbcrypt \
-        -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg \
-        -lcurl -static-libgcc -static-libstdc++
+LIB_DIRS := -L"SFML-2.6.2-windows-gcc-13.1.0-mingw-32-bit(1)/SFML-2.6.2/lib" \
+            -L"CURL/lib"
 
+# Libraries - IMPORTANT: Order matters for static linking!
+LIBS := -lsfml-audio-s \
+        -lsfml-graphics-s \
+        -lsfml-window-s \
+        -lsfml-network-s \
+        -lsfml-system-s \
+        -lsfml-main \
+        -lopenal32 \
+        -lflac \
+        -lvorbisenc \
+        -lvorbisfile \
+        -lvorbis \
+        -logg \
+        -lopengl32 \
+        -lfreetype \
+        -lwinmm \
+        -lgdi32 \
+        -lws2_32 \
+        -lbcrypt \
+        -lcurl \
+        -static-libgcc \
+        -static-libstdc++
 
 # Source and build directories
 SRC_DIR := src
@@ -48,7 +66,7 @@ dirs:
 # Link step
 $(TARGET): $(OBJ)
 	@echo [LINK] Linking $(TARGET)
-	$(CXX) $(OBJ) -o $(TARGET) $(LIBS)
+	$(CXX) $(OBJ) -o $(TARGET) $(LIB_DIRS) $(LIBS)
 
 # Compile source files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
@@ -66,4 +84,4 @@ run: all
 	@echo Running...
 	$(TARGET)
 
-.PHONY: clean all run dirs
+.PHONY: all clean run dirs
