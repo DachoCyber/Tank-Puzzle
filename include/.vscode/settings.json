@@ -2,6 +2,7 @@
     "files.associations": {
         "*.ejs": "html",
         "system_error": "cpp",
-        "memory": "cpp"
+        "memory": "cpp",
+        "stdexcept": "cpp"
     }
 }

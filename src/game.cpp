@@ -49,6 +49,8 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
 void MainGame::run() {
 
     bool waterToggle = false;
+    int framesTank = 0; // 0, 1, 2
+    int frames = 0;
     while (window->isOpen()) {
         undoMoveEndGame = false;
         if (!gameEnd()) {
@@ -63,8 +65,17 @@ void MainGame::run() {
             sf::Time time = waterFramesClock.getElapsedTime();
             if (time >= updateFramesWaterTile) {
                 waterToggle = !waterToggle; // prebaci frame
+
                 tileMap.switchFramesWaterTiles(waterToggle ? 1 : 0);
                 waterFramesClock.restart();
+            }
+            sf::Time timeTank = enemyTankFramesClock.getElapsedTime();
+            if(timeTank >= updateFramesEnemyTank) {
+                
+                framesTank = (framesTank + 1) % 3;
+                 
+                tileMap.switchFramesEnemyTank(framesTank);
+                enemyTankFramesClock.restart();
             }
 
             sf::Event event;
@@ -401,7 +412,7 @@ void MainGame::loadGameOverFont() {
             textBounds.top + textBounds.height / 2.f);
 
         gameOverText.setPosition(static_cast<float>(windowSizeX) / 2,
-            static_cast<float>(windowSizeY) / 2);
+            static_cast<float>(windowSizeY) / 4);
 
     }
     catch (const std::exception& e) {

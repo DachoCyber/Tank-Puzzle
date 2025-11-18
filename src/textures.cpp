@@ -31,3 +31,16 @@ sf::Texture transportTrackRightTex;
 sf::Texture transportTrackDownTex;
 
 sf::Texture tileInWaterTex;
+
+
+sf::Texture secondFrameEnemyTank1Texture;
+sf::Texture thirdFrameEnemyTank1Texture;
+
+sf::Texture secondFrameEnemyTank2Texture;
+sf::Texture thirdFrameEnemyTank2Texture;
+
+sf::Texture secondFrameEnemyTank3Texture;
+sf::Texture thirdFrameEnemyTank3Texture;
+
+sf::Texture secondFrameEnemyTank4Texture;
+sf::Texture thirdFrameEnemyTank4Texture;

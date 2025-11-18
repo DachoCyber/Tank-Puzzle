@@ -30,3 +30,15 @@ extern sf::Texture transportTrackRightTex;
 extern sf::Texture transportTrackDownTex;
 
 extern sf::Texture tileInWaterTex;
+
+extern sf::Texture secondFrameEnemyTank1Texture;
+extern sf::Texture thirdFrameEnemyTank1Texture;
+
+extern sf::Texture secondFrameEnemyTank2Texture;
+extern sf::Texture thirdFrameEnemyTank2Texture;
+
+extern sf::Texture secondFrameEnemyTank3Texture;
+extern sf::Texture thirdFrameEnemyTank3Texture;
+
+extern sf::Texture secondFrameEnemyTank4Texture;
+extern sf::Texture thirdFrameEnemyTank4Texture;

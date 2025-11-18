@@ -2,6 +2,7 @@
 
     #include "tile.h"
     #include "bullet.h"
+    #include "textures.h"
 
     #include <memory>
 
@@ -23,6 +24,29 @@
         std::unique_ptr<Tile> clone() const override {
             auto clone = std::make_unique<EnemyTank1>(posX, posY, dir, texture); // Copy constructor
     return clone;
+        }
+        void switchFrame(int i) {
+            int codeTexture = 12 - dir;
+            if(i == 0) {
+                sprite.setTexture(texture);
+            } else {
+                if(i == 1) {
+                    switch(dir) {
+                        case 0: sprite.setTexture(secondFrameEnemyTank1Texture); break;
+                        case 1: sprite.setTexture(secondFrameEnemyTank2Texture); break;
+                        case 2: sprite.setTexture(secondFrameEnemyTank3Texture); break;
+                        case 3: sprite.setTexture(secondFrameEnemyTank4Texture); break;
+                    }
+                }
+                if(i == 2) {
+                    switch(dir) {
+                        case 0: sprite.setTexture(thirdFrameEnemyTank1Texture); break;
+                        case 1: sprite.setTexture(thirdFrameEnemyTank2Texture); break;
+                        case 2: sprite.setTexture(thirdFrameEnemyTank3Texture); break;
+                        case 3: sprite.setTexture(thirdFrameEnemyTank4Texture); break;
+                    }
+                }
+            }
         }
         int code() override {
             return 12 + dir;

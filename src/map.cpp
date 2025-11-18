@@ -126,6 +126,30 @@ void Map::loadTextures() {
     if(!tileInWaterTex.loadFromFile("Images/tileInWater.png")) {
         throw std::runtime_error("Failed to load tile in water texture");
     }
+    if(!thirdFrameEnemyTank1Texture.loadFromFile("Images/tank1SecondFrame.png")) {
+        throw std::runtime_error("Failed to load tank1 second frame texture");
+    }
+    if(!secondFrameEnemyTank1Texture.loadFromFile("Images/tank1ThirdFrame.png")) {
+        throw std::runtime_error("Failed to load tank1 third frame texture");
+    }
+    if(!thirdFrameEnemyTank2Texture.loadFromFile("Images/tank2SecondFrame.png")) {
+        throw std::runtime_error("Failed to load tank1 second frame texture");
+    }
+    if(!secondFrameEnemyTank2Texture.loadFromFile("Images/tank2ThirdFrame.png")) {
+        throw std::runtime_error("Failed to load tank1 third frame texture");
+    }
+    if(!thirdFrameEnemyTank3Texture.loadFromFile("Images/tank3SecondFrame.png")) {
+        throw std::runtime_error("Failed to load tank1 second frame texture");
+    }
+    if(!secondFrameEnemyTank3Texture.loadFromFile("Images/tank3ThirdFrame.png")) {
+        throw std::runtime_error("Failed to load tank1 third frame texture");
+    }
+    if(!thirdFrameEnemyTank4Texture.loadFromFile("Images/tank4SecondFrame.png")) {
+        throw std::runtime_error("Failed to load tank1 second frame texture");
+    }
+    if(!secondFrameEnemyTank4Texture.loadFromFile("Images/tank4ThirdFrame.png")) {
+        throw std::runtime_error("Failed to load tank1 third frame texture");
+    }
 
 }
 
@@ -239,6 +263,18 @@ void Map::switchFramesWaterTiles(int i) {
                 waterTile -> switchFrame(i);
             }
 		}
+}
+
+void Map::switchFramesEnemyTank(int i) {
+    for(int x = 0; x < 16; x++) {
+        for(int y = 0; y < 16; y++) {
+            if(tileMap[y][x] == 12 || tileMap[y][x] == 13 || tileMap[y][x] == 14 || tileMap[y][x] == 15) {
+               
+                EnemyTank1* enemyTank1 = dynamic_cast<EnemyTank1*>(tiles[y][x].get());
+                enemyTank1 -> switchFrame(i);
+            }
+        }
+    }
 }
 
 void Map :: updateWaterTiles() {

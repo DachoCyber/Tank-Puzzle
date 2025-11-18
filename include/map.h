@@ -27,6 +27,7 @@ public:
     }
 
     void switchFramesWaterTiles(int i);
+    void switchFramesEnemyTank(int i);
 
 
     void setTilesEl(size_t i, size_t j, std::unique_ptr<Tile> newElement);

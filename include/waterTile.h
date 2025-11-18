@@ -18,7 +18,7 @@ class WaterTile : public Tile {
             sprite.setTexture(*texturePtr);
             sprite.setPosition(x, y);
             sf::Color waterColor = sprite.getColor();
-            waterColor.a = 180;
+            waterColor.a = 210;
             sprite.setColor(sf::Color(waterColor));
         }
         void switchFrame(int frameIndex) {
