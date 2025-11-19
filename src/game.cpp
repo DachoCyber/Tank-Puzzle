@@ -51,9 +51,15 @@ void MainGame::run() {
     bool waterToggle = false;
     int framesTank = 0; // 0, 1, 2
     int frames = 0;
+    sf::Clock deltaClock;
     while (window->isOpen()) {
         undoMoveEndGame = false;
         if (!gameEnd()) {
+
+            float dt = deltaClock.restart().asSeconds();
+    
+            updateHUD(dt);
+            blinkTimer += dt;
 
             if (windowEnableRepeatMovement.getElapsedTime() >= windowEnableRepMovTime) {
                 isRepeatMovEnabled = true;
@@ -80,6 +86,14 @@ void MainGame::run() {
 
             sf::Event event;
             while (window->pollEvent(event)) {
+                if (event.type == sf::Event::MouseButtonPressed &&
+                        event.mouseButton.button == sf::Mouse::Left)
+                {
+                        sf::Vector2f mouse(event.mouseButton.x, event.mouseButton.y);
+
+                        if (undoButton.getGlobalBounds().contains(mouse))
+                            undoMove();
+                }
                 if (event.type == sf::Event::Closed) {
 
                     window->close();
@@ -174,6 +188,7 @@ void MainGame::undoMove() {
             
         tankMovedOrBulletShot.pop_back();
     }
+    movesText.setString("Moves:"  + std::to_string(movesPlayed));
 }
 
 bool MainGame::playerKilledByEnemy() {
@@ -221,6 +236,7 @@ void MainGame::handleInput() {
         movesPlayed++;
         pressedKey = sf::Keyboard::Up;
         tankMovedOrBulletShot.push_back("tank moved");
+
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
         movesPlayed++;
@@ -238,9 +254,11 @@ void MainGame::handleInput() {
         tankMovedOrBulletShot.push_back("tank moved");
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-        movesPlayed++;
         pressedKey = sf::Keyboard::Space;
-        tankMovedOrBulletShot.push_back("bullet shot");
+        if(player.getBullet() == nullptr) {
+            movesPlayed++;
+            tankMovedOrBulletShot.push_back("bullet shot");
+        }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::U) && 
         (!mapStates.empty() || !player.getPlayerStates().empty())) 
@@ -258,6 +276,7 @@ void MainGame::handleInput() {
 
         PlayerInteraction playerInteraction(windowSizeX, windowSizeY, player, tileMap, pressedKey);
         playerInteraction.handleMovement();
+        movesText.setString("Moves: " + std::to_string(movesPlayed));
     }
 
     if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() && returnFromTrack && pressedKey != sf::Keyboard::Unknown) {
@@ -287,6 +306,15 @@ void MainGame::update() {
         shouldEnemyFireBullet();
     }
 
+    if (fmod(blinkTimer, 1.0f) < 0.5f) {
+        light1.setFillColor(sf::Color(255,50,50));
+        light2.setFillColor(sf::Color(50,255,50));
+    } else {
+        light1.setFillColor(sf::Color(120,0,0));
+        light2.setFillColor(sf::Color(0,120,0));
+    }
+
+
     if (bullets.size() > 0) {
         const sf::Time updateInterval = sf::seconds(1.f / 60.f);
         for (int i = 0; i < bullets.size(); i++) {
@@ -311,37 +339,164 @@ void MainGame::update() {
     }
 }
 
+void MainGame::updateHUD(float dt)
+{
+    blinkTimer += dt;
+
+    if (std::fmod(blinkTimer, 1.0f) < 0.5f) {
+        light1.setFillColor(sf::Color(255, 50, 50));
+        light2.setFillColor(sf::Color(50, 255, 50));
+    } else {
+        light1.setFillColor(sf::Color(120, 0, 0));
+        light2.setFillColor(sf::Color(0, 120, 0));
+    }
+}
+
+
 void MainGame :: drawPadding() {
-    window->draw(topPad);
-    window->draw(bottomPad);
-    window->draw(leftPad);
+    // Draw minimap content
+    minimapTexture.clear(sf::Color(30,50,30));
+
+    // Example: draw player (scaled down)
+    sf::CircleShape p(3);
+    p.setFillColor(sf::Color::Yellow);
+    p.setPosition(tileMap.getPlayerPositionX() / 10.0f,
+                tileMap.getPlayerPositionY() / 10.0f);
+
+    minimapTexture.draw(p);
+    minimapTexture.display();
+
+    // Draw HUD elements
     window->draw(rightPad);
+    window->draw(borderLine);
+
+    for (auto& c : hudCorners) window->draw(c);
+
+    window->draw(titleText);
+    window->draw(movesText);
+    window->draw(controlsText);
+
+    window->draw(iconUp);
+    window->draw(iconDown);
+    window->draw(iconLeft);
+    window->draw(iconRight);
+
+    window->draw(undoButton);
+    window->draw(undoText);
+
+    window->draw(minimapFrame);
+    window->draw(minimapSprite);
+
+}
+void MainGame::initPadding()
+{
+    float hudX = windowSizeX;       // 512
+    float hudWidth = screenSizeX - windowSizeX; // 188
+    float hudY = 0;
+    float hudHeight = windowSizeY; // 512
+
+    // ============ HUD BACKGROUND ============
+    rightPad.setSize(sf::Vector2f(hudWidth, hudHeight));
+    rightPad.setFillColor(sf::Color(30, 50, 30));
+    rightPad.setPosition(hudX, hudY);
+
+    // ============ BORDER LINE ============
+    borderLine.setSize(sf::Vector2f(3, hudHeight));
+    borderLine.setFillColor(sf::Color(70, 120, 70));
+    borderLine.setPosition(hudX - 3, 0);
+
+    // ============ CLEAN CORNERS ============
+    hudCorners.clear();
+    float r = 12.f;
+
+    sf::CircleShape topLeft(r);
+    topLeft.setFillColor(sf::Color(30, 50, 30));
+    topLeft.setPosition(hudX, 0);
+    hudCorners.push_back(topLeft);
+
+    sf::CircleShape topRight(r);
+    topRight.setFillColor(sf::Color(30, 50, 30));
+    topRight.setPosition(hudX + hudWidth - 2*r, 0);
+    hudCorners.push_back(topRight);
+
+    sf::CircleShape bottomLeft(r);
+    bottomLeft.setFillColor(sf::Color(30, 50, 30));
+    bottomLeft.setPosition(hudX, hudHeight - 2*r);
+    hudCorners.push_back(bottomLeft);
+
+    sf::CircleShape bottomRight(r);
+    bottomRight.setFillColor(sf::Color(30, 50, 30));
+    bottomRight.setPosition(hudX + hudWidth - 2*r, hudHeight - 2*r);
+    hudCorners.push_back(bottomRight);
+
+    // ============ TEXT ============
+
+    font.loadFromFile("Fonts/arial.ttf");
+
+    titleText.setFont(font);
+    titleText.setCharacterSize(22);
+    titleText.setFillColor(sf::Color(180, 255, 180));
+    titleText.setString("CONTROL PANEL");
+    titleText.setPosition(hudX + 15, 15);
+
+    movesText.setFont(font);
+    movesText.setCharacterSize(20);
+    movesText.setFillColor(sf::Color(200, 255, 200));
+    movesText.setString("Moves: 0");
+    movesText.setPosition(hudX + 15, 60);
+
+    controlsText.setFont(font);
+    controlsText.setCharacterSize(18);
+    controlsText.setFillColor(sf::Color(200, 255, 200));
+    controlsText.setString(
+    "Controls:\n"
+    "        ^\n"
+    "< - - + - - >\n"
+    "        v\n"
+    "\n"
+    "U - Undo\n"
+);
+
+    controlsText.setPosition(hudX + 15, 110);
+
+    // ============ ICON POSITIONS ============
+    float ix = hudX + 15;
+    float iy = 150;
+
+    iconUp.setPosition(ix, iy);
+    iconRight.setPosition(ix, iy + 40);
+    iconDown.setPosition(ix, iy + 80);
+    iconLeft.setPosition(ix, iy + 120);
+
+    // ============ UNDO BUTTON ============
+    undoButton.setSize(sf::Vector2f(hudWidth - 30, 40));
+    undoButton.setFillColor(sf::Color(0, 100, 0));
+    undoButton.setPosition(hudX + 15, iy + 180);
+
+    undoText.setFont(font);
+    undoText.setCharacterSize(20);
+    undoText.setFillColor(sf::Color(220, 255, 220));
+    undoText.setString("Undo Move (U)");
+    undoText.setPosition(undoButton.getPosition().x + 10,
+                         undoButton.getPosition().y + 8);
+
+    // ============ MINI-MAP ============
+    minimapTexture.create(140, 140);
+
+    minimapFrame.setSize(sf::Vector2f(140, 140));
+    minimapFrame.setFillColor(sf::Color(20, 40, 20));
+    minimapFrame.setOutlineColor(sf::Color(90, 140, 90));
+    minimapFrame.setOutlineThickness(2);
+    minimapFrame.setPosition(hudX + 15, undoButton.getPosition().y + 70);
+
+    minimapSprite.setTexture(minimapTexture.getTexture());
+    minimapSprite.setPosition(minimapFrame.getPosition());
+
 }
 
-void MainGame :: initPadding() {
-    sf::Color borderColor(180, 180, 180); // light gray
 
-    // Top padding
-    topPad.setSize(sf::Vector2f(screenSizeX, (screenSizeY - windowSizeY) / 2.f));
-    topPad.setFillColor(borderColor);
-    topPad.setPosition(0, 0);
 
-    // Bottom padding
-    bottomPad.setSize(sf::Vector2f(screenSizeX, (screenSizeY - windowSizeY) / 2.f));
-    bottomPad.setFillColor(borderColor);
-    bottomPad.setPosition(0,windowSizeY + (screenSizeY - windowSizeY) / 2.f);
 
-    // Left padding
-    leftPad.setSize(sf::Vector2f((screenSizeX - windowSizeX) / 2.f, windowSizeY));
-    leftPad.setFillColor(borderColor);
-    leftPad.setPosition(0, (screenSizeY - windowSizeY) / 2.f);
-
-    // Right padding
-    rightPad.setSize(sf::Vector2f((screenSizeX - windowSizeX) / 2.f, windowSizeY));
-    rightPad.setFillColor(borderColor);
-    rightPad.setPosition(windowSizeX + (screenSizeX - windowSizeX) / 2.f,
-                         (screenSizeY - windowSizeY) / 2.f);
-}
 
 
 void MainGame::render() {
@@ -354,6 +509,7 @@ void MainGame::render() {
     if (gameLost()) {
         window->draw(gameOverText);
     }
+    drawPadding();
 
     window->display();
 }

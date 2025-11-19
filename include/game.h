@@ -6,6 +6,9 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <SFML/Audio.hpp>
+#include <vector>
+#include <cmath>
+
 
 
 
@@ -31,6 +34,7 @@ private:
 
     void undoMove();
 
+    void updateHUD(float dt);
 
 
     void loadGameOverFont();
@@ -100,7 +104,7 @@ private:
 
     std::vector<sf::Keyboard::Key> arrOfMoves;
 
-
+    bool undoMoveEndGame;
     bool playerMoved = false;
     int moveCount = 0;
     std::vector<std::pair<int, int>> playerPositions;
@@ -112,8 +116,34 @@ private:
     int movesPlayed = 0;
 
     sf::RectangleShape padding;
-    sf::RectangleShape topPad, bottomPad, leftPad, rightPad;
+        // HUD elements
+    sf::RectangleShape rightPad;
+    sf::RectangleShape leftPad, topPad, bottomPad;
 
-    bool undoMoveEndGame = false;
+    sf::Text titleText;
+    sf::Text movesText;
+    sf::Text controlsText;
+    sf::Text undoText;
+    sf::Font font;
+
+    sf::RectangleShape undoButton;
+
+    // Icons
+    sf::Texture tankIconTexture;
+    sf::Sprite iconUp, iconDown, iconLeft, iconRight;
+
+    // Blinking lights
+    sf::CircleShape light1, light2;
+    float blinkTimer = 0.f;
+
+    // Mini-map
+    sf::RectangleShape minimapFrame;
+    sf::RenderTexture minimapTexture;
+    sf::Sprite minimapSprite;
+
+    // For border
+    sf::RectangleShape borderLine;
+    std::vector<sf::CircleShape> hudCorners;
+
 };
 
