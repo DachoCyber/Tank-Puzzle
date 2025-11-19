@@ -187,15 +187,19 @@ void Map :: destroyTank(int bulletGridPosX, int bulletGridPosY, int tankType) {
     switch(tankType) {
         case 1:
             tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 0, destroyedTankLeftTexture);
+            tileMap[bulletGridPosY][bulletGridPosX] = 16;
             break;
         case 2:
             tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 1, destroyedTankUpTexture);
+            tileMap[bulletGridPosY][bulletGridPosX] = 17;
             break;
         case 3:
             tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 2, destroyedTankDownTexture);
+            tileMap[bulletGridPosY][bulletGridPosX] = 18;
             break;
         case 4:
             tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 3, destroyedTankRightTexture);
+            tileMap[bulletGridPosY][bulletGridPosX] = 19;
             break;
     }
     
