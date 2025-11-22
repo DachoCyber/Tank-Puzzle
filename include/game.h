@@ -23,6 +23,8 @@ public:
     bool gameEnd();
     bool gameLost();
     bool gameWon();
+
+    std::string getInitials() const {return initials;}
     
     int getMovesCount() { return movesPlayed; }
 private:
@@ -99,6 +101,8 @@ private:
 
     sf::Texture gobletTexture;
     sf::Sprite gobletSprite;
+
+    std::string initials;
 
     std::vector<std::vector<std::vector<int>>> mapStates;
 

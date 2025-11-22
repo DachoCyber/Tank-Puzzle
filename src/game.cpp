@@ -3,6 +3,11 @@
 #include "../include/loadSound.h"
 #include "../include/gameLost.h"
 
+#include "../include/mainMenu/resources.h"
+
+
+#include "../include/gameWonWindow.h"
+
 
 MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int constwindowSizeY, int level) :
     window(std::make_unique<sf::RenderWindow>(
@@ -44,7 +49,6 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
 
 
 }
-
 
 void MainGame::run() {
 
@@ -134,7 +138,10 @@ void MainGame::run() {
 
                 window->clear(sf::Color::White);
                 if (gameWon()) {
-                    drawGoblet();
+                    GameWonWindow gameWonWindow;
+                    gameWonWindow.run();
+                    initials = gameWonWindow.initialsField.initials;
+                    window -> close();
                 }
                 else if (gameLost()) {
                     GameLostWindow gameLostWindow;
@@ -157,6 +164,9 @@ void MainGame::run() {
         }
     }
 }
+
+
+
 
 void MainGame::undoMove() {
     if (movesPlayed > 0) {
@@ -255,10 +265,9 @@ void MainGame::handleInput() {
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
         pressedKey = sf::Keyboard::Space;
-        if(player.getBullet() == nullptr) {
+        
             movesPlayed++;
             tankMovedOrBulletShot.push_back("bullet shot");
-        }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::U) && 
         (!mapStates.empty() || !player.getPlayerStates().empty())) 

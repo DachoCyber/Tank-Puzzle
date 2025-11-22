@@ -2,8 +2,10 @@
 #include "../include/mainMenu/mainMenu.h"
 
 #include "../include/mainMenu/resources.h"
+#include "../include/sfmlScoreUI.h"
 
 #include "../include/movesProcessor.h"
+
 
 #include <filesystem>
 #include <curl/curl.h>
@@ -101,6 +103,10 @@ void downloadAllLevels(const std::string& baseUrl) {
 
 int main() {
 
+    std::vector<LevelTable> scoreByLevels;
+    curl_global_init(CURL_GLOBAL_ALL);
+    
+
 	std::string url = "https://alas.matf.bg.ac.rs/~mr22033/~public_html/levels/";
 
     downloadAllLevels(url);
@@ -115,6 +121,8 @@ int main() {
 
     std::string folder = "maps/";
     int levelCount = countMapFiles(folder);
+    scoreByLevels.resize(levelCount + 1);
+
 
 
     bool getIsClosed = false;
@@ -128,33 +136,30 @@ int main() {
         if (!enterAnotherLevel) {
             chosenLevel = menu.getChosenLevel();
         }
-        //std::cout << chosenLevel << std::endl;
         if (chosenLevel != -1) {
             MainGame game(700, 512, 512, 512, chosenLevel);
             game.run();
             getIsClosed = !game.getWindowClosedState();
             if (game.gameWon()) {
                 
-               // std::cout << "game won" << std::endl;
                 enterAnotherLevel = true;
-                
-               // std::cout << game.getMovesCount() << std::endl;
-               // std::cout << "Enter initials: ";
-                
-                std::string initials;
-                std::cin >> initials;
+        
+                std::string initials = game.getInitials();
                 curl_global_init(CURL_GLOBAL_ALL);
+                std::vector<PlayerTable> players = getPlayerScores(chosenLevel);
+                scoreByLevels[chosenLevel].players = players;
+
                 sendScore(initials, game.getMovesCount(), chosenLevel);
+                sfmlUi(initials, chosenLevel, game.getMovesCount());
                 curl_global_cleanup();
 
 
                 chosenLevel = (chosenLevel + 1) % levelCount;
-		std::cout << chosenLevel << std::endl;
-		std::cout << enterAnotherLevel << std::endl;
 	    }
 	  
         }
         std::cout << getIsClosed << std::endl;
     } while (getIsClosed);
+    curl_global_cleanup();
     return 0;
 }
