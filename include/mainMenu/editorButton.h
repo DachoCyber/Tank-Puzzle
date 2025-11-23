@@ -13,8 +13,8 @@ private:
 public:
     sf::RectangleShape editorButton;
     EditorButton(int menuWinSizeX, int menuWinSizeY, bool editorWinClose) {
-        editorButton.setPosition(sf::Vector2f(static_cast<float>(menuWinSizeX) * 419 / 794, static_cast<float>(menuWinSizeY) * 684 / 800));
-        editorButton.setSize(sf::Vector2f(static_cast<float>(menuWinSizeX) * 350 / 794, static_cast<float>(menuWinSizeY) * 69 / 800));
+        editorButton.setPosition(sf::Vector2f(static_cast<float>(menuWinSizeX) * 425 / 794, static_cast<float>(menuWinSizeY) * 690 / 800));
+        editorButton.setSize(sf::Vector2f(static_cast<float>(menuWinSizeX) * 344 / 794, static_cast<float>(menuWinSizeY) * 67 / 800));
         editorButton.setFillColor(sf::Color::White);
 
         this->editorWinClose = editorWinClose;

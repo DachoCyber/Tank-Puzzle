@@ -27,6 +27,7 @@ public:
     std::string getInitials() const {return initials;}
     
     int getMovesCount() { return movesPlayed; }
+    bool isBackClicked() { return backClicked; }
 private:
     void drawPadding();
     void initPadding();
@@ -148,6 +149,10 @@ private:
     // For border
     sf::RectangleShape borderLine;
     std::vector<sf::CircleShape> hudCorners;
+
+    sf::RectangleShape backButton;
+    sf::Text backButtonText;
+    bool backClicked = false;
 
 };
 

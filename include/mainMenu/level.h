@@ -65,6 +65,7 @@ private:
                 if (event.type == sf::Event::Closed) {
                     menuWindow.close();
                     menuWindowOpen = false;
+                    bool t = false;
                 }
 
                 if (event.type == sf::Event::MouseButtonPressed &&
@@ -142,9 +143,9 @@ public:
           level(-1)
     {   
         
-        levelRectShape.setSize(sf::Vector2f(static_cast<float>(menuSizeX)*350 / 794, static_cast<float>(menuSizeY)*69/800));
+        levelRectShape.setSize(sf::Vector2f(static_cast<float>(menuSizeX)*344 / 794, static_cast<float>(menuSizeY)*67/800));
         levelRectShape.setFillColor(sf::Color::White);
-        levelRectShape.setPosition(sf::Vector2f((static_cast<float>(menuSizeX)) * 419 / 794, (static_cast<float>(menuSizeY) * 595 / 800)));
+        levelRectShape.setPosition(sf::Vector2f((static_cast<float>(menuSizeX)) * 425 / 794, (static_cast<float>(menuSizeY) * 601 / 800)));
         sf::Color rectColor = levelRectShape.getFillColor();
         rectColor.a = 255;
         levelRectShape.setFillColor(rectColor);

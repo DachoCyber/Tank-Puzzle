@@ -129,16 +129,28 @@ int main() {
     MainMenu menu(levelCount);
     menu.run();
 
+    bool backClicked = false;
     bool enterAnotherLevel = false;
     int chosenLevel;
     do {
+        
+        
         //std::cout << chosenLevel << std::endl;
         if (!enterAnotherLevel) {
             chosenLevel = menu.getChosenLevel();
         }
+        if(backClicked) {
+            MainMenu menu(levelCount);
+            menu.run();
+            chosenLevel = menu.getChosenLevel();
+            std::cout << "Chosen level is " << chosenLevel << std::endl;
+            menu.setChosenLevel(chosenLevel);
+        }
+        std::cout << "Chosen level is " << chosenLevel << std::endl;
         if (chosenLevel != -1) {
             MainGame game(700, 512, 512, 512, chosenLevel);
             game.run();
+            backClicked = game.isBackClicked();
             getIsClosed = !game.getWindowClosedState();
             if (game.gameWon()) {
                 

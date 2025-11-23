@@ -8,7 +8,7 @@ BulletInteraction::BulletInteraction(int windowSizeX, int windowSizeY, Tank& tan
     : windowSizeX(windowSizeX), windowSizeY(windowSizeY), player(tank), tileMap(map) {}
 
 void BulletInteraction :: interact() {
-
+    bool t = false;
     if(player.getBullet() == nullptr) {
         return;
     }

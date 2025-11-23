@@ -33,6 +33,7 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
     if (!image.loadFromFile(iconPath)) {
         throw std::runtime_error("Failed to load icon from: " + iconPath);
     }
+    backClicked = false;
 
     window->setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
     int playerPosX = tileMap.getPlayerPositionX();
@@ -46,7 +47,7 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
 
 
     playerPositions.push_back(std::make_pair<int, int>(static_cast<unsigned>(playerPosX), static_cast<unsigned>(playerPosY)));
-
+    
 
 }
 
@@ -97,6 +98,11 @@ void MainGame::run() {
 
                         if (undoButton.getGlobalBounds().contains(mouse))
                             undoMove();
+
+                        if(backButton.getGlobalBounds().contains(mouse)) {
+                            backClicked = true;
+                            window -> close();
+                        }
                 }
                 if (event.type == sf::Event::Closed) {
 
@@ -296,6 +302,8 @@ void MainGame::handleInput() {
 
 void MainGame::update() {
 
+    
+
     if (isRepeatMovEnabled) {
         window->setKeyRepeatEnabled(true);
     }
@@ -313,14 +321,6 @@ void MainGame::update() {
     if (bullets.size() == 0 || (player.getGridPosition().x != coordXKillerTank && player.getGridPosition().y != coordYKillerTank)) {
 
         shouldEnemyFireBullet();
-    }
-
-    if (fmod(blinkTimer, 1.0f) < 0.5f) {
-        light1.setFillColor(sf::Color(255,50,50));
-        light2.setFillColor(sf::Color(50,255,50));
-    } else {
-        light1.setFillColor(sf::Color(120,0,0));
-        light2.setFillColor(sf::Color(0,120,0));
     }
 
 
@@ -395,6 +395,8 @@ void MainGame :: drawPadding() {
 
     window->draw(minimapFrame);
     window->draw(minimapSprite);
+    window->draw(backButton);
+    window->draw(backButtonText);
 
 }
 void MainGame::initPadding()
@@ -501,6 +503,17 @@ void MainGame::initPadding()
     minimapSprite.setTexture(minimapTexture.getTexture());
     minimapSprite.setPosition(minimapFrame.getPosition());
 
+    backButton.setSize(sf::Vector2f(hudWidth - 30, 40)); // adjust if needed
+    backButton.setPosition(sf::Vector2f(hudX + 15, iy + 120));
+    backButton.setFillColor(sf::Color(0, 100, 0));
+    
+    
+    backButtonText.setFont(font);
+    backButtonText.setString( "Main Menu");
+    backButtonText.setCharacterSize(20);
+    backButtonText.setPosition(backButton.getPosition().x + 10, 
+                               backButton.getPosition().y + 8);
+    backButtonText.setFillColor(sf::Color(220, 255, 220));
 }
 
 
