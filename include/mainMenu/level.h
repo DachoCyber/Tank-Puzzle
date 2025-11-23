@@ -80,6 +80,17 @@ private:
                         }
                     }
                 }
+            
+                // On hover
+                sf::Vector2i mousePos = sf::Mouse::getPosition();
+                sf::Vector2f floatMousePos = sf::Vector2f(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+                if(levelRectShape.getGlobalBounds().contains(floatMousePos)) {
+                    levelRectShape.setFillColor(sf::Color(212, 212, 216));
+                } else {
+                    levelRectShape.setFillColor(sf::Color::White);
+                }
+
+
                 if(event.type == sf::Event::KeyPressed) {
 
                     if(event.key.code == sf::Keyboard::Key::Down) {
@@ -131,18 +142,17 @@ public:
           level(-1)
     {   
         
-        levelRectShape.setSize(sf::Vector2f(static_cast<float>(menuSizeX)*6/15, static_cast<float>(menuSizeY)/5));
+        levelRectShape.setSize(sf::Vector2f(static_cast<float>(menuSizeX)*350 / 794, static_cast<float>(menuSizeY)*69/800));
         levelRectShape.setFillColor(sf::Color::White);
-        levelRectShape.setPosition(sf::Vector2f((static_cast<float>(menuSizeX)) / 3, (static_cast<float>(menuSizeY*12)/30)));
+        levelRectShape.setPosition(sf::Vector2f((static_cast<float>(menuSizeX)) * 419 / 794, (static_cast<float>(menuSizeY) * 595 / 800)));
         sf::Color rectColor = levelRectShape.getFillColor();
-        rectColor.a = 0;
+        rectColor.a = 255;
         levelRectShape.setFillColor(rectColor);
 
         
         
         levelText.setFont(globalFont);
         levelText.setCharacterSize(24.f);
-        levelText.setString("Level");
 
 
         float textWidth = levelText.getLocalBounds().width;
@@ -168,5 +178,9 @@ public:
 
     void setTextColor(sf::Color color) {
         levelText.setFillColor(color);
+    }
+
+    sf::RectangleShape& getButton() {
+        return levelRectShape;
     }
 };

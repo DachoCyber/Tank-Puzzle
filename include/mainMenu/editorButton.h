@@ -13,16 +13,14 @@ private:
 public:
     sf::RectangleShape editorButton;
     EditorButton(int menuWinSizeX, int menuWinSizeY, bool editorWinClose) {
-        editorButton.setPosition(sf::Vector2f(static_cast<float>(menuWinSizeX) * 1 / 3, static_cast<float>(menuWinSizeY) * 20.5 / 32));
-        editorButton.setSize(sf::Vector2f(static_cast<float>(menuWinSizeX) * 6 / 15, static_cast<float>(menuWinSizeY) * 3 / 15));
+        editorButton.setPosition(sf::Vector2f(static_cast<float>(menuWinSizeX) * 419 / 794, static_cast<float>(menuWinSizeY) * 684 / 800));
+        editorButton.setSize(sf::Vector2f(static_cast<float>(menuWinSizeX) * 350 / 794, static_cast<float>(menuWinSizeY) * 69 / 800));
         editorButton.setFillColor(sf::Color::White);
 
         this->editorWinClose = editorWinClose;
 
         editorText.setFont(globalFont);
         editorText.setCharacterSize(24);
-
-        editorText.setString("Editor");
         editorText.setFillColor(sf::Color::Black);
 
         float textWidth = editorText.getLocalBounds().width;
@@ -32,8 +30,13 @@ public:
             editorButton.getPosition().y + (editorButton.getSize().y - textHeight) / 2.f - 5.f
         );
         sf::Color rectColor = editorButton.getFillColor();
-        rectColor.a = 0;
+        rectColor.a = 255;
+
         editorButton.setFillColor(rectColor);
+    }
+
+    sf::RectangleShape& getButton() {
+        return editorButton;
     }
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {

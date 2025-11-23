@@ -14,7 +14,7 @@ struct PlayerTable {
     int score;
 
     bool operator==(const PlayerTable& other) const {
-        return name == other.name && score == other.score;
+        return name == other.name;
     }
 };
 

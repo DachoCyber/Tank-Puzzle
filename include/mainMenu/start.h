@@ -11,13 +11,13 @@ private:
 
 public:
     Start(int menuWinSizeX, int menuWinSizeY) {
-        startButton.setPosition(sf::Vector2f(static_cast<float>(menuWinSizeX) * 1 / 3, static_cast<float>(menuWinSizeY) * 1 / 6));
-        startButton.setSize(sf::Vector2f(static_cast<float>(menuWinSizeX) * 6 / 15, static_cast<float>(menuWinSizeY) * 3 / 15));
+        startButton.setPosition(sf::Vector2f(static_cast<float>(menuWinSizeX) * 419 / 794, static_cast<float>(menuWinSizeY) * 506 / 800));
+        startButton.setSize(sf::Vector2f(static_cast<float>(menuWinSizeX) * 350 / 794, static_cast<float>(menuWinSizeY) * 69 / 800));
         startButton.setFillColor(sf::Color::White);
+
 
         startText.setFont(globalFont);
         startText.setCharacterSize(24);
-        startText.setString("Start");
         startText.setFillColor(sf::Color::Black);
 
         float textWidth = startText.getLocalBounds().width;
@@ -27,7 +27,7 @@ public:
             startButton.getPosition().y + (startButton.getSize().y - textHeight) / 2.f - 5.f
         );
         sf::Color rectColor = startButton.getFillColor();
-        rectColor.a = 0;
+        rectColor.a = 255;
         startButton.setFillColor(rectColor);
     }
 
@@ -41,6 +41,12 @@ public:
             clicked = true;
         }
     }
+
+    sf::RectangleShape& getButton() {
+        return startButton;
+    }
+
+    
 
     bool wasClicked() const {
         return clicked;

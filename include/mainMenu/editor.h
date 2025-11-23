@@ -83,6 +83,10 @@ public:
 public:
     Editor(int menuWinSizeX, int menuWinSizeY, bool editorWinClose) : button(menuWinSizeX, menuWinSizeY, editorWinClose) {}
     
+    sf::RectangleShape& getButton() {
+        return button.editorButton;
+    }
+
     std::vector<std::vector<int>> getTileMap() { return tileMap; }
 
     static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
@@ -195,7 +199,7 @@ public:
         tankInstructionTextFont = tileInstructionTextFont;
         sf::RectangleShape instructionPanel;
         instructionPanel.setFillColor(sf::Color::White);
-        instructionPanel.setSize(sf::Vector2f(256, 200));  // širina i visina panela
+        instructionPanel.setSize(sf::Vector2f(256, 200));  // ï¿½irina i visina panela
         instructionPanel.setPosition(sf::Vector2f(512, 96)); // stavi ga desno od mape
 
 
@@ -708,7 +712,6 @@ public:
             tileMap[tileY][tileX] = placeID;
 
             if (placeID == 8) {
-                // water tile ? 3 argumenta
                 tiles[tileY][tileX] = std::make_unique<WaterTile>(
                     tileX * tileSize,
                     tileY * tileSize,
@@ -717,7 +720,6 @@ public:
                 );
             }
             else {
-                // svi ostali ? 2 argumenta
                 tiles[tileY][tileX] = std::make_unique<TileType>(
                     tileX * tileSize,
                     tileY * tileSize,

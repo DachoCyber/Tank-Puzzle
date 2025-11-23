@@ -43,6 +43,8 @@ public:
             throw std::runtime_error("Failed to load texture!");
         }
         backgroundImageSprite.setTexture(backgroundImageTexture);
+        backgroundImageSprite.setScale(sf::Vector2f(794.f/1024.f, 800.f/1536.f));
+        levels.level = 1;
     }
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
@@ -54,6 +56,7 @@ public:
     void run() {
         sf::Time updateLevelTextTime = sf::seconds(0.25);
         sf::Clock clock;
+        window -> setFramerateLimit(30);
         while (window->isOpen()) {
             sf::Event event;
             while (window->pollEvent(event)) {
@@ -67,9 +70,14 @@ public:
                     sf::Vector2f mousePos = window->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y});
                     levels.handleClick(mousePos);
                     start.handleClick(mousePos);
+                    
                     editor.button.handleClick(mousePos);
                 }
+                
             }
+            onHover(start.getButton());
+            onHover(editor.getButton());
+            onHover(levels.getButton());
 
             if (start.wasClicked() && levels.level == -1) {
                 if (clock.getElapsedTime().asSeconds() >= updateLevelTextTime.asSeconds() / 2) {
@@ -95,13 +103,21 @@ public:
         }
     }
 
+    void onHover(sf::RectangleShape& button) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(*window);
+        sf::Vector2f floatMousePos = sf::Vector2f(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+        if(button.getGlobalBounds().contains(floatMousePos)) {
+            button.setFillColor(sf::Color(212, 212, 216));
+        } else {
+            button.setFillColor(sf::Color::White);
+        }
+
+    }
+
 
     void render() {
         window->clear(sf::Color::Black);
         window->draw(backgroundImageSprite);
-        window->draw(levels);
-        window->draw(start);
-        window->draw(editor);
         window->display();
     }
 
