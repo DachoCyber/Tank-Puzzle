@@ -60,6 +60,7 @@ class WaterTile : public Tile {
         if(posX == playerPosX && posY == playerPosY) {
             return true;
         }
+        std::cout << "Player is not dead!" << std::endl;
         return false;
     }
     bool isWater() override {

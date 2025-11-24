@@ -61,6 +61,11 @@ void MainGame::run() {
         undoMoveEndGame = false;
         if (!gameEnd()) {
 
+            int code = tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->code();
+            if(code == 8) {
+                killPlayer = true;
+            }
+
             float dt = deltaClock.restart().asSeconds();
     
             updateHUD(dt);
@@ -600,6 +605,11 @@ void MainGame::loadGameOverFont() {
 
 
 void MainGame::handlTransportableTrack(int y, int x) {
+
+    int isTransportTrack = tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->code();
+    if(!(isTransportTrack == 20 || isTransportTrack == 21 || isTransportTrack == 22 || isTransportTrack == 23))
+        returnFromTrack = true;
+
     if (returnFromTrack) return;
 
     int dx = 0, dy = 0;
@@ -631,6 +641,7 @@ void MainGame::handlTransportableTrack(int y, int x) {
         int currGridCoordY = y;
 
         returnFromTrack = false;
+        std::cout << "Is player valid move " << x + dx << ", " << y + dy << std::endl;
 
         player.setGridPosition(sf::Vector2i(x + dx, y + dy));
 
