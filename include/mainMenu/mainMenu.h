@@ -22,6 +22,8 @@ private:
 
     bool editorWinClose = false;
 
+    bool winClose;
+
     sf::Image  backgroundImage;
     sf::Image  originalBackgroundImage;
     sf::Texture backgroundImageTexture;
@@ -76,6 +78,10 @@ public:
         this -> level = level;
     }
 
+    bool getWinClose() const {
+        return winClose;
+    }
+
     // --------------------------------------------------------
     // crtanje (ako negde radiš window->draw(mainMenu))
     // --------------------------------------------------------
@@ -101,8 +107,11 @@ public:
 
             sf::Event event;
             while (window->pollEvent(event)) {
-                if (event.type == sf::Event::Closed)
+                if (event.type == sf::Event::Closed) {
+
                     window->close();
+                    winClose = true;
+                }
 
                 if (event.type == sf::Event::MouseButtonPressed &&
                     event.mouseButton.button == sf::Mouse::Left) {

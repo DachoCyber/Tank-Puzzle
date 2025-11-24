@@ -129,9 +129,14 @@ int main() {
     MainMenu menu(levelCount);
     menu.run();
 
+    if(menu.getWinClose()) {
+        return 0;
+    }
+
     bool backClicked = false;
     bool enterAnotherLevel = false;
     int chosenLevel;
+    bool menuWindowClose = false;
     do {
         
         
@@ -142,6 +147,8 @@ int main() {
         if(backClicked) {
             MainMenu menu(levelCount);
             menu.run();
+            menuWindowClose = menu.getWinClose();
+            std::cout << "Menu window closed " << menuWindowClose << std::endl;
             chosenLevel = menu.getChosenLevel();
             std::cout << "Chosen level is " << chosenLevel << std::endl;
             menu.setChosenLevel(chosenLevel);
@@ -171,7 +178,7 @@ int main() {
 	  
         }
         std::cout << getIsClosed << std::endl;
-    } while (getIsClosed);
+    } while (getIsClosed && !menuWindowClose);
     curl_global_cleanup();
     return 0;
 }
