@@ -23,3 +23,5 @@ struct LevelTable {
 };
 
 std::vector<PlayerTable> getPlayerScores(int targetLevel);
+
+extern bool noInternetConnection;

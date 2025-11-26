@@ -1,6 +1,7 @@
 #include "../include/player.h"
 
 
+
 Tank::Tank(int gridPosX, int gridPosY, int windowSizeX, int windowSizeY) 
     :
     dir(RIGHT),
@@ -17,6 +18,15 @@ Tank::Tank(int gridPosX, int gridPosY, int windowSizeX, int windowSizeY)
     setDir(dir);
     sprite.setPosition(sf::Vector2f(static_cast<float>(gridPosX * tileSize + tileSize/2), static_cast<float>(gridPosY*tileSize + tileSize/2)));
     updateSpritePosition();
+
+    
+    moveSoundBfr.loadFromFile("sounds/MOVE.MP3");
+    moveSound.setBuffer(moveSoundBfr);
+    turnSoundBfr.loadFromFile("sounds/TURN.MP3");
+    turnSound.setBuffer(turnSoundBfr);
+    fireSoundBfr.loadFromFile("sounds/FIRE.MP3");
+    fireSound.setBuffer(fireSoundBfr);
+
     
 }
 

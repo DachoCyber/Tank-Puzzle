@@ -28,6 +28,8 @@ public:
     
     int getMovesCount() { return movesPlayed; }
     bool isBackClicked() { return backClicked; }
+
+
 private:
     void drawPadding();
     void initPadding();

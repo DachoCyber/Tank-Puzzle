@@ -32,6 +32,7 @@ void PlayerInteraction :: handleMovement() {
                 player.setDir(UP);
                 staySame = true;
                 dir = UP;
+                player.turnSound.play();
             } else {
                 if(validMove(newGridPos.x, newGridPos.y - 1)) {
                     bool notUpTrack = tileMap.getTileMap()[newGridPos.y - 1][newGridPos.x] -> isTransportTrack() != 4;
@@ -44,6 +45,7 @@ void PlayerInteraction :: handleMovement() {
                         }
                     }
                 }
+                player.moveSound.play();
             }
         }
         sf::Vector2i position = player.getGridPosition();
@@ -57,6 +59,7 @@ void PlayerInteraction :: handleMovement() {
                 player.setDir(DOWN);
                 staySame = true;
                 dir = DOWN;
+                player.turnSound.play();
             } else {
                 if(validMove(newGridPos.x, newGridPos.y + 1)) {
                     bool notDownTrack = tileMap.getTileMap()[newGridPos.y + 1][newGridPos.x] -> isTransportTrack() != 3;
@@ -69,6 +72,7 @@ void PlayerInteraction :: handleMovement() {
                         }
                     }
                 }
+                player.moveSound.play();
             }
         }
         sf::Vector2i position = player.getGridPosition();
@@ -83,6 +87,7 @@ void PlayerInteraction :: handleMovement() {
             player.setDir(LEFT);
             staySame = true;
             dir = LEFT;
+            player.turnSound.play();
         } else {
             if(validMove(newGridPos.x - 1, newGridPos.y)) {
                 
@@ -96,6 +101,7 @@ void PlayerInteraction :: handleMovement() {
                     }
                 }
             }
+            player.moveSound.play();
         }
         sf::Vector2i position = player.getGridPosition();
         player.getPlayerStates().push_back({dir, position});
@@ -109,6 +115,7 @@ void PlayerInteraction :: handleMovement() {
                 player.setDir(RIGHT);
                 staySame = true;
                 dir = RIGHT;
+                player.turnSound.play();
             } else {
                 if(validMove(newGridPos.y, newGridPos.x + 1)) {
                     bool notRightTrack = tileMap.getTileMap()[newGridPos.y][newGridPos.x + 1] -> isTransportTrack() != 1;
@@ -121,6 +128,8 @@ void PlayerInteraction :: handleMovement() {
                     }
 
                 }
+
+                player.moveSound.play();
                 
             }
             
@@ -137,6 +146,8 @@ void PlayerInteraction :: handleMovement() {
         if(!player.deleteAdjBlockIfExists(tileMap)) {
             player.fireBullet();
         }
+
+        player.fireSound.play();
     }
 
     if(moved && validMove(newGridPos.x, newGridPos.y)) {

@@ -6,6 +6,8 @@
 
 #include "../include/getScores.h"
 
+bool noInternetConnection = false;
+
 
 size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     size_t totalSize = size * nmemb;
@@ -27,7 +29,10 @@ int extractIntValue(const std::string& line) {
 }
 
 
+
+
 std::vector<PlayerTable> getPlayerScores(int targetLevel) {
+    noInternetConnection = false;
 
     int maximum = 100;
 
@@ -47,6 +52,7 @@ std::vector<PlayerTable> getPlayerScores(int targetLevel) {
         if (res != CURLE_OK) {
             std::cerr << "cURL error: "
                       << curl_easy_strerror(res) << "\n";
+            noInternetConnection = true;
             return {};
         }
         curl_easy_cleanup(curl);

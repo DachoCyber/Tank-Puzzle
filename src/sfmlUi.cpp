@@ -13,6 +13,10 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
     // get players for that level
     std::vector<PlayerTable> players = getPlayerScores(chosenLevel);
 
+    if(players.empty()) {
+
+    }
+
     // Sort ascending by score
     std::sort(players.begin(), players.end(), [](const PlayerTable& a, const PlayerTable& b) {
         return a.score < b.score;
@@ -52,6 +56,17 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
     // prepare rows text
     std::vector<sf::Text> nameTexts;
     std::vector<sf::Text> scoreTexts;
+
+    sf::Text noInternet("CONNECT TO", globalFont, 16);
+    sf::Text noInternetNext("INTERNET", globalFont, 16);
+    if(noInternetConnection) {
+        noInternet.setPosition(margin + 5, startY + headerH + 4);
+        noInternetNext.setPosition(margin + colNameW + 5, startY + headerH + 4);
+    }
+    
+
+    noInternet.setFillColor(sf::Color::Black);
+    noInternetNext.setFillColor(sf::Color::Black);
 
     for (size_t idx = 0; idx < players.size(); ++idx) {
 
@@ -107,50 +122,75 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
         headerBg.setFillColor(sf::Color(220, 220, 220));
         window.draw(headerBg);
 
+
+
         // draw header texts
-        window.draw(headerName);
-        window.draw(headerScore);
+            window.draw(headerName);
+            window.draw(headerScore);
 
-        // draw rows
-        for (int r = 0; r < visibleRows; ++r) {
+        if (noInternetConnection) {
 
-            int idx = offset + r;
-            if (idx >= (int)players.size()) break;
-
-            float y = startY + headerH + r * rowH;
-
-            // highlight initials
-            bool isInitials = (players[idx].name == initials);
-
-            sf::RectangleShape rowBg(sf::Vector2f(colNameW + colScoreW, rowH));
-            rowBg.setPosition(startX, y);
-
-            // *** TOP 3 COLORING ***
-            if (idx == 0)      rowBg.setFillColor(GOLD);
-            else if (idx == 1) rowBg.setFillColor(SILVER);
-            else if (idx == 2) rowBg.setFillColor(BRONZE);
-            else if (isInitials)
-                rowBg.setFillColor(sf::Color(180, 210, 250));  // highlighted player
-            else
-                rowBg.setFillColor(sf::Color(245, 245, 245));
-
+            // Tamna pozadina ispod headera
+            sf::RectangleShape rowBg(sf::Vector2f(colNameW + colScoreW, 200));
+            rowBg.setPosition(startX, startY + headerH);
+            rowBg.setFillColor(sf::Color(100, 0, 150)); // tamno ljubičasta
             window.draw(rowBg);
 
-            // dividing line
-            sf::RectangleShape line(sf::Vector2f(colNameW + colScoreW, 1.f));
-            line.setPosition(startX, y + rowH - 1);
-            line.setFillColor(sf::Color(200, 200, 200));
-            window.draw(line);
+            // Veliki centrirani tekst
+            sf::Text offline("No internet connection\nCan not load results", globalFont, 24);
+            offline.setFillColor(sf::Color::White);
+            offline.setStyle(sf::Text::Bold);
 
-            // update text positions
-            sf::Text nameT = nameTexts[idx];
-            nameT.setPosition(startX + 5, y + 4);
-            window.draw(nameT);
+            // centriranje horiznotalno
+            float textX = startX + (colNameW + colScoreW) / 2 - offline.getLocalBounds().width / 2;
+            float textY = startY + headerH + 60;
 
-            sf::Text scoreT = scoreTexts[idx];
-            scoreT.setPosition(startX + colNameW + 5, y + 4);
-            window.draw(scoreT);
+            offline.setPosition(textX, textY);
+            window.draw(offline);
         }
+        else {
+                // draw rows
+            for (int r = 0; r < visibleRows; ++r) {
+
+                int idx = offset + r;
+                if (idx >= (int)players.size()) break;
+
+                float y = startY + headerH + r * rowH;
+
+                // highlight initials
+                bool isInitials = (players[idx].name == initials);
+
+                sf::RectangleShape rowBg(sf::Vector2f(colNameW + colScoreW, rowH));
+                rowBg.setPosition(startX, y);
+
+                // *** TOP 3 COLORING ***
+                if (idx == 0)      rowBg.setFillColor(GOLD);
+                else if (idx == 1) rowBg.setFillColor(SILVER);
+                else if (idx == 2) rowBg.setFillColor(BRONZE);
+                else if (isInitials)
+                    rowBg.setFillColor(sf::Color(180, 210, 250));  // highlighted player
+                else
+                    rowBg.setFillColor(sf::Color(245, 245, 245));
+
+                window.draw(rowBg);
+
+                // dividing line
+                sf::RectangleShape line(sf::Vector2f(colNameW + colScoreW, 1.f));
+                line.setPosition(startX, y + rowH - 1);
+                line.setFillColor(sf::Color(200, 200, 200));
+                window.draw(line);
+
+                // update text positions
+                sf::Text nameT = nameTexts[idx];
+                nameT.setPosition(startX + 5, y + 4);
+                window.draw(nameT);
+
+                sf::Text scoreT = scoreTexts[idx];
+                scoreT.setPosition(startX + colNameW + 5, y + 4);
+                window.draw(scoreT);
+            }
+        }
+        
 
         // instructions text
         sf::Text instr("Scroll mouse or Up/Down. Highlighted = " + initials,

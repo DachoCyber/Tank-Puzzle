@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <chrono>
 #include "bullet.h"
@@ -29,6 +30,12 @@ public:
     void setDontKillPlayer() {
         shouldKillPlayer = false;
     }
+    sf::Sound moveSound;
+    sf::Sound turnSound;
+    sf::Sound fireSound;
+    sf::SoundBuffer moveSoundBfr;
+    sf::SoundBuffer turnSoundBfr;
+    sf::SoundBuffer fireSoundBfr;
     std::vector<PlayerState>& getPlayerStates() { 
         return playerStates; 
     }
@@ -59,6 +66,8 @@ public:
     int getPositionY() const {return sprite.getPosition().y;}
 
 private:
+
+    
 
     std::vector<PlayerState> playerStates;
 

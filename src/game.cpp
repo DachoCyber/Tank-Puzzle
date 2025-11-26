@@ -42,7 +42,9 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
     player.setGridPosition(playerPos);
     window->setFramerateLimit(60);
     loadGoblet();
-    loadGameOverFont();
+
+    loadGameOverSound("sounds/game-over.mp3");
+    loadWonSound("sounds/ENDLEV.mp3");
 
 
 
@@ -149,12 +151,15 @@ void MainGame::run() {
 
                 window->clear(sf::Color::White);
                 if (gameWon()) {
+                    levelWonSound.play();
                     GameWonWindow gameWonWindow;
                     gameWonWindow.run();
                     initials = gameWonWindow.initialsField.initials;
                     window -> close();
                 }
                 else if (gameLost()) {
+
+                    gameOverSound.play();
                     GameLostWindow gameLostWindow;
                     gameLostWindow.loop();
                     if(gameLostWindow.getUndoMove()) {
@@ -533,9 +538,6 @@ void MainGame::render() {
     for (int i = 0; i < bullets.size(); i++) {
         window->draw(*bullets[i]);
     }
-    if (gameLost()) {
-        window->draw(gameOverText);
-    }
     drawPadding();
 
     window->display();
@@ -573,36 +575,6 @@ void MainGame::loadGoblet() {
     gobletSprite.setOrigin(gobletSprite.getLocalBounds().width / 2, gobletSprite.getLocalBounds().height / 2);
     gobletSprite.setPosition(sf::Vector2f(static_cast<float>(windowSizeX) / 2, static_cast<float>(windowSizeY) / 2));
 }
-void MainGame::loadGameOverFont() {
-    try {
-        if (!weirdFont.loadFromFile("Fonts/Creepster-Regular.ttf")) {
-            throw std::runtime_error("Cannot load weird font");
-        }
-
-        gameOverText.setFont(weirdFont);
-
-        gameOverText.setString("GAME OVER");
-
-        gameOverText.setCharacterSize(80);
-
-        gameOverText.setFillColor(sf::Color::Red);
-
-        gameOverText.setStyle(sf::Text::Bold | sf::Text::Italic);
-
-        sf::FloatRect textBounds = gameOverText.getLocalBounds();
-
-        gameOverText.setOrigin(textBounds.left + textBounds.width / 2.f,
-            textBounds.top + textBounds.height / 2.f);
-
-        gameOverText.setPosition(static_cast<float>(windowSizeX) / 2,
-            static_cast<float>(windowSizeY) / 4);
-
-    }
-    catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-    }
-}
-
 
 void MainGame::handlTransportableTrack(int y, int x) {
 
