@@ -6,7 +6,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die(json_encode(['error' => 'Samo POST metoda je dozvoljena']));
 }
 
-// Validacija ulaznih podataka
 if (!isset($_POST['name']) || !isset($_POST['score'])) {
     http_response_code(400);
     die(json_encode(['error' => 'Nedostaju name ili score parametri']));
@@ -14,13 +13,12 @@ if (!isset($_POST['name']) || !isset($_POST['score'])) {
 
 $name = trim($_POST['name']);
 $score = intval($_POST['score']);
-$level = isset($_POST['level']) ? intval($_POST['level']) : 1; // ili neka podrazumevana vrednost
+$level = isset($_POST['level']) ? intval($_POST['level']) : 1;
 
 
 function write_to_json_file($name, $score, $level) {
     $file = 'data.json';
     
-    // Provera i kreiranje fajla ako ne postoji
     if (!file_exists($file)) {
         if (file_put_contents($file, '[]') === false) {
             error_log("Greška: Ne mogu da kreiram data.json");
@@ -29,7 +27,7 @@ function write_to_json_file($name, $score, $level) {
         chmod($file, 0644); // Postavi dozvole
     }
     
-    // Provera dozvola
+
     if (!is_writable($file)) {
         error_log("Greška: data.json nije upisiv. Dozvole: " . decoct(fileperms($file)));
         return false;
@@ -45,10 +43,9 @@ function write_to_json_file($name, $score, $level) {
     $data = json_decode($json, true);
     if (json_last_error() !== JSON_ERROR_NONE) {
         error_log("Greška: Nevalidan JSON format: " . json_last_error_msg());
-        $data = []; // Resetuj ako je korumpiran
+        $data = [];
     }
 
-    // Dodavanje novog unosa
     $data[] = [
         'name' => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
         'score' => $score,
@@ -56,7 +53,7 @@ function write_to_json_file($name, $score, $level) {
         'timestamp' => date('Y-m-d H:i:s')
     ];
 
-    // Snimanje
+
     $result = file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     return $result !== false;
 }
