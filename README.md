@@ -11,7 +11,7 @@ This project was created for learning, experimentation, and fun — while carefu
 ## Main Menu
 Below is a preview of the main menu, redesigned in a retro-pixel style:
 
-![Main Menu](images/main_menu.png)
+![Main Menu](images/mainMenuImage.png)
 
 ---
 
@@ -19,7 +19,7 @@ Below is a preview of the main menu, redesigned in a retro-pixel style:
 
 Here is a sample level demonstrating movement tracks, water tiles, mirrors, bricks, and multiple tanks:
 
-![Level Screenshot](images/level_preview.png)
+![Level Screenshot](images/level.png)
 
 # Features
 
