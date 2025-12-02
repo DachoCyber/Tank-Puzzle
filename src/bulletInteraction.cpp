@@ -262,11 +262,14 @@ if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]
         // Hit from left - reflect down
         if(lastBulletGridPosX < bulletGridPosX || (-player.getGridPosition().x + bulletGridPosX == 1 && player.getGridPosition().y == bulletGridPosY)) {
             player.getBullet()->changeVelocity(UP, 3);
+            std::cout << "BulletInteraction.cpp: line 265: bullet should go up"; 
             player.getBullet() -> dir = UP;
             mirrorSound.play();
+            return;
         }
         // Hit from right - move mirror left
-        else if(lastBulletGridPosX > bulletGridPosX || player.getGridPosition().x - bulletGridPosX == 1) {
+        else if(lastBulletGridPosX > bulletGridPosX || (player.getGridPosition().x - bulletGridPosX == 1 && player.getGridPosition().y == bulletGridPosY)) {
+            std::cout << "BulletInteraction.cpp: line 265: mirror moves left"; 
             if(bulletGridPosX > 0) {  // Can we move left?
                 bool canMove = (player.getGridPosition().x != bulletGridPosX - 1 || player.getGridPosition().y != bulletGridPosY)
                               && bulletGridPosX > 0 && !tileMap.getTileMap()[bulletGridPosY][bulletGridPosX - 1] || 
@@ -286,7 +289,7 @@ if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]
             mirrorSound.play();
         }
         // Hit from top - move mirror down
-        else if(lastBulletGridPosY > bulletGridPosY || player.getGridPosition().y - bulletGridPosY == 1) {
+        else if(lastBulletGridPosY > bulletGridPosY || (player.getGridPosition().y - bulletGridPosY == 1 && player.getGridPosition().x == bulletGridPosX)) {
             if(bulletGridPosY > 0) {  // Can we move down?
                 bool canMove = (player.getGridPosition().x != bulletGridPosX || player.getGridPosition().y != bulletGridPosY - 1) &&
                              bulletGridPosY > 0 && (!tileMap.getTileMap()[bulletGridPosY - 1][bulletGridPosX] || 
