@@ -1,6 +1,6 @@
 # LaserTank Clone
 
-**LaserTank Clone** is a modern reinterpretation of the classic puzzle game *LaserTank*, fully written in **C++** with **SFML 2.6.2**.  
+**LaserTank Clone** is a reinterpretation of the classic puzzle game *LaserTank*, fully written in **C++** with **SFML 2.6.2**.  
 The goal is simple: navigate your tank through challenging levels, avoid obstacles, use mirrors to redirect your laser, and reach the finish tile.  
 Behind this simplicity hides a deep strategic puzzle system with undo mechanics, movable blocks, enemy tanks, and diverse terrain types.
 
@@ -53,8 +53,8 @@ Here is a sample level demonstrating movement tracks, water tiles, mirrors, bric
 - Ambient and interaction effects using SFML Audio
 
 # Engine Architecture
-- Modularized classes:
-  - `MainGame`, `TileMap`, `Player`, `Bullet`, `UndoSystem`, etc.  
+- Classes:
+  - `MainGame`, `Map`, `Player`, `Bullet`, `BulletInteraction` etc  
 - Clean separation of:
   - Player interaction  
   - Bullet physics  
@@ -67,12 +67,41 @@ Here is a sample level demonstrating movement tracks, water tiles, mirrors, bric
 ---
 
 ## Build Instructions
+Windows (MinGW + SFML Static Build)
 
-### **Windows (MinGW + SFML Static Build)**
+Install MinGW-w64 (UCRT) — choose 32-bit or 64-bit depending on your desired build target.
 
-1. Install MinGW-w64 (UCRT, 32-bit or 64-bit depending on your build)  
-2. Download **SFML 2.6.2 static** matching your compiler  
-3. Clone this repository:
-   ```sh
-   git clone https://github.com/your-user/LaserTankClone.git
+Download SFML 2.6.2 (static) that exactly matches your GCC version.
 
+You can check version of your GCC with:
+## gcc --version
+
+Clone this repository:
+
+git clone https://github.com/DachoCyber/LaserTankVSCode.git
+
+Extract SFML into the root of the project so that the folder structure looks like this:
+
+LaserTankVSCode/
+    SFML-2.6.2/
+        SFML-2.6.2/
+            include/
+            lib/
+
+These libraries are required for the online high-score system and HTTP requests.
+
+Build the game by running:
+
+## mingw32-make
+
+If the build succeeds, the executable will appear as:
+
+## LaserTank.exe
+
+To run the game from the terminal:
+
+## mingw32-make run
+
+To remove all object files and rebuild from scratch:
+
+## mingw32-make clean
