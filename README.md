@@ -8,6 +8,40 @@ This project was created for learning, experimentation, and fun — while carefu
 
 ---
 
+
+## Build Instructions
+Windows (MinGW + SFML Static Build)
+
+Install MinGW-w64 (UCRT) — choose 32-bit or 64-bit depending on your desired build target.
+
+Download SFML 2.6.2 (static) that exactly matches your GCC version.
+
+You can check version of your GCC with:
+
+gcc --version
+
+Clone this repository:
+
+git clone https://github.com/DachoCyber/LaserTankVSCode.git
+
+Extract SFML into the root of the project so that the folder structure looks like this:
+
+LaserTankVSCode/
+    SFML-2.6.2/
+        SFML-2.6.2/
+            include/
+            lib/
+
+These libraries are required for the online high-score system and HTTP requests.
+
+Build the game by running:
+  
+  mingw32-make
+    
+  mingw32-make run
+    
+  mingw32-make clean
+
 ## Main Menu
 Below is a preview of the main menu, redesigned in a retro-pixel style:
 
@@ -66,35 +100,3 @@ Here is a sample level demonstrating movement tracks, water tiles, mirrors, bric
 
 ---
 
-## Build Instructions
-Windows (MinGW + SFML Static Build)
-
-Install MinGW-w64 (UCRT) — choose 32-bit or 64-bit depending on your desired build target.
-
-Download SFML 2.6.2 (static) that exactly matches your GCC version.
-
-You can check version of your GCC with:
-
-gcc --version
-
-Clone this repository:
-
-git clone https://github.com/DachoCyber/LaserTankVSCode.git
-
-Extract SFML into the root of the project so that the folder structure looks like this:
-
-LaserTankVSCode/
-    SFML-2.6.2/
-        SFML-2.6.2/
-            include/
-            lib/
-
-These libraries are required for the online high-score system and HTTP requests.
-
-Build the game by running:
-  
-  mingw32-make
-  
-  mingw32-make run
-  
-  mingw32-make clean
