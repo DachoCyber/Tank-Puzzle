@@ -37,6 +37,8 @@ These libraries are required for the online high-score system and HTTP requests.
 Build the game by running:
   
   mingw32-make
+
+  You will also have to download libcurl.dll and openal32.dll to run:
     
   mingw32-make run
     
