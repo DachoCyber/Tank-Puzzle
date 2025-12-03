@@ -1,12 +1,12 @@
 CXX := g++
 CXXFLAGS := -std=c++17 -Wall -O2 -DNDEBUG -DSFML_STATIC -DCURL_STATICLIB -DWIN32 -static -pipe
 
-INCLUDES := -I"SFML-2.6.2-windows-gcc-13.1.0-mingw-32-bit(1)/SFML-2.6.2/include" \
+INCLUDES := -I"SFML-2.6.2/include" \
             -I"CURL" \
             -Iinclude \
             -Itinyxml2
 
-LIB_DIRS := -L"SFML-2.6.2-windows-gcc-13.1.0-mingw-32-bit(1)/SFML-2.6.2/lib" \
+LIB_DIRS := -L"SFML-2.6.2/lib" \
             -L"CURL/lib"
 
 LIBS := -lsfml-audio-s \
