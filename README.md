@@ -4,7 +4,7 @@
 The goal is simple: navigate your tank through challenging levels, avoid obstacles, use mirrors to redirect your laser, and reach the finish tile.  
 Behind this simplicity hides a deep strategic puzzle system with undo mechanics, movable blocks, enemy tanks, and diverse terrain types.
 
-This project was created for learning, experimentation, and fun — while carefully improving the visuals and gameplay experience of the original.
+This project was created for learning, experimentation, and fun - while carefully improving the visuals and gameplay experience of the original.
 
 ---
 
@@ -12,7 +12,7 @@ This project was created for learning, experimentation, and fun — while carefu
 ## Build Instructions
 Windows (MinGW + SFML Static Build)
 
-Install MinGW-w64 (UCRT) — choose 32-bit or 64-bit depending on your desired build target.
+Install MinGW-w64 (UCRT) - choose 32-bit or 64-bit depending on your desired build target.
 
 Download SFML 2.6.2 (static) that exactly matches your GCC version.
 
@@ -99,6 +99,3 @@ Here is a sample level demonstrating movement tracks, water tiles, mirrors, bric
 - Cross-platform build system:
   - Windows (MinGW / MSVC)  
   - Linux (GCC / Clang)  
-
----
-
