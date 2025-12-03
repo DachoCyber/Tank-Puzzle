@@ -74,7 +74,7 @@ Install MinGW-w64 (UCRT) — choose 32-bit or 64-bit depending on your desired b
 Download SFML 2.6.2 (static) that exactly matches your GCC version.
 
 You can check version of your GCC with:
-## gcc --version
+gcc --version
 
 Clone this repository:
 
@@ -91,17 +91,8 @@ LaserTankVSCode/
 These libraries are required for the online high-score system and HTTP requests.
 
 Build the game by running:
-
-## mingw32-make
-
-If the build succeeds, the executable will appear as:
-
-## LaserTank.exe
-
-To run the game from the terminal:
-
-## mingw32-make run
-
-To remove all object files and rebuild from scratch:
-
-## mingw32-make clean
+  mingw32-make
+  If the build succeeds, the executable will appear as:
+  LaserTank.exe
+  mingw32-make run
+  mingw32-make clean
