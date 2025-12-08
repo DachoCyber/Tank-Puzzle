@@ -157,3 +157,47 @@ void PlayerInteraction :: handleMovement() {
         }
     }
 }
+
+void PlayerInteraction :: handlTransportableTrack(int x, int y, bool returnFromTrack) {
+    
+
+    int isTransportTrack = tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->code();
+    if(!(isTransportTrack == 20 || isTransportTrack == 21 || isTransportTrack == 22 || isTransportTrack == 23))
+        returnFromTrack = true;
+
+    if (returnFromTrack) return;
+
+    int dx = 0, dy = 0;
+    if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() == 1) {
+        dx = -1;
+    }
+    else if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() == 2) {
+        dx = 1;
+    }
+    else if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() == 3) {
+        dy = -1;
+    }
+    else if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() == 4) {
+        dy = 1;
+    }
+    if (player.validMove(x + dx, y + dy)) {
+
+        if (tileMap.getTileMap()[y + dy][x + dx]->isTileMovableBlock() ||
+            tileMap.getTileMap()[y + dy][x + dx]->isBulletDestroyable() ||
+            tileMap.getTileMap()[y + dy][x + dx]->isMirror1() ||
+            tileMap.getTileMap()[y + dy][x + dx]->isMirror2() ||
+            tileMap.getTileMap()[y + dy][x + dx]->isMirror3() ||
+            tileMap.getTileMap()[y + dy][x + dx]->isMirror4() ||
+            tileMap.getTileMap()[y + dy][x + dx]->isTank()) {
+            returnFromTrack = true;
+            return;
+        }
+        int currGridCoordX = x;
+        int currGridCoordY = y;
+
+        returnFromTrack = false;
+
+        player.setGridPosition(sf::Vector2i(x + dx, y + dy));
+
+    }
+}

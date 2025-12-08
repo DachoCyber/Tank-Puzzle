@@ -13,6 +13,6 @@ private:
 public:
     PlayerInteraction(int windowSizeX, int windowSizeY, Tank& player, Map& map, sf::Keyboard::Key key);
     ~PlayerInteraction() = default;
-    void handlTransportableTrack(int x, int y);
+    void handlTransportableTrack(int x, int y, bool retrunFromTrack);
     void handleMovement();
 };

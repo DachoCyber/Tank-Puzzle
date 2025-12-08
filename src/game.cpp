@@ -41,7 +41,6 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
     sf::Vector2i playerPos = sf::Vector2i(playerPosX, playerPosY);
     player.setGridPosition(playerPos);
     window->setFramerateLimit(60);
-    loadGoblet();
 
     loadGameOverSound("sounds/game-over.mp3");
     loadWonSound("sounds/ENDLEV.mp3");
@@ -50,6 +49,11 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
 
     playerPositions.push_back(std::make_pair<int, int>(static_cast<unsigned>(playerPosX), static_cast<unsigned>(playerPosY)));
     
+    backButtonAbsPosX = 527.f;
+    backButtonAbsPosY = 270.f;
+
+    backButtonSizeX = 158.f;
+    backButtonSizeY = 40.f;
 
 }
 
@@ -82,7 +86,7 @@ void MainGame::run() {
 
             sf::Time time = waterFramesClock.getElapsedTime();
             if (time >= updateFramesWaterTile) {
-                waterToggle = !waterToggle; // prebaci frame
+                waterToggle = !waterToggle;
 
                 tileMap.switchFramesWaterTiles(waterToggle ? 1 : 0);
                 waterFramesClock.restart();
@@ -105,11 +109,21 @@ void MainGame::run() {
 
                         if (undoButton.getGlobalBounds().contains(mouse))
                             undoMove();
-
+                            
                         if(backButton.getGlobalBounds().contains(mouse)) {
                             backClicked = true;
                             window -> close();
                         }
+                
+
+                }
+                if(event.type == sf::Event::Resized) {
+                    float winSizeX = window -> getSize().x;
+                    float winSizeY = window -> getSize().y;
+                    backButtonAbsPosX *= winSizeX / 700.f;
+                    backButtonAbsPosY *= winSizeY / 512.f;
+                    backButtonSizeX *= winSizeX / 158.f;
+                    backButtonSizeY *= winSizeY / 30.f;
                 }
                 if (event.type == sf::Event::Closed) {
 
@@ -128,8 +142,8 @@ void MainGame::run() {
             
 
             if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() && !returnFromTrack) {
-                handlTransportableTrack(player.getGridPosition().y, player.getGridPosition().x);
-
+                PlayerInteraction transportTrackPlayerInteraction(windowSizeX, windowSizeY, player, tileMap, sf::Keyboard::Unknown);
+                transportTrackPlayerInteraction.handlTransportableTrack(player.getGridPosition().x, player.getGridPosition().y, returnFromTrack);
             }
             if (!tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack()) {
                 returnFromTrack = false;
@@ -411,10 +425,10 @@ void MainGame :: drawPadding() {
 }
 void MainGame::initPadding()
 {
-    float hudX = windowSizeX;       // 512
-    float hudWidth = screenSizeX - windowSizeX; // 188
+    float hudX = 512;       // 512
+    float hudWidth = 188; // 188
     float hudY = 0;
-    float hudHeight = windowSizeY; // 512
+    float hudHeight = 512; // 512
 
     // ============ HUD BACKGROUND ============
     rightPad.setSize(sf::Vector2f(hudWidth, hudHeight));
@@ -501,7 +515,7 @@ void MainGame::initPadding()
     undoText.setPosition(undoButton.getPosition().x + 10,
                          undoButton.getPosition().y + 8);
 
-    // ============ MINI-MAP ============
+
     minimapTexture.create(140, 140);
 
     minimapFrame.setSize(sf::Vector2f(140, 140));
@@ -513,7 +527,7 @@ void MainGame::initPadding()
     minimapSprite.setTexture(minimapTexture.getTexture());
     minimapSprite.setPosition(minimapFrame.getPosition());
 
-    backButton.setSize(sf::Vector2f(hudWidth - 30, 40)); // adjust if needed
+    backButton.setSize(sf::Vector2f(hudWidth - 30, 40)); // 158, 40
     backButton.setPosition(sf::Vector2f(hudX + 15, iy + 120));
     backButton.setFillColor(sf::Color(0, 100, 0));
     
@@ -558,66 +572,6 @@ bool MainGame::gameEnd() {
 void MainGame::drawGoblet() {
 
     window->draw(gobletSprite);
-}
-
-void MainGame::loadGoblet() {
-    try {
-        if (!gobletTexture.loadFromFile("Images/goblet.png")) {
-            throw std::runtime_error("Cannot load goblet image");
-        }
-
-    }
-    catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return;
-    }
-    gobletSprite.setTexture(gobletTexture);
-    gobletSprite.setOrigin(gobletSprite.getLocalBounds().width / 2, gobletSprite.getLocalBounds().height / 2);
-    gobletSprite.setPosition(sf::Vector2f(static_cast<float>(windowSizeX) / 2, static_cast<float>(windowSizeY) / 2));
-}
-
-void MainGame::handlTransportableTrack(int y, int x) {
-
-    int isTransportTrack = tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->code();
-    if(!(isTransportTrack == 20 || isTransportTrack == 21 || isTransportTrack == 22 || isTransportTrack == 23))
-        returnFromTrack = true;
-
-    if (returnFromTrack) return;
-
-    int dx = 0, dy = 0;
-    if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() == 1) {
-        dx = -1;
-    }
-    else if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() == 2) {
-        dx = 1;
-    }
-    else if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() == 3) {
-        dy = -1;
-    }
-    else if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() == 4) {
-        dy = 1;
-    }
-    if (player.validMove(x + dx, y + dy)) {
-
-        if (tileMap.getTileMap()[y + dy][x + dx]->isTileMovableBlock() ||
-            tileMap.getTileMap()[y + dy][x + dx]->isBulletDestroyable() ||
-            tileMap.getTileMap()[y + dy][x + dx]->isMirror1() ||
-            tileMap.getTileMap()[y + dy][x + dx]->isMirror2() ||
-            tileMap.getTileMap()[y + dy][x + dx]->isMirror3() ||
-            tileMap.getTileMap()[y + dy][x + dx]->isMirror4() ||
-            tileMap.getTileMap()[y + dy][x + dx]->isTank()) {
-            returnFromTrack = true;
-            return;
-        }
-        int currGridCoordX = x;
-        int currGridCoordY = y;
-
-        returnFromTrack = false;
-        std::cout << "Is player valid move " << x + dx << ", " << y + dy << std::endl;
-
-        player.setGridPosition(sf::Vector2i(x + dx, y + dy));
-
-    }
 }
 
 bool MainGame::getWindowClosedState() const {

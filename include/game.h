@@ -153,6 +153,8 @@ private:
     std::vector<sf::CircleShape> hudCorners;
 
     sf::RectangleShape backButton;
+    float backButtonAbsPosX, backButtonAbsPosY;
+    float backButtonSizeX, backButtonSizeY;
     sf::Text backButtonText;
     bool backClicked = false;
 

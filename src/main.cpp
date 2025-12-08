@@ -159,6 +159,7 @@ int main() {
             game.run();
             backClicked = game.isBackClicked();
             getIsClosed = !game.getWindowClosedState();
+            std::cout << "Back clicked: " << backClicked << ", getIsClosed: " << getIsClosed << std::endl;
             if (game.gameWon()) {
                 
                 enterAnotherLevel = true;

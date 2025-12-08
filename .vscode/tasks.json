@@ -2,19 +2,41 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "type": "cppbuild",
-            "label": "C/C++: g++ build active file",
-            "command": "/usr/bin/g++",
+            "type": "shell",
+            "label": "Build SFML project",
+            "command": "C:/mingw32/bin/g++.exe",
             "args": [
+                "-std=c++17",
+                "-DSFML_STATIC",
                 "-g",
+
                 "${workspaceFolder}/src/*.cpp",
                 "-o",
-                "${workspaceFolder}/bin/outputfile",
-                "-lsfml-audio-s",
+                "${workspaceFolder}/bin/output.exe",
+
+                "-I", "${workspaceFolder}/SFML-2.6.2-windows-gcc-13.1.0-mingw-32-bit(1)/SFML-2.6.2/include",
+                "-L", "${workspaceFolder}/SFML-2.6.2-windows-gcc-13.1.0-mingw-32-bit(1)/SFML-2.6.2/lib",
+
                 "-lsfml-graphics-s",
-                "-lsfml-network-s",
+                "-lsfml-window-s",
                 "-lsfml-system-s",
-                "-lsfml-window-s"
+                "-lsfml-audio-s",
+                "-lsfml-network-s",
+                
+                "-lopengl32",
+                "-lfreetype",
+                "-lwinmm",
+                "-lgdi32",
+                "-lopenal32",
+                "-lflac",
+                "-lvorbisenc",
+                "-lvorbisfile",
+                "-lvorbis",
+                "-logg",
+                "-lbcrypt",
+
+                "-static-libgcc",
+                "-static-libstdc++"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -25,8 +47,7 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "detail": "compiler: /usr/bin/g++"
+            }
         }
     ]
 }

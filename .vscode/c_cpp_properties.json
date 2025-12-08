@@ -3,21 +3,17 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${vcpkgRoot}/x64-windows/include",
-                "${vcpkgRoot}/x86-mingw-dynamic/include",
-                "${vcpkgRoot}/x86-windows/include"
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/SFML-2.6.2-windows-gcc-13.1.0-mingw-32-bit(1)/SFML-2.6.2/include",
+                "C:/mingw32/include"
             ],
             "defines": [
-                "_DEBUG",
-                "UNICODE",
-                "_UNICODE"
+                "SFML_STATIC"
             ],
-            "windowsSdkVersion": "10.0.26100.0",
-            "compilerPath": "cl.exe",
+            "compilerPath": "C:/mingw32/bin/g++.exe",
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "windows-msvc-x64"
+            "intelliSenseMode": "windows-gcc-x86"
         }
     ],
     "version": 4
