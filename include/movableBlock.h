@@ -20,6 +20,13 @@ public:
             std::cerr << what << std::endl;
         }
     }
+    TileSignal sendSignal(const BulletHitInfo& h) const override {
+        if (h.dx < 0) return TileSignal::MOVE_TILE_RIGHT; // from left
+        if (h.dx > 0) return TileSignal::MOVE_TILE_LEFT;    // from right
+        if (h.dy > 0) return TileSignal::MOVE_TILE_UP; // from bottom
+        if (h.dy < 0) return TileSignal::MOVE_TILE_DOWN;    // from top
+        return TileSignal::NONE;
+    }
     int code() override {
         return 9;
     }

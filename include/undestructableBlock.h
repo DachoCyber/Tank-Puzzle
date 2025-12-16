@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tile.h"
+#include "tileSignal.h"
 
 class UndestructableBlock : public Tile {
 public:
@@ -17,6 +18,12 @@ const sf::Texture& texture;
     }
     int code() override {
         return 11;
+    }
+    TileSignal sendSignal(const BulletHitInfo& h) const override {
+        return TileSignal :: DESTROY_BULLET;
+    }
+    PlayerTileSignal sendSignal() const override {
+        return PlayerTileSignal :: BLOCK_PLAYER;
     }
     std::unique_ptr<Tile> clone() const override {
         auto clone = std::make_unique<UndestructableBlock>(posX, posY, texture); // Copy constructor

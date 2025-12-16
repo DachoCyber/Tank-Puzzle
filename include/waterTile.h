@@ -2,7 +2,9 @@
 
 #include "tile.h"
 #include <iostream>
-
+#include "bulletHitInfo.h"
+#include "tileSignal.h" 
+#include "playerTileSignal.h"  
 
 class WaterTile : public Tile {
 
@@ -33,6 +35,14 @@ class WaterTile : public Tile {
           
             
         }
+
+    TileSignal sendSignal(const BulletHitInfo& h) const override {
+        return TileSignal :: NONE;
+    }
+
+    PlayerTileSignal sendSignal() const override {
+        return PlayerTileSignal :: KILL_PLAYER;
+    }
 
     bool isUndestructibleBlock() override {
         return false;

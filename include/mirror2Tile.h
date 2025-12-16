@@ -16,6 +16,16 @@ class Mirror2Tile : public Tile {
             sprite.setPosition(x, y);
         }
 
+    TileSignal sendSignal(const BulletHitInfo& h) const override {
+        if (h.dx > 0) return TileSignal::REFLECT_DOWN; // from left
+        if (h.dx < 0) return TileSignal::MOVE_TILE_RIGHT;    // from right
+        if (h.dy < 0) return TileSignal::MOVE_TILE_DOWN; // from bottom
+        if (h.dy > 0) return TileSignal::REFLECT_RIGHT;    // from top
+        return TileSignal::NONE;
+    }
+    PlayerTileSignal sendSignal() const override {
+        return PlayerTileSignal::BLOCK_PLAYER;
+    }
     std::unique_ptr<Tile> clone() const override {
        auto clone = std::make_unique<Mirror2Tile>(posX, posY, *texturePtr); // Copy constructor
     clone->sprite = this->sprite; // Copy the sprite

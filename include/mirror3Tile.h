@@ -16,11 +16,20 @@ class Mirror3Tile : public Tile {
             sprite.setPosition(x, y);
         }
 
-
+    TileSignal sendSignal(const BulletHitInfo& h) const override {
+        if (h.dx > 0) return TileSignal::MOVE_TILE_LEFT; // from left
+        if (h.dx < 0) return TileSignal::REFLECT_UP;    // from right
+        if (h.dy > 0) return TileSignal::MOVE_TILE_UP; // from top
+        if (h.dy < 0) return TileSignal::REFLECT_LEFT;    // from bottom
+        return TileSignal::NONE;
+    }
     std::unique_ptr<Tile> clone() const override {
         auto clone = std::make_unique<Mirror3Tile>(posX, posY, *texturePtr); // Copy constructor
     clone->sprite = this->sprite; // Copy the sprite
     return clone;
+    }
+    PlayerTileSignal sendSignal() const override {
+        return PlayerTileSignal::BLOCK_PLAYER;
     }
     int code() override {
         return 6;

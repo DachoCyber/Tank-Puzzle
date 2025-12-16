@@ -3,6 +3,8 @@
 #include "map.h"
 #include "player.h"
 
+#include "playerTileSignal.h"
+
 class PlayerInteraction {
 private:
     int windowSizeX, windowSizeY;
@@ -15,4 +17,8 @@ public:
     ~PlayerInteraction() = default;
     void handlTransportableTrack(int x, int y, bool retrunFromTrack);
     void handleMovement();
+
+    void handlePlayerTileSignal();
+    void movePlayer (int newX, int newY);
+    void handleFire ();
 };

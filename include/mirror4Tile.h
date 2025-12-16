@@ -21,6 +21,16 @@ class Mirror4Tile : public Tile {
     clone->sprite = this->sprite; // Copy the sprite
     return clone;
     }
+    PlayerTileSignal sendSignal() const override {
+        return PlayerTileSignal::BLOCK_PLAYER;
+    }
+    TileSignal sendSignal(const BulletHitInfo& h) const override {
+        if (h.dx < 0) return TileSignal::MOVE_TILE_RIGHT; // from left
+        if (h.dx > 0) return TileSignal::REFLECT_UP;    // from right
+        if (h.dy < 0) return TileSignal::REFLECT_RIGHT; // from top
+        if (h.dy > 0) return TileSignal::MOVE_TILE_UP;    // from bottom
+        return TileSignal::NONE;
+    }
     bool isUndestructibleBlock() override {
         return false;
     }

@@ -38,15 +38,19 @@ std::unique_ptr<Tile> TileFactory :: constructTile(int code, int x, int y, int t
                     tile = std::make_unique<UndestructableBlock>(x * tileSize, y * tileSize, undestructableBlockTex);
                     break;
                 case 12:
+                    // dir = 0, weakSide = RIGHT
                     tile = std::make_unique<EnemyTank1>(x * tileSize, y * tileSize, 0, EnemyTank1LeftTexture);
                     break;
                 case 13:
+                    // dir = 1, weakSide = LEFT
                     tile = std::make_unique<EnemyTank1>(x * tileSize, y * tileSize, 1, EnemyTank1RightTexture);
                     break;
                 case 14:
+                    // dir = 2, weakSide = DOWN
                     tile = std::make_unique<EnemyTank1>(x * tileSize, y * tileSize, 2, EnemyTank1UpTexture);
                     break;
                 case 15:
+                    // dir = 3, weakSide = UP
                     tile = std::make_unique<EnemyTank1>(x * tileSize, y * tileSize, 3, EnemyTank1DownTexture);
                     break;
                 case 16:

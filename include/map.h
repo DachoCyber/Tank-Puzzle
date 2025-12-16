@@ -24,7 +24,10 @@ public:
     void destroyTile(int gridPosX, int gridPosY) {
         std::unique_ptr<Tile> tile = std::make_unique<WalkableGround>(gridPosX*tileSize, gridPosY*tileSize, walkableTexture);
         tiles[gridPosY][gridPosX] = std::move(tile);
+        tileMap[gridPosY][gridPosX] = 1;
     }
+
+    void sendSignal(int x, int y, Direction dir);
 
     void switchFramesWaterTiles(int i);
     void switchFramesEnemyTank(int i);

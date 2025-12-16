@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/src",
-                "${workspaceFolder}/SFML-2.6.2-windows-gcc-13.1.0-mingw-32-bit(1)/SFML-2.6.2/include",
+                "${workspaceFolder}/SFML-2.6.2/include",
                 "C:/mingw32/include"
             ],
             "defines": [

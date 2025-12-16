@@ -15,6 +15,8 @@ struct PlayerState {
         : dir(dir), playerPos(playerPos) {}
 };
 
+class Map;
+
 
 class Tank : public sf::Drawable {
 public:

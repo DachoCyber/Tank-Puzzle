@@ -3,6 +3,9 @@
 #include "tile.h"
 #include <iostream>
 
+#include "bulletHitInfo.h"
+#include "tileSignal.h" 
+
 
 class Mirror1Tile : public Tile {
 
@@ -20,6 +23,20 @@ class Mirror1Tile : public Tile {
     clone->sprite = this->sprite; // Copy the sprite
     return clone;
     }
+
+    
+    TileSignal sendSignal(const BulletHitInfo& h) const override {
+        if (h.dx < 0) return TileSignal::REFLECT_DOWN; // from left
+        if (h.dx > 0) return TileSignal::MOVE_TILE_LEFT;    // from right
+        if (h.dy < 0) return TileSignal::MOVE_TILE_DOWN; // from bottom
+        if (h.dy > 0) return TileSignal::REFLECT_LEFT;    // from top
+        return TileSignal::NONE;
+    }
+
+    PlayerTileSignal sendSignal() const override {
+        return PlayerTileSignal::BLOCK_PLAYER;
+    }
+
     int code() override {
         return 4;
     }

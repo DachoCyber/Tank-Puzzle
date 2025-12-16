@@ -3,6 +3,9 @@
 #include "tile.h"
 #include <iostream>
 
+#include "bulletHitInfo.h"
+    #include "tileSignal.h" 
+
 
 class TransportTrack : public Tile {
     public:
@@ -17,6 +20,14 @@ class TransportTrack : public Tile {
             }
         catch(const std::string& what) {
             std::cerr << what << std::endl;
+        }
+    }
+    PlayerTileSignal sendSignal() const override {
+        switch (dir) {
+            case UP: return PlayerTileSignal :: MOVE_PLAYER_UP; break;
+            case DOWN: return PlayerTileSignal :: MOVE_PLAYER_DOWN; break;
+            case LEFT: return PlayerTileSignal :: MOVE_PLAYER_LEFT; break;
+            case RIGHT: return PlayerTileSignal :: MOVE_PLAYER_RIGHT; break;
         }
     }
     int code() override {

@@ -9,6 +9,7 @@
     class EnemyTank1 : public Tile {
     public:
         const sf::Texture& texture;
+        Direction weakSide;
         int dir;
         EnemyTank1(int x, int y, int dir, const sf::Texture& texture) : Tile(x, y), texture(texture) {
             try {
@@ -20,7 +21,59 @@
             catch(const std::string& what) {
                 std::cerr << what << std::endl;
             }
+
+            switch (dir) {
+                
+                case 0: weakSide = Direction::RIGHT; break;
+                case 1: weakSide = Direction::LEFT;  break;
+                case 2: weakSide = Direction::DOWN;  break;
+                case 3: weakSide = Direction::UP;    break;
+
+            }
+
         }
+        /*case 12:
+                    // dir = 0, weakSide = RIGHT
+                    tile = std::make_unique<EnemyTank1>(x * tileSize, y * tileSize, 0, EnemyTank1LeftTexture);
+                    break;
+                case 13:
+                    // dir = 1, weakSide = LEFT
+                    tile = std::make_unique<EnemyTank1>(x * tileSize, y * tileSize, 1, EnemyTank1RightTexture);
+                    break;
+                case 14:
+                    // dir = 2, weakSide = DOWN
+                    tile = std::make_unique<EnemyTank1>(x * tileSize, y * tileSize, 2, EnemyTank1UpTexture);
+                    break;
+                case 15:
+                    // dir = 3, weakSide = UP
+                    tile = std::make_unique<EnemyTank1>(x * tileSize, y * tileSize, 3, EnemyTank1DownTexture);
+                    break;*/
+        TileSignal sendSignal(const BulletHitInfo& h) const override {
+            Direction hitSide;
+
+            if (h.dx > 0)      hitSide = Direction::LEFT;
+            else if (h.dx < 0) hitSide = Direction::RIGHT;
+            else if (h.dy > 0) hitSide = Direction::UP;
+            else               hitSide = Direction::DOWN;
+
+
+            // If bullet hits the weak side → destroy tank
+            if (hitSide == weakSide) {
+                switch (dir) {
+                    case 1: return TileSignal::DESTROY_TANK_RIGHT;
+                    case 0: return TileSignal::DESTROY_TANK_LEFT;
+                    case 2: return TileSignal::DESTROY_TANK_DOWN;
+                    case 3: return TileSignal::DESTROY_TANK_UP;
+                }
+            }
+
+            // Otherwise bullet bounces
+            if (h.dx < 0) return TileSignal::MOVE_TILE_RIGHT;
+            if (h.dx > 0) return TileSignal::MOVE_TILE_LEFT;
+            if (h.dy < 0) return TileSignal::MOVE_TILE_DOWN;
+            return TileSignal::MOVE_TILE_UP;
+        }
+
         std::unique_ptr<Tile> clone() const override {
             auto clone = std::make_unique<EnemyTank1>(posX, posY, dir, texture); // Copy constructor
     return clone;

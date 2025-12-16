@@ -183,27 +183,30 @@ void Map::buildMap() {
 }
 
 
-void Map :: destroyTank(int bulletGridPosX, int bulletGridPosY, int tankType) {
-    switch(tankType) {
-        case 1:
-            tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 0, destroyedTankLeftTexture);
-            tileMap[bulletGridPosY][bulletGridPosX] = 16;
+void Map::destroyTank(int x, int y, int tankDir) {
+    switch (tankDir) {
+        case Direction::DOWN:   // 3
+            tiles[y][x] = std::make_unique<DestroyedTank>(x*tileSize, y*tileSize, 0, destroyedTankLeftTexture);
+            tileMap[y][x] = 16;
             break;
-        case 2:
-            tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 1, destroyedTankUpTexture);
-            tileMap[bulletGridPosY][bulletGridPosX] = 17;
+
+        case Direction::RIGHT:  // 2
+            tiles[y][x] = std::make_unique<DestroyedTank>(x*tileSize, y*tileSize, 3, destroyedTankUpTexture);
+            tileMap[y][x] = 17;
             break;
-        case 3:
-            tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 2, destroyedTankDownTexture);
-            tileMap[bulletGridPosY][bulletGridPosX] = 18;
+
+        case Direction::UP:     // 1
+            tiles[y][x] = std::make_unique<DestroyedTank>(x*tileSize, y*tileSize, 2, destroyedTankDownTexture);
+            tileMap[y][x] = 18;
             break;
-        case 4:
-            tiles[bulletGridPosY][bulletGridPosX] = std::make_unique<DestroyedTank>(bulletGridPosX*tileSize, bulletGridPosY*tileSize, 3, destroyedTankRightTexture);
-            tileMap[bulletGridPosY][bulletGridPosX] = 19;
+
+        case Direction::LEFT:   // 4
+            tiles[y][x] = std::make_unique<DestroyedTank>(x*tileSize, y*tileSize, 1, destroyedTankRightTexture);
+            tileMap[y][x] = 19;
             break;
     }
-    
 }
+
 
 void Map::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
@@ -259,6 +262,8 @@ void Map::updateTransportTracks() {
 }
 
 void Map::switchFramesWaterTiles(int i) {
+
+    
         for(auto it = waterTilesCoords.begin(); it != waterTilesCoords.end(); it++) {
         int x = it -> second;
         int y = it -> first;
@@ -307,6 +312,19 @@ void Map :: moveTile(int newGridPosY, int newGridPosX, int oldGridPosY, int oldG
             !tiles[oldGridPosY][oldGridPosX]) {
             return;
         }
+
+        if (! (tileMap[newGridPosY][newGridPosX] == 8  ||
+               tileMap[newGridPosY][newGridPosX] == 1  ||
+               tileMap[newGridPosY][newGridPosX] == 50 ||
+               tileMap[newGridPosY][newGridPosX] == 20 ||
+               tileMap[newGridPosY][newGridPosX] == 21 ||
+               tileMap[newGridPosY][newGridPosX] == 22 ||
+               tileMap[newGridPosY][newGridPosX] == 23 ))
+            {
+                std::cout << tileMap[newGridPosY][newGridPosX]<<std::endl;
+                return;
+            }
+            std::cout << "pass" << std::endl;
 
         
 
@@ -364,6 +382,7 @@ void Map :: moveTile(int newGridPosY, int newGridPosX, int oldGridPosY, int oldG
             tiles[newGridPosY][newGridPosX]->setPosition(newGridPosX * tileSize, newGridPosY * tileSize);
             
             // 4. Update tileMap to maintain consistency
+            tileMap[newGridPosY][newGridPosX] = tileMap[oldGridPosY][oldGridPosX];
             
             //tileMap[newGridPosY][newGridPosX] = 1;
             // 5. Handle the old position
@@ -435,7 +454,10 @@ void Map :: moveTile(int newGridPosY, int newGridPosX, int oldGridPosY, int oldG
         //std::cout << "HERE" << newGridPosY << " " << newGridPosX <<" " << tileMap[newGridPosY][newGridPosX] << std::endl; 
         if (movingToWater && erasedWaterTilesExists) {
             //std::cout << "HERE2" << std::endl;
-            tileMap[newGridPosY][newGridPosX] = 9;
+            if(tileMap[newGridPosY][newGridPosX] == 50 || tileMap[newGridPosY][newGridPosX] == 8) {
+                std::cout << "NOW IS TILE IN WATER!" << std::endl;
+            }
+            //tileMap[newGridPosY][newGridPosX] = 9;
             std::unique_ptr<MovableBlock> tile = std::make_unique<MovableBlock>(newGridPosX * tileSize, newGridPosY * tileSize, movableBlockTexture);
             tiles[newGridPosY][newGridPosX] = std::move(tile);
             erasedWaterTiles.erase(

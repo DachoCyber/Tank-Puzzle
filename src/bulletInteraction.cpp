@@ -1,6 +1,7 @@
 #define SFML_STATIC
 #include "../include/bulletInteraction.h"
 #include "../include/loadSound.h"
+#include "../include/bulletHitInfo.h"
 
 
 BulletInteraction::BulletInteraction(int windowSizeX, int windowSizeY, Tank& tank, Map& map) 
@@ -8,21 +9,15 @@ BulletInteraction::BulletInteraction(int windowSizeX, int windowSizeY, Tank& tan
     : windowSizeX(windowSizeX), windowSizeY(windowSizeY), player(tank), tileMap(map) {}
 
 void BulletInteraction :: interact() {
-    bool t = false;
-    if(player.getBullet() == nullptr) {
+
+    if (!player.getBullet()) {
         return;
     }
 
     bool playBulletBubbleSound = false;
     bool playBulletHitSound = false;
 
-    /*if(abs(player.getBullet() -> getPosition().x/tileSize - player.getGridPosition().x) == 0
-      && abs(player.getBullet() -> getPosition().y/tileSize - player.getGridPosition().y) == 0) {
-        player.getBullet() -> setTransparentColor();
-    } else {
-        player.getBullet() -> returnOldColor();
-    }*/
-    
+
     int lastBulletGridPosX = player.getBullet()->getPosition().x/tileSize;
     int lastBulletGridPosY = player.getBullet()->getPosition().y/tileSize;
 
@@ -37,322 +32,111 @@ void BulletInteraction :: interact() {
 
     int bulletGridPosX = player.getBullet()->getPosition().x/tileSize;
     int bulletGridPosY = player.getBullet()->getPosition().y/tileSize;
-        //std::cout << bulletGridPosX << " " << bulletGridPosY << std::endl;
 
-    
+    int lX =  lastBulletGridPosX;
+    int lY =  lastBulletGridPosY;
+    int x  =  bulletGridPosX;
+    int y  =  bulletGridPosY;
 
-    if (bulletGridPosX >= 0 && bulletGridPosX < tileMap.getTileMap()[0].size() &&
-    bulletGridPosY >= 0 && bulletGridPosY < tileMap.getTileMap().size()) {
-        
-        
-        //::cout << "jeste " << std::endl;
+    if (x < 0 || x > 16 || y < 0 || y > 16)
+        return;
 
-        int tankType = tileMap.getTileMap()[bulletGridPosY][bulletGridPosX] -> isTank();
-        playBulletHitSound = true;
-        bool deleted = false;
-        if(tankType == 1) {
-            if(player.getBullet()->dir == RIGHT) {
-                tileMap.destroyTank(bulletGridPosX, bulletGridPosY, 1);
-                return;
-            }
-            player.deleteBullet();
-            //std::cout << "bullet direction is right" << std::endl;
-        } else if(tankType == 2) {
-            if(player.getBullet()->dir == LEFT) {
-                tileMap.destroyTank(bulletGridPosX, bulletGridPosY, 4);
-                return;
-            }
-            player.deleteBullet();
-           // std::cout << "bullet direction is left" << std::endl;
+    Bullet* b = player.getBullet();
+    Direction bDir = b -> getDirection();
 
-        } else if(tankType == 3) {
-            if(player.getBullet()->dir == DOWN) {
-                tileMap.destroyTank(bulletGridPosX, bulletGridPosY, 2);
-                return;
-            }
-            //std::cout << "bullet direction is down" << std::endl;
-            player.deleteBullet();
-        } else if(tankType == 4) {
-            if(player.getBullet()->dir == UP) {
-                tileMap.destroyTank(bulletGridPosX, bulletGridPosY, 3);
-                return;
-            }
-           // std::cout << "bullet direction is up" << std::endl;
-            player.deleteBullet();
 
-        }
-       // std::cout << "tank should move " << std::endl;
+    BulletHitInfo hit;
+    hit.dir = bDir;
+    hit.dx = lastBulletGridPosX - bulletGridPosX;
+    hit.dy = lastBulletGridPosY - bulletGridPosY;
 
-        if(tankType != 0) {
-            deleted = true;
-        }
+    Tile* tile = tileMap.getTileMap()[y][x].get(); 
+    TileSignal signal =  tile->sendSignal(hit);
 
-        if (tileMap.getTileMap()[bulletGridPosY][bulletGridPosX] &&
-            tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]->isBulletDestroyable()) {
-           // std::cout << "bullet destroyed" << std::endl;
-            player.deleteBullet();
-            tileMap.destroyTile(bulletGridPosX, bulletGridPosY);
-            playBulletHitSound = true;
-            }
-        if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX] -> isUndestructibleBlock()) {
-            if(!deleted) {
-                player.deleteBullet();
-                //std::cout << "bullet destroyed " << std::endl;
-            }
-            playBulletHitSound = true;
-        }
-        //std::cout << bulletGridPosX << " " << bulletGridPosY << std::endl;
-        if(tileMap.getTileMapInt()[bulletGridPosY][bulletGridPosX] == 9 || tileMap.getTileMapInt()[bulletGridPosY][bulletGridPosX] == 50) {
-            
-        }
-        if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX] -> isTileMovableBlock() || tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]->isMovableBlock()) {
-            playBulletHitSound = true;
-            // std::cout << "dfddfdfdfd" << std::endl;
-            //std::cout << tileMap.getTileMap().size() << std::endl;
-            if(lastBulletGridPosY > bulletGridPosY) {
-                if(bulletGridPosY > 0 && (player.getGridPosition().x != bulletGridPosX || player.getGridPosition().y != bulletGridPosY - 1)) {
-                    if(tileMap.getTileMap()[bulletGridPosY - 1][bulletGridPosX] -> isOverlappled()) {
-                        tileMap.moveTile(bulletGridPosY - 1, bulletGridPosX, bulletGridPosY, bulletGridPosX);
-                    }
-                }
-            } else if(lastBulletGridPosY < bulletGridPosY) {
-                if(bulletGridPosY < tileMap.getTileMap().size() - 1 && (player.getGridPosition().x != bulletGridPosX || player.getGridPosition().y != bulletGridPosY + 1)) {
-                    if(tileMap.getTileMap()[bulletGridPosY + 1][bulletGridPosX] -> isOverlappled()) {
-
-                        tileMap.moveTile(bulletGridPosY + 1, bulletGridPosX, bulletGridPosY, bulletGridPosX);
-                    }
-                }
-            }else if(lastBulletGridPosX > bulletGridPosX) {
-                if(bulletGridPosX > 0 && (player.getGridPosition().x != bulletGridPosX - 1 || player.getGridPosition().y != bulletGridPosY)) {
-                    if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX - 1] -> isOverlappled()) {
-
-                        tileMap.moveTile(bulletGridPosY, bulletGridPosX - 1, bulletGridPosY, bulletGridPosX);
-                    }
-                }
-            } else if(lastBulletGridPosX < bulletGridPosX) {
-                if(bulletGridPosX < tileMap.getTileMap()[bulletGridPosY].size() - 1 && (player.getGridPosition().x != bulletGridPosX + 1 || player.getGridPosition().y != bulletGridPosY)) {
-                    if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX + 1] -> isOverlappled()) {
-
-                        tileMap.moveTile(bulletGridPosY, bulletGridPosX + 1, bulletGridPosY, bulletGridPosX);
-                    }
-                }
-            }
-          
-            if(!deleted) {
-
-                player.deleteBullet();
-            }
-            return;
-        }
-        if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]
-    && tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]->isMirror1()) 
-{   
-   // std::cout << lastBulletGridPosX << " " << lastBulletGridPosY << " " << bulletGridPosX << " "<< bulletGridPosY << std::endl;
-    // First ensure bullet is actually on the mirror tile
-    //if(!(bulletGridPosX == lastBulletGridPosX && bulletGridPosY == lastBulletGridPosY))
-    //{
-        // Hit from left - reflect down
-        
-        if(lastBulletGridPosX < bulletGridPosX && (lastBulletGridPosY == bulletGridPosY)) {
-
-            player.getBullet()->changeVelocity(DOWN, 2);
-            player.getBullet() -> dir = DOWN;
-            mirrorSound.play();
-        }
-        // Hit from right - move mirror left
-        else if(lastBulletGridPosX > bulletGridPosX || (player.getGridPosition().x - bulletGridPosX == 1 && player.getGridPosition().y == bulletGridPosY)) {
-            if(bulletGridPosX > 0) {  // Can we move left?
-                bool canMove = (player.getGridPosition().x != bulletGridPosX - 1 || player.getGridPosition().y != bulletGridPosY)
-                               && bulletGridPosX > 0 && !tileMap.getTileMap()[bulletGridPosY][bulletGridPosX - 1] || 
-                               tileMap.getTileMap()[bulletGridPosY][bulletGridPosX - 1]->isOverlappled();
-                playBulletHitSound = true;
-                if(canMove) {
-                    tileMap.moveTile(bulletGridPosY, bulletGridPosX - 1,
-                                   bulletGridPosY, bulletGridPosX);
-                }
-            }
-            player.deleteBullet();
-        }
-        // Hit from bottom - reflect left
-        else if(lastBulletGridPosY > bulletGridPosY || (player.getGridPosition().y - bulletGridPosY == 1 && player.getGridPosition().x == bulletGridPosX)) {
-            player.getBullet()->changeVelocity(LEFT, 2);
-            player.getBullet() -> dir = LEFT;
-            mirrorSound.play();
-        }
-        // Hit from top - move mirror down
-        else if(lastBulletGridPosY < bulletGridPosY) {
-            if(bulletGridPosY < tileMap.getTileMap().size() - 1) {  // Can we move down?
-                bool canMove = (player.getGridPosition().x != bulletGridPosX  || player.getGridPosition().y != bulletGridPosY + 1) &&
-                               bulletGridPosY < 17 && (!tileMap.getTileMap()[bulletGridPosY + 1][bulletGridPosX] || 
-                               tileMap.getTileMap()[bulletGridPosY + 1][bulletGridPosX]->isOverlappled());
-               // std::cout << "1" << std::endl;
-                if(player.getGridPosition().x != bulletGridPosX  && player.getGridPosition().y != bulletGridPosY + 1) {
-                  //  std::cout << "3" << std::endl;
-                }
-                playBulletHitSound = true;
-                if(canMove) {
-                   // std::cout << "2" << std::endl;
-                    tileMap.moveTile(bulletGridPosY + 1, bulletGridPosX,
-                                   bulletGridPosY, bulletGridPosX);
-                }
-            }
-            player.deleteBullet();
-        }
+    if(signal == TileSignal :: MOVE_TILE_UP) {
+        std::cout << "Moving tile" << std::endl;
     }
+    if(signal == TileSignal :: REFLECT_RIGHT) {
+        std::cout << "Reflecting right" << std::endl;
+    }
+        
+    switch (signal) {
+        
+        case TileSignal::BLOCK_BULLET:
+        case TileSignal::DESTROY_BULLET:    
+            player.deleteBullet();
+                break;
+        
+        case TileSignal::DESTROY_TILE:
+            tileMap.destroyTile(x, y);
+            player.deleteBullet();
+            break;
+
+        case TileSignal::MOVE_TILE_RIGHT:
+            tileMap.moveTile(y, x + 1, y, x);
+            player.deleteBullet();
+            break;
+        
+        case TileSignal::MOVE_TILE_DOWN:
+            tileMap.moveTile(y + 1, x, y, x);
+            player.deleteBullet();
+            break;
+        
+        case TileSignal::MOVE_TILE_LEFT:
+            tileMap.moveTile(y, x - 1, y, x);
+            player.deleteBullet();
+            break;
+        
+        case TileSignal::MOVE_TILE_UP:
+            tileMap.moveTile(y - 1, x, y, x);
+            player.deleteBullet();
+            break;
+
+        case TileSignal::REFLECT_UP:
+            b->setVelocity(UP);
+            mirrorSound.play();
+            break;
+
+        case TileSignal::REFLECT_DOWN:
+            b->setVelocity(DOWN);
+            mirrorSound.play();
+            break;
+
+        case TileSignal::REFLECT_LEFT:
+            b->setVelocity(LEFT);
+            mirrorSound.play();
+            break;
+
+        case TileSignal::REFLECT_RIGHT:
+            b->setVelocity(RIGHT);
+            mirrorSound.play();
+            break;
+        
+        case TileSignal::DESTROY_TANK_UP:
+            tileMap.destroyTank(x, y, Direction::UP);
+            player.deleteBullet();
+            break;
+
+        case TileSignal::DESTROY_TANK_RIGHT:
+            tileMap.destroyTank(x, y, Direction::RIGHT);
+            player.deleteBullet();
+            break;
+
+        case TileSignal::DESTROY_TANK_DOWN:
+            tileMap.destroyTank(x, y, Direction::DOWN);
+            player.deleteBullet();
+            break;
+
+        case TileSignal::DESTROY_TANK_LEFT:
+            tileMap.destroyTank(x, y, Direction::LEFT);
+            player.deleteBullet();
+            break;
+
+        default:
+            break;
+    }
+
 }
-if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]
-    && tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]->isMirror2()) 
-{   
-    ////std::cout << lastBulletGridPosX << " " << lastBulletGridPosY << " " << bulletGridPosX << " "<< bulletGridPosY << //std::endl;
-    // First ensure bullet is actually on the mirror tile
-    //if(!(bulletGridPosX == lastBulletGridPosX && bulletGridPosY == lastBulletGridPosY))
-    //{
-        // Hit from left - reflect down
-        
-        if(lastBulletGridPosX > bulletGridPosX || (player.getGridPosition().x - bulletGridPosX == 1 && player.getGridPosition().y == bulletGridPosY)) {
-            player.getBullet()->changeVelocity(DOWN, 1);
-            player.getBullet() -> dir = DOWN;
-            mirrorSound.play();
-            std::cout << "now it should turn down!" << lastBulletGridPosX << " " <<  bulletGridPosX << " " << player.getGridPosition().x << " " << bulletGridPosX << std::endl;
-        }
-        // Hit from right - move mirror left
-        else if(lastBulletGridPosX < bulletGridPosX || -player.getGridPosition().x + bulletGridPosX == 1) {
-            if(bulletGridPosX > 0) {  // Can we move left?
-                bool canMove = (player.getGridPosition().x != bulletGridPosX + 1 || player.getGridPosition().y != bulletGridPosY) &&
-                                bulletGridPosX > 0 && !tileMap.getTileMap()[bulletGridPosY][bulletGridPosX + 1] || 
-                             tileMap.getTileMap()[bulletGridPosY][bulletGridPosX + 1]->isOverlappled();
-                
-                if(canMove && tileMap.getTileMap()[bulletGridPosY][bulletGridPosX + 1]->isOverlappled()) {
-                    tileMap.moveTile(bulletGridPosY, bulletGridPosX + 1,
-                                   bulletGridPosY, bulletGridPosX);
-                }
-                playBulletHitSound = true;
-            }
-            player.deleteBullet();
-        }
-        // Hit from bottom - reflect left
-        else if(lastBulletGridPosY > bulletGridPosY  || (player.getGridPosition().y - bulletGridPosY == 1 && player.getGridPosition().x == bulletGridPosX)) {
-            std::cout << "now it should turn right!" << std::endl;
-            player.getBullet()->changeVelocity(RIGHT, 1);
-            player.getBullet() -> dir = RIGHT;
-            mirrorSound.play();
-        }
-        // Hit from top - move mirror down
-        else if(lastBulletGridPosY < bulletGridPosY ) {
-            if(bulletGridPosY < tileMap.getTileMap().size() - 1) {  // Can we move down?
-                bool canMove = (player.getGridPosition().x != bulletGridPosX || player.getGridPosition().y != bulletGridPosY + 1) &&
-                             bulletGridPosY < 17 && (!tileMap.getTileMap()[bulletGridPosY + 1][bulletGridPosX] || 
-                             tileMap.getTileMap()[bulletGridPosY + 1][bulletGridPosX]->isOverlappled());
-                playBulletHitSound = true;
-                if(canMove) {
-                    tileMap.moveTile(bulletGridPosY + 1, bulletGridPosX,
-                                   bulletGridPosY, bulletGridPosX);
-                }
-            }
-            player.deleteBullet();
-        }
-    }
-    if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]
-    && tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]->isMirror3()) 
-{   
-    std::cout << lastBulletGridPosX << " " << lastBulletGridPosY << " " << bulletGridPosX << " "<< bulletGridPosY << std::endl;
-    // First ensure bullet is actually on the mirror tile
-    //if(!(bulletGridPosX == lastBulletGridPosX && bulletGridPosY == lastBulletGridPosY))
-    //{
-        // Hit from left - reflect down
-        if(lastBulletGridPosX < bulletGridPosX || (-player.getGridPosition().x + bulletGridPosX == 1 && player.getGridPosition().y == bulletGridPosY)) {
-            player.getBullet()->changeVelocity(UP, 3);
-            std::cout << "BulletInteraction.cpp: line 265: bullet should go up"; 
-            player.getBullet() -> dir = UP;
-            mirrorSound.play();
-            return;
-        }
-        // Hit from right - move mirror left
-        else if(lastBulletGridPosX > bulletGridPosX || (player.getGridPosition().x - bulletGridPosX == 1 && player.getGridPosition().y == bulletGridPosY)) {
-            std::cout << "BulletInteraction.cpp: line 265: mirror moves left"; 
-            if(bulletGridPosX > 0) {  // Can we move left?
-                bool canMove = (player.getGridPosition().x != bulletGridPosX - 1 || player.getGridPosition().y != bulletGridPosY)
-                              && bulletGridPosX > 0 && !tileMap.getTileMap()[bulletGridPosY][bulletGridPosX - 1] || 
-                             tileMap.getTileMap()[bulletGridPosY][bulletGridPosX - 1]->isOverlappled();
-                
-                if(canMove) {
-                    tileMap.moveTile(bulletGridPosY, bulletGridPosX - 1,
-                                   bulletGridPosY, bulletGridPosX);
-                }
-            }
-            player.deleteBullet();
-        }
-        // Hit from bottom - reflect left
-        else if(lastBulletGridPosY < bulletGridPosY || (-player.getGridPosition().y + bulletGridPosY == 1 && player.getGridPosition().x == bulletGridPosX)) {
-            player.getBullet()->changeVelocity(LEFT, 3);
-            player.getBullet() -> dir = LEFT;
-            mirrorSound.play();
-        }
-        // Hit from top - move mirror down
-        else if(lastBulletGridPosY > bulletGridPosY || (player.getGridPosition().y - bulletGridPosY == 1 && player.getGridPosition().x == bulletGridPosX)) {
-            if(bulletGridPosY > 0) {  // Can we move down?
-                bool canMove = (player.getGridPosition().x != bulletGridPosX || player.getGridPosition().y != bulletGridPosY - 1) &&
-                             bulletGridPosY > 0 && (!tileMap.getTileMap()[bulletGridPosY - 1][bulletGridPosX] || 
-                             tileMap.getTileMap()[bulletGridPosY - 1][bulletGridPosX]->isOverlappled());
-                
-                if(canMove) {
-                    tileMap.moveTile(bulletGridPosY - 1, bulletGridPosX,
-                                   bulletGridPosY, bulletGridPosX);
-                }
-            }
-            player.deleteBullet();
-        }
-    }
-    if(tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]
-    && tileMap.getTileMap()[bulletGridPosY][bulletGridPosX]->isMirror4()) 
-{   
 
-    // First ensure bullet is actually on the mirror tile
-    //if(!(bulletGridPosX == lastBulletGridPosX && bulletGridPosY == lastBulletGridPosY))
-    //{
-        // Hit from left - reflect down
-        if(lastBulletGridPosX > bulletGridPosX || (player.getGridPosition().x - bulletGridPosX == 1 && player.getGridPosition().y == bulletGridPosY)) {
-            player.getBullet()->changeVelocity(UP, 3);
-            player.getBullet() -> dir = UP;
-            mirrorSound.play();
-        }
-        // Hit from right - move mirror left
-        else if(lastBulletGridPosX < bulletGridPosX || (player.getGridPosition().x - bulletGridPosX == -1 && player.getGridPosition().y == bulletGridPosY)) {
-            if(bulletGridPosX < tileMap.getTileMap()[bulletGridPosY].size()) {  // Can we move left?
-                bool canMove = (player.getGridPosition().x != bulletGridPosX + 1 || player.getGridPosition().y != bulletGridPosY)
-                             && bulletGridPosX > 0 && !tileMap.getTileMap()[bulletGridPosY][bulletGridPosX + 1] || 
-                             tileMap.getTileMap()[bulletGridPosY][bulletGridPosX + 1]->isOverlappled();
-                playBulletHitSound = true;
-                if(canMove) {
-                    tileMap.moveTile(bulletGridPosY, bulletGridPosX + 1,
-                                   bulletGridPosY, bulletGridPosX);
-                }
-            }
-            player.deleteBullet();
-        }
-        // Hit from bottom - reflect left
-        else if(lastBulletGridPosY < bulletGridPosY || (player.getGridPosition().y - bulletGridPosY == -1 && player.getGridPosition().x == bulletGridPosX)) {
-            player.getBullet()->changeVelocity(RIGHT, 3);
-            player.getBullet() -> dir = RIGHT;
-            mirrorSound.play();
-        }
-        // Hit from top - move mirror down
-        else if(lastBulletGridPosY > bulletGridPosY) {
-            if(bulletGridPosY > 0) {  // Can we move down?
-                bool canMove = (player.getGridPosition().x != bulletGridPosX || player.getGridPosition().y != bulletGridPosY - 1)
-                            && bulletGridPosY > 0 && (!tileMap.getTileMap()[bulletGridPosY - 1][bulletGridPosX] || 
-                             tileMap.getTileMap()[bulletGridPosY - 1][bulletGridPosX]->isOverlappled());
-                playBulletHitSound = true;
-                if(canMove) {
-                    tileMap.moveTile(bulletGridPosY - 1, bulletGridPosX,
-                                   bulletGridPosY, bulletGridPosX);
-                }
-            }
-            player.deleteBullet();
-        }
-    }
-
-    
-}
 
      

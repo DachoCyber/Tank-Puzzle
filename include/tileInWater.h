@@ -1,6 +1,9 @@
 #pragma once
 
 #include "tile.h"
+#include "bulletHitInfo.h"  // MUST include argument type
+#include "tileSignal.h"     // if TileSignal is separate
+
 
 
 class TileInWater : public Tile {
@@ -19,6 +22,9 @@ const sf::Texture& texture;
         catch(const std::string& what) {
             std::cerr << what << std::endl;
         }
+    }
+    TileSignal sendSignal(const BulletHitInfo& h) const override {
+        return TileSignal::NONE;
     }
     int code() override {
         return 50;

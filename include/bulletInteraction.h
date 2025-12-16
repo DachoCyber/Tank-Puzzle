@@ -4,6 +4,7 @@
 #include "player.h"
 
 
+
 class BulletInteraction {
 private:
     int windowSizeX, windowSizeY;

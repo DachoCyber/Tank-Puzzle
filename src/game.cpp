@@ -67,11 +67,6 @@ void MainGame::run() {
         undoMoveEndGame = false;
         if (!gameEnd()) {
 
-            int code = tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->code();
-            if(code == 8) {
-                killPlayer = true;
-            }
-
             float dt = deltaClock.restart().asSeconds();
     
             updateHUD(dt);
@@ -130,24 +125,20 @@ void MainGame::run() {
                     window->close();
                     isWindowClosed = true;
                 }
-                if (event.type == sf::Event::KeyPressed && (!tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() || returnFromTrack) && (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() || !bulletFired)) {
-
+                if (event.type == sf::Event::KeyPressed) {
+                    
+                    std::cout << "here" << std::endl;
                     handleInput();
                 }
             }
+
+            PlayerInteraction interaction (windowSizeX, windowSizeY, player, tileMap, sf::Keyboard::Unknown);
+            interaction.handlePlayerTileSignal();
 
             tileMap.updateTransportTracks();
             tileMap.updateWaterTiles();
 
             
-
-            if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() && !returnFromTrack) {
-                PlayerInteraction transportTrackPlayerInteraction(windowSizeX, windowSizeY, player, tileMap, sf::Keyboard::Unknown);
-                transportTrackPlayerInteraction.handlTransportableTrack(player.getGridPosition().x, player.getGridPosition().y, returnFromTrack);
-            }
-            if (!tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack()) {
-                returnFromTrack = false;
-            }
 
             update();
             render();
@@ -310,11 +301,14 @@ void MainGame::handleInput() {
     }
 
     if (pressedKey != sf::Keyboard::Unknown) {
-        if(tankMovedOrBulletShot.back() == "bullet shot") 
-            mapStates.push_back(tileMap.getMapState());
+        if(tankMovedOrBulletShot.back() == "bullet shot")  {
 
-        PlayerInteraction playerInteraction(windowSizeX, windowSizeY, player, tileMap, pressedKey);
-        playerInteraction.handleMovement();
+            mapStates.push_back(tileMap.getMapState());
+        }
+        PlayerInteraction interaction (windowSizeX, windowSizeY, player, tileMap, pressedKey);
+        interaction.handleMovement ();
+        interaction.handleFire ();  
+        interaction.handlePlayerTileSignal ();
         movesText.setString("Moves: " + std::to_string(movesPlayed));
     }
 

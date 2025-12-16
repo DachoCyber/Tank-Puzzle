@@ -10,6 +10,9 @@
 #include "bullet.h"
 
 #include "direction.h"
+#include "tileSignal.h"
+#include "bulletHitInfo.h"
+#include "playerTileSignal.h"
 
 class Tile : public sf::Drawable {
 
@@ -26,6 +29,12 @@ public:
     Tile(int x, int y) {
         posX = x;
         posY = y;
+    }
+    virtual TileSignal sendSignal(const BulletHitInfo& hit) const {
+        return TileSignal::NONE;
+    }
+    virtual PlayerTileSignal sendSignal() const {
+        return PlayerTileSignal::NONE;
     }
     virtual int code() = 0;
     virtual std::unique_ptr<Tile> clone() const = 0;

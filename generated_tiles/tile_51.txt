@@ -1,0 +1,38 @@
+--- DESCRIPTION ---
+Tile that reflects bullets upwards and moves itself down when hit.
+
+--- C++ HEADER ---
+```cpp
+#pragma once
+#include "BulletHitInfo.h"
+#include "Direction.h"
+#include "TileSignal.h"
+
+class Tile {
+public:
+    void sendSignal(const BulletHitInfo& hitInfo);
+};
+```
+
+--- C++ SOURCE ---
+```cpp
+#include "Tile.h"
+
+void Tile::sendSignal(const BulletHitInfo& hitInfo) {
+    if (hitInfo.direction == Direction::Down) {
+        return;
+    }
+
+    if (hitInfo.direction == Direction::Up) {
+        hitInfo.bullet->setDirection(Direction::Down);
+        return;
+    }
+
+    if (hitInfo.direction == Direction::Left || hitInfo.direction == Direction::Right) {
+        hitInfo.bullet->setDirection(Direction::Up);
+        return;
+    }
+
+    emitSignal(TileSignal::MoveDown);
+}
+```

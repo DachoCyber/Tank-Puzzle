@@ -5,6 +5,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+#include "bulletHitInfo.h"
+#include "tileSignal.h"
+
 class DestructibleBlock : public Tile {
 private:
     sf::Texture destructibleBlockTex;
@@ -21,6 +24,12 @@ public:
         catch(const std::string& what) {
             std::cerr << what << std::endl;
         }
+    }
+    TileSignal sendSignal(const BulletHitInfo& h) const override {
+        return TileSignal :: DESTROY_TILE;
+    }
+    PlayerTileSignal sendSignal() const override {
+        return PlayerTileSignal::BLOCK_PLAYER;
     }
     int code() override {
         return 3;

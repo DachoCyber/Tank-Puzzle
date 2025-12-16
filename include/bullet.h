@@ -73,6 +73,26 @@ public:
         }
     }
 
+    void setVelocity(Direction bulletDir) {
+        switch(bulletDir) {
+            case RIGHT : case LEFT :
+                shape.setSize(sf::Vector2f(20.f, 3.f));
+                break;
+            case UP : case DOWN:
+                shape.setSize(sf::Vector2f(3.f, 20.f));
+        }
+        switch(bulletDir) {
+            case UP:
+                velocity = sf::Vector2f(0.f, -1.f); break;
+            case DOWN:
+                velocity = sf::Vector2f(0.f, 1.f); break;
+            case LEFT:
+                velocity = sf::Vector2f(-1.f, 0.f); break;
+            case RIGHT:
+                velocity = sf::Vector2f(1.f, 0.f); break;
+        }
+    }
+
     void setVelocity() {
         switch(dir) {
             case UP:
