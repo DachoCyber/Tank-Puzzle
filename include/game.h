@@ -3,6 +3,8 @@
 #define SFML_STATIC
 
 #include "bulletInteraction.h"
+#include "paddingGame.h"
+
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <SFML/Audio.hpp>
@@ -34,15 +36,7 @@ private:
     void drawPadding();
     void initPadding();
     
-    void loadGoblet();
-    void drawGoblet();
-
     void undoMove();
-
-    void updateHUD(float dt);
-
-
-    void loadGameOverFont();
 
     bool shouldEnemyFireBullet();
     bool playerKilledByEnemy();
@@ -122,41 +116,12 @@ private:
     bool isRepeatMovEnabled = false;
     int movesPlayed = 0;
 
-    sf::RectangleShape padding;
-        // HUD elements
-    sf::RectangleShape rightPad;
-    sf::RectangleShape leftPad, topPad, bottomPad;
+    PaddingGame padding;
 
-    sf::Text titleText;
-    sf::Text movesText;
-    sf::Text controlsText;
-    sf::Text undoText;
-    sf::Font font;
-
-    sf::RectangleShape undoButton;
-
-    // Icons
-    sf::Texture tankIconTexture;
-    sf::Sprite iconUp, iconDown, iconLeft, iconRight;
-
-    // Blinking lights
-    sf::CircleShape light1, light2;
-    float blinkTimer = 0.f;
-
-    // Mini-map
-    sf::RectangleShape minimapFrame;
-    sf::RenderTexture minimapTexture;
-    sf::Sprite minimapSprite;
-
-    // For border
-    sf::RectangleShape borderLine;
-    std::vector<sf::CircleShape> hudCorners;
-
-    sf::RectangleShape backButton;
     float backButtonAbsPosX, backButtonAbsPosY;
     float backButtonSizeX, backButtonSizeY;
     sf::Text backButtonText;
-    bool backClicked = false;
+    bool backClicked;
 
 };
 

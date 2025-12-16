@@ -19,12 +19,12 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
     windowSizeX(constwindowSizeX),
     windowSizeY(constwindowSizeY),
     bullets(0, nullptr),
-    padding(sf::Vector2f(static_cast<float>(screenSizeX - constwindowSizeX), static_cast<float>(screenSizeY)))
+    padding(screenSizeX - constwindowSizeX, screenSizeY, constwindowSizeX)
 {
     this -> screenSizeX = screenSizeX;
     this -> screenSizeY = screenSizeY;
-    padding.setPosition(constwindowSizeX*1.f, 0.f);
-    initPadding();
+    padding.padding.setPosition(constwindowSizeX*1.f, 0.f);
+    padding.initPadding();
     loadMirrorBubbleSound("sounds/bubble.mp3");
     loadHitWallSoundBuffer("sounds/hitTankSoundAndBrickSound.mp3");
     auto image = sf::Image{};
@@ -48,7 +48,8 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
 
 
     playerPositions.push_back(std::make_pair<int, int>(static_cast<unsigned>(playerPosX), static_cast<unsigned>(playerPosY)));
-    
+    padding.initPadding();
+
     backButtonAbsPosX = 527.f;
     backButtonAbsPosY = 270.f;
 
@@ -68,9 +69,6 @@ void MainGame::run() {
         if (!gameEnd()) {
 
             float dt = deltaClock.restart().asSeconds();
-    
-            updateHUD(dt);
-            blinkTimer += dt;
 
             if (windowEnableRepeatMovement.getElapsedTime() >= windowEnableRepMovTime) {
                 isRepeatMovEnabled = true;
@@ -102,23 +100,15 @@ void MainGame::run() {
                 {
                         sf::Vector2f mouse(event.mouseButton.x, event.mouseButton.y);
 
-                        if (undoButton.getGlobalBounds().contains(mouse))
+                        if (padding.undoButton.getGlobalBounds().contains(mouse))
                             undoMove();
                             
-                        if(backButton.getGlobalBounds().contains(mouse)) {
+                        if(padding.backButton.getGlobalBounds().contains(mouse)) {
                             backClicked = true;
                             window -> close();
                         }
                 
 
-                }
-                if(event.type == sf::Event::Resized) {
-                    float winSizeX = window -> getSize().x;
-                    float winSizeY = window -> getSize().y;
-                    backButtonAbsPosX *= winSizeX / 700.f;
-                    backButtonAbsPosY *= winSizeY / 512.f;
-                    backButtonSizeX *= winSizeX / 158.f;
-                    backButtonSizeY *= winSizeY / 30.f;
                 }
                 if (event.type == sf::Event::Closed) {
 
@@ -219,7 +209,7 @@ void MainGame::undoMove() {
             
         tankMovedOrBulletShot.pop_back();
     }
-    movesText.setString("Moves:"  + std::to_string(movesPlayed));
+    padding.movesText.setString("Moves:"  + std::to_string(movesPlayed));
 }
 
 bool MainGame::playerKilledByEnemy() {
@@ -309,7 +299,7 @@ void MainGame::handleInput() {
         interaction.handleMovement ();
         interaction.handleFire ();  
         interaction.handlePlayerTileSignal ();
-        movesText.setString("Moves: " + std::to_string(movesPlayed));
+        padding.movesText.setString("Moves: " + std::to_string(movesPlayed));
     }
 
     if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() && returnFromTrack && pressedKey != sf::Keyboard::Unknown) {
@@ -366,174 +356,6 @@ void MainGame::update() {
     }
 }
 
-void MainGame::updateHUD(float dt)
-{
-    blinkTimer += dt;
-
-    if (std::fmod(blinkTimer, 1.0f) < 0.5f) {
-        light1.setFillColor(sf::Color(255, 50, 50));
-        light2.setFillColor(sf::Color(50, 255, 50));
-    } else {
-        light1.setFillColor(sf::Color(120, 0, 0));
-        light2.setFillColor(sf::Color(0, 120, 0));
-    }
-}
-
-
-void MainGame :: drawPadding() {
-    // Draw minimap content
-    minimapTexture.clear(sf::Color(30,50,30));
-
-    // Example: draw player (scaled down)
-    sf::CircleShape p(3);
-    p.setFillColor(sf::Color::Yellow);
-    p.setPosition(tileMap.getPlayerPositionX() / 10.0f,
-                tileMap.getPlayerPositionY() / 10.0f);
-
-    minimapTexture.draw(p);
-    minimapTexture.display();
-
-    // Draw HUD elements
-    window->draw(rightPad);
-    window->draw(borderLine);
-
-    for (auto& c : hudCorners) window->draw(c);
-
-    window->draw(titleText);
-    window->draw(movesText);
-    window->draw(controlsText);
-
-    window->draw(iconUp);
-    window->draw(iconDown);
-    window->draw(iconLeft);
-    window->draw(iconRight);
-
-    window->draw(undoButton);
-    window->draw(undoText);
-
-    window->draw(minimapFrame);
-    window->draw(minimapSprite);
-    window->draw(backButton);
-    window->draw(backButtonText);
-
-}
-void MainGame::initPadding()
-{
-    float hudX = 512;       // 512
-    float hudWidth = 188; // 188
-    float hudY = 0;
-    float hudHeight = 512; // 512
-
-    // ============ HUD BACKGROUND ============
-    rightPad.setSize(sf::Vector2f(hudWidth, hudHeight));
-    rightPad.setFillColor(sf::Color(30, 50, 30));
-    rightPad.setPosition(hudX, hudY);
-
-    // ============ BORDER LINE ============
-    borderLine.setSize(sf::Vector2f(3, hudHeight));
-    borderLine.setFillColor(sf::Color(70, 120, 70));
-    borderLine.setPosition(hudX - 3, 0);
-
-    // ============ CLEAN CORNERS ============
-    hudCorners.clear();
-    float r = 12.f;
-
-    sf::CircleShape topLeft(r);
-    topLeft.setFillColor(sf::Color(30, 50, 30));
-    topLeft.setPosition(hudX, 0);
-    hudCorners.push_back(topLeft);
-
-    sf::CircleShape topRight(r);
-    topRight.setFillColor(sf::Color(30, 50, 30));
-    topRight.setPosition(hudX + hudWidth - 2*r, 0);
-    hudCorners.push_back(topRight);
-
-    sf::CircleShape bottomLeft(r);
-    bottomLeft.setFillColor(sf::Color(30, 50, 30));
-    bottomLeft.setPosition(hudX, hudHeight - 2*r);
-    hudCorners.push_back(bottomLeft);
-
-    sf::CircleShape bottomRight(r);
-    bottomRight.setFillColor(sf::Color(30, 50, 30));
-    bottomRight.setPosition(hudX + hudWidth - 2*r, hudHeight - 2*r);
-    hudCorners.push_back(bottomRight);
-
-    // ============ TEXT ============
-
-    font.loadFromFile("Fonts/arial.ttf");
-
-    titleText.setFont(font);
-    titleText.setCharacterSize(22);
-    titleText.setFillColor(sf::Color(180, 255, 180));
-    titleText.setString("CONTROL PANEL");
-    titleText.setPosition(hudX + 15, 15);
-
-    movesText.setFont(font);
-    movesText.setCharacterSize(20);
-    movesText.setFillColor(sf::Color(200, 255, 200));
-    movesText.setString("Moves: 0");
-    movesText.setPosition(hudX + 15, 60);
-
-    controlsText.setFont(font);
-    controlsText.setCharacterSize(18);
-    controlsText.setFillColor(sf::Color(200, 255, 200));
-    controlsText.setString(
-    "Controls:\n"
-    "        ^\n"
-    "< - - + - - >\n"
-    "        v\n"
-    "\n"
-    "U - Undo\n"
-);
-
-    controlsText.setPosition(hudX + 15, 110);
-
-    // ============ ICON POSITIONS ============
-    float ix = hudX + 15;
-    float iy = 150;
-
-    iconUp.setPosition(ix, iy);
-    iconRight.setPosition(ix, iy + 40);
-    iconDown.setPosition(ix, iy + 80);
-    iconLeft.setPosition(ix, iy + 120);
-
-    // ============ UNDO BUTTON ============
-    undoButton.setSize(sf::Vector2f(hudWidth - 30, 40));
-    undoButton.setFillColor(sf::Color(0, 100, 0));
-    undoButton.setPosition(hudX + 15, iy + 180);
-
-    undoText.setFont(font);
-    undoText.setCharacterSize(20);
-    undoText.setFillColor(sf::Color(220, 255, 220));
-    undoText.setString("Undo Move (U)");
-    undoText.setPosition(undoButton.getPosition().x + 10,
-                         undoButton.getPosition().y + 8);
-
-
-    minimapTexture.create(140, 140);
-
-    minimapFrame.setSize(sf::Vector2f(140, 140));
-    minimapFrame.setFillColor(sf::Color(20, 40, 20));
-    minimapFrame.setOutlineColor(sf::Color(90, 140, 90));
-    minimapFrame.setOutlineThickness(2);
-    minimapFrame.setPosition(hudX + 15, undoButton.getPosition().y + 70);
-
-    minimapSprite.setTexture(minimapTexture.getTexture());
-    minimapSprite.setPosition(minimapFrame.getPosition());
-
-    backButton.setSize(sf::Vector2f(hudWidth - 30, 40)); // 158, 40
-    backButton.setPosition(sf::Vector2f(hudX + 15, iy + 120));
-    backButton.setFillColor(sf::Color(0, 100, 0));
-    
-    
-    backButtonText.setFont(font);
-    backButtonText.setString( "Main Menu");
-    backButtonText.setCharacterSize(20);
-    backButtonText.setPosition(backButton.getPosition().x + 10, 
-                               backButton.getPosition().y + 8);
-    backButtonText.setFillColor(sf::Color(220, 255, 220));
-}
-
 
 
 
@@ -546,7 +368,7 @@ void MainGame::render() {
     for (int i = 0; i < bullets.size(); i++) {
         window->draw(*bullets[i]);
     }
-    drawPadding();
+    window -> draw(padding);
 
     window->display();
 }
@@ -561,11 +383,6 @@ bool MainGame::gameWon() {
 
 bool MainGame::gameEnd() {
     return gameLost() || gameWon();
-}
-
-void MainGame::drawGoblet() {
-
-    window->draw(gobletSprite);
 }
 
 bool MainGame::getWindowClosedState() const {
