@@ -54,7 +54,7 @@ void PlayerInteraction :: handleMovement () {
     // if next tile code is not walkable ground, water, tile in water etc.
     // we can not move, otherwise move player
     if (code == 1  || code == 8  || code == 50 || code == 20 ||
-           code == 21 || code == 22 || code == 23 || code == 10)
+        code == 21 || code == 22 || code == 23 || code == 10 || code == 0)
     {
 
         player.setGridPosition(sf::Vector2i(newX, newY));

@@ -17,7 +17,6 @@ void BulletInteraction :: interact() {
     bool playBulletBubbleSound = false;
     bool playBulletHitSound = false;
 
-
     int lastBulletGridPosX = player.getBullet()->getPosition().x/tileSize;
     int lastBulletGridPosY = player.getBullet()->getPosition().y/tileSize;
 

@@ -22,6 +22,7 @@ const sf::Texture& texture;
     TileSignal sendSignal(const BulletHitInfo& h) const override {
         return TileSignal :: DESTROY_BULLET;
     }
+    
     PlayerTileSignal sendSignal() const override {
         return PlayerTileSignal :: BLOCK_PLAYER;
     }

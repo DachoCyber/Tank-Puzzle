@@ -52,8 +52,6 @@ public:
     void updateTransportTracks();
     void moveTile(int newGridPosY, int newGridPosX, int oldGridPosY, int oldGridPosX);
     std::vector<std::tuple<int, int, Direction>> getTrackCoord() const {return trackTileCoords;}
-
-    std::vector<std::pair<int, int>> getTilesInWaterCoords() const { return tilesInWaterCoords; }
     void setTileCoords(int i, int j, int code);
 
     void clearWaterTiles();
@@ -69,19 +67,17 @@ private:
     int playerPosX;
     int playerPosY;
     
-    std::list<std::pair<int, int>> waterTilesCoords; // done
     
     std::vector<std::vector<int>> tileMap;
     std::vector<std::vector<sf::Sprite>> sprites;
     std::vector<std::vector<std::unique_ptr<Tile>>> tiles;
-    std::vector<std::pair<int, int>> tileInWater;
-    std::vector<std::pair<int, int>> erasedWaterTiles;
-
-
-
+    
+    
+    
     std::vector<std::tuple<int, int, Direction>> trackTileCoords;
-
-    std::vector<std::pair<int, int>> tilesInWaterCoords;
+    
+    std::vector<std::vector<bool>> waterTilesCoords; // done
+    std::vector<std::vector<bool>> movableBlockInWater;
 
     int level;
 

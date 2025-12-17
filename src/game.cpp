@@ -14,13 +14,14 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
         sf::VideoMode(screenSizeX, screenSizeY),
         "LaserTank",
         sf::Style::Close | sf::Style::Resize)),
-    tileMap(level),
-    player(tileMap.getPlayerPositionX(), tileMap.getPlayerPositionY(), constwindowSizeX, constwindowSizeY),
-    windowSizeX(constwindowSizeX),
-    windowSizeY(constwindowSizeY),
-    bullets(0, nullptr),
-    padding(screenSizeX - constwindowSizeX, screenSizeY, constwindowSizeX)
+    tileMap (level),
+    player (tileMap.getPlayerPositionX(), tileMap.getPlayerPositionY(), constwindowSizeX, constwindowSizeY),
+    windowSizeX (constwindowSizeX),
+    windowSizeY (constwindowSizeY),
+    bullets (0, nullptr),
+    padding (screenSizeX - constwindowSizeX, screenSizeY, constwindowSizeX)
 {
+    std::cout << "Loaded" << std::endl;
     this -> screenSizeX = screenSizeX;
     this -> screenSizeY = screenSizeY;
     padding.padding.setPosition(constwindowSizeX*1.f, 0.f);
@@ -126,7 +127,6 @@ void MainGame::run() {
             interaction.handlePlayerTileSignal();
 
             tileMap.updateTransportTracks();
-            tileMap.updateWaterTiles();
 
             
 
@@ -225,26 +225,48 @@ bool MainGame::playerKilledByEnemy() {
 }
 
 bool MainGame::shouldEnemyFireBullet() {
-    for (int i = 0; i < tileMap.getTileMap().size(); i++) {
-        for (int j = 0; j < tileMap.getTileMap()[i].size(); j++) {
-            if (tileMap.getTileMap()[i][j]) {
 
-                if (tileMap.getTileMap()[i][j]->killPlayer(
-                    tileMap.getTileMap(),
-                    player.getGridPosition().x * tileSize,
-                    player.getGridPosition().y * tileSize)) {
+    int px = player.getGridPosition().x, py = player.getGridPosition().y;
+    int tankX, tankY;
+    for (int x = 0; x < 16; x++) {
+        
+        if (tileMap.getTileMap()[py][x] -> killPlayer(
+            tileMap.getTileMap(), player.getGridPosition().x * tileSize,
+            player.getGridPosition().y * tileSize)) {
+            
+            tileMap.getTileMap()[py][x] -> fireBullet();
+            bullets.push_back(tileMap.getTileMap()[py][x]->getBullet());
+            tankX = x, tankY = py;
+            coordXKillerTank = x;
+            coordYKillerTank = py;
 
-                    tileMap.getTileMap()[i][j]->fireBullet();
-                    bullets.push_back(tileMap.getTileMap()[i][j]->getBullet());
-                    bulletFired = true;
-                    coordXKillerTank = j;
-                    coordYKillerTank = i;
+            bulletFired = true;
 
-                    isRepeatMovEnabled = false;
-                    window->setKeyRepeatEnabled(false);
-                    return true;
-                }
-            }
+            isRepeatMovEnabled = false;
+            window->setKeyRepeatEnabled(false);
+            return true;
+
+
+        }
+    }
+    for (int y = 0; y < 16; y++) {
+        
+        if (tileMap.getTileMap()[y][px] -> killPlayer(
+            tileMap.getTileMap(), player.getGridPosition().x * tileSize,
+            player.getGridPosition().y * tileSize)) {
+            
+            tileMap.getTileMap()[y][px] -> fireBullet();
+            bullets.push_back(tileMap.getTileMap()[y][px]->getBullet());
+            tankX = px, tankY = y;
+            coordXKillerTank = px;
+            coordYKillerTank = y;
+                
+            bulletFired = true;
+
+            isRepeatMovEnabled = false;
+            window->setKeyRepeatEnabled(false);
+            return true;
+
         }
     }
     return false;

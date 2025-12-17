@@ -4,6 +4,7 @@
 
 #include "bulletInteraction.h"
 #include "paddingGame.h"
+#include "inputManager.h"
 
 #include <SFML/Graphics.hpp>
 #include <memory>
@@ -123,5 +124,6 @@ private:
     sf::Text backButtonText;
     bool backClicked;
 
+    InputManager inputManager;
 };
 
