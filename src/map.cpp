@@ -281,105 +281,100 @@ void Map::switchFramesEnemyTank(int i) {
 }
 
 void Map :: updateWaterTiles() {
-
-    for(int y = 0; y < 16; y++) {
-        for(int x = 0; x < 16; x++) {
-
-            if (tileMap[y][x] == 8)
-                waterTilesCoords[y][x] = true;
-        }
-    }
 }
 
 void Map :: moveTile(int newGridPosY, int newGridPosX, int oldGridPosY, int oldGridPosX) {
     // 1. Check bounds and validity
-        if (oldGridPosY < 0 || oldGridPosY >= tiles.size() ||
-            oldGridPosX < 0 || oldGridPosX >= tiles[0].size() ||
-            newGridPosY < 0 || newGridPosY >= tiles.size() ||
-            newGridPosX < 0 || newGridPosX >= tiles[0].size() ||
-            !tiles[oldGridPosY][oldGridPosX]) {
-            return;
+    if (oldGridPosY < 0 || oldGridPosY >= 16 ||
+        oldGridPosX < 0 || oldGridPosX >= 16 ||
+        newGridPosY < 0 || newGridPosY >= 16 ||
+        newGridPosX < 0 || newGridPosX >= 16 ||
+        !tiles[oldGridPosY][oldGridPosX]) {
+        return;
+    }
+
+    if (! (tileMap[newGridPosY][newGridPosX] == 8  ||
+            tileMap[newGridPosY][newGridPosX] == 1  ||
+            tileMap[newGridPosY][newGridPosX] == 50 ||
+            tileMap[newGridPosY][newGridPosX] == 20 ||
+            tileMap[newGridPosY][newGridPosX] == 21 ||
+            tileMap[newGridPosY][newGridPosX] == 22 ||
+            tileMap[newGridPosY][newGridPosX] == 23 ))
+    {
+
+        return;
+    }
+        
+    if (tileMap[oldGridPosY][oldGridPosX] != 9) {
+
+        tileMap[newGridPosY][newGridPosX] = waterTilesCoords[newGridPosY][newGridPosX] ? 8 : tileMap[oldGridPosY][oldGridPosX];
+        tileMap[oldGridPosY][oldGridPosX] = 1;
+    }
+    else {
+
+        if (tileMap[newGridPosY][newGridPosX] == 8) {
+            tileMap[newGridPosY][newGridPosX] = 50;
+            movableBlockInWater[newGridPosY][newGridPosX] = true;
+        } else {
+            tileMap[newGridPosY][newGridPosX] = 9;
         }
 
-        if (! (tileMap[newGridPosY][newGridPosX] == 8  ||
-               tileMap[newGridPosY][newGridPosX] == 1  ||
-               tileMap[newGridPosY][newGridPosX] == 50 ||
-               tileMap[newGridPosY][newGridPosX] == 20 ||
-               tileMap[newGridPosY][newGridPosX] == 21 ||
-               tileMap[newGridPosY][newGridPosX] == 22 ||
-               tileMap[newGridPosY][newGridPosX] == 23 ))
-        {
-
-            return;
-        }
-            
-        if (tileMap[oldGridPosY][oldGridPosX] != 9) {
-
-            tileMap[newGridPosY][newGridPosX] = waterTilesCoords[newGridPosY][newGridPosX] ? 8 : tileMap[oldGridPosY][oldGridPosX];
+        if (movableBlockInWater[oldGridPosY][oldGridPosX]) {
+            tileMap[oldGridPosY][oldGridPosX] = 50;
+        } else {
             tileMap[oldGridPosY][oldGridPosX] = 1;
         }
-        else {
-
-            if (tileMap[newGridPosY][newGridPosX] == 8) {
-                tileMap[newGridPosY][newGridPosX] = 50;
-                movableBlockInWater[newGridPosY][newGridPosX] = true;
-            } else {
-                tileMap[newGridPosY][newGridPosX] = 9;
-            }
-
-            if (movableBlockInWater[oldGridPosY][oldGridPosX]) {
-                tileMap[oldGridPosY][oldGridPosX] = 50;
-            } else {
-                tileMap[oldGridPosY][oldGridPosX] = 1;
-            }
-        }
-
-        std::unique_ptr<Tile> tileNew = TileFactory :: constructTile (tileMap[newGridPosY][newGridPosX], newGridPosX, newGridPosY, 32);
-        std::unique_ptr<Tile> tileOld = TileFactory :: constructTile (tileMap[oldGridPosY][oldGridPosX], oldGridPosX, oldGridPosY, 32);
-        
-        tiles[newGridPosY][newGridPosX] = std::move(tileNew);
-        tiles[oldGridPosY][oldGridPosX] = std::move(tileOld);
     }
 
+    waterTilesCoords[oldGridPosY][oldGridPosX] = tileMap[oldGridPosY][oldGridPosX] == 8;
+    waterTilesCoords[newGridPosY][newGridPosX] = tileMap[newGridPosY][newGridPosX] == 8;
 
-    Tile* Map :: getTileFromUniquePtr(std::unique_ptr<Tile> tile) const {
-        return tile.get();
-    }
+    std::unique_ptr<Tile> tileNew = TileFactory :: constructTile (tileMap[newGridPosY][newGridPosX], newGridPosX, newGridPosY, 32);
+    std::unique_ptr<Tile> tileOld = TileFactory :: constructTile (tileMap[oldGridPosY][oldGridPosX], oldGridPosX, oldGridPosY, 32);
+    
+    tiles[newGridPosY][newGridPosX] = std::move(tileNew);
+    tiles[oldGridPosY][oldGridPosX] = std::move(tileOld);
+}
 
-    std::vector<std::vector<int>> Map::getMapState() const {
-        std::vector<std::vector<int>> mapState(mapHeight); // Initialize outer vector with mapHeight empty vectors
-        
-        for(int i = 0; i < mapHeight; i++) {
-            mapState[i].reserve(mapWidth); // Optional but recommended for performance
-            for(int j = 0; j < mapWidth; j++) {
-                mapState[i].push_back(tiles[i][j] -> code());
-            }
-        }
-        return mapState;
-    }
 
-    void Map::setTilesEl(size_t i, size_t j, std::unique_ptr<Tile> newElement) {
-        if (i < tiles.size() && j < tiles[i].size()) {
-            tiles[i][j] = std::move(newElement);
+Tile* Map :: getTileFromUniquePtr(std::unique_ptr<Tile> tile) const {
+    return tile.get();
+}
+
+std::vector<std::vector<int>> Map::getMapState() const {
+    std::vector<std::vector<int>> mapState(mapHeight); // Initialize outer vector with mapHeight empty vectors
+    
+    for(int i = 0; i < mapHeight; i++) {
+        mapState[i].reserve(mapWidth); // Optional but recommended for performance
+        for(int j = 0; j < mapWidth; j++) {
+            mapState[i].push_back(tiles[i][j] -> code());
         }
     }
+    return mapState;
+}
 
-    void Map::undoMove(std::vector<std::vector<int>>* lastMapState) {
-        for (int y = 0; y < mapHeight; ++y) {
-            auto& lastRow = (*lastMapState)[y];
-            auto& tileRow = tiles[y];
-            auto& mapRow = tileMap[y];
+void Map::setTilesEl(size_t i, size_t j, std::unique_ptr<Tile> newElement) {
+    if (i < tiles.size() && j < tiles[i].size()) {
+        tiles[i][j] = std::move(newElement);
+    }
+}
 
-            for (int x = 0; x < mapWidth; ++x) {
-                int code = lastRow[x];
-                auto tile = TileFactory::constructTile(code, x, y, tileSize);
+void Map::undoMove(std::vector<std::vector<int>>* lastMapState) {
+    for (int y = 0; y < mapHeight; ++y) {
+        auto& lastRow = (*lastMapState)[y];
+        auto& tileRow = tiles[y];
+        auto& mapRow = tileMap[y];
 
-                waterTilesCoords[y][x] = code == 8;
+        for (int x = 0; x < mapWidth; ++x) {
+            int code = lastRow[x];
+            auto tile = TileFactory::constructTile(code, x, y, tileSize);
 
-                tileRow[x] = std::move(tile);
-                mapRow[x] = code;
-            }
+            waterTilesCoords[y][x] = code == 8;
+            movableBlockInWater[y][x] = code == 50;
+
+            tileRow[x] = std::move(tile);
+            mapRow[x] = code;
         }
     }
+}
 
-   
