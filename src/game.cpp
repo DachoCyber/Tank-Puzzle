@@ -117,8 +117,6 @@ void MainGame::run() {
                     isWindowClosed = true;
                 }
                 if (event.type == sf::Event::KeyPressed) {
-                    
-                    std::cout << "here" << std::endl;
                     handleInput();
                 }
             }
@@ -318,17 +316,20 @@ void MainGame::handleInput() {
             mapStates.push_back(tileMap.getMapState());
         }
         PlayerInteraction interaction (windowSizeX, windowSizeY, player, tileMap, pressedKey);
+        interaction.handlePlayerTileSignal ();
         interaction.handleMovement ();
         interaction.handleFire ();  
-        interaction.handlePlayerTileSignal ();
         padding.movesText.setString("Moves: " + std::to_string(movesPlayed));
     }
 
-    if (tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x]->isTransportTrack() && returnFromTrack && pressedKey != sf::Keyboard::Unknown) {
+    if (isTransportTrack(tileMap.getTileMap()[player.getGridPosition().y][player.getGridPosition().x] -> code()) && returnFromTrack && pressedKey != sf::Keyboard::Unknown) {
         returnFromTrack = false;
     }
 }
 
+bool MainGame :: isTransportTrack (int code) {
+    return code == 20 || code == 21 || code == 22 || code == 23;
+}
 
 void MainGame::update() {
 

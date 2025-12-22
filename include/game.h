@@ -34,6 +34,8 @@ public:
 
 
 private:
+
+    bool isTransportTrack (int code);
     void drawPadding();
     void initPadding();
     

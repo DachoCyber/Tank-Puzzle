@@ -73,11 +73,6 @@ public:
         if (h.dy < 0) return TileSignal::MOVE_TILE_DOWN;
         return TileSignal::MOVE_TILE_UP;
     }
-
-    std::unique_ptr<Tile> clone() const override {
-        auto clone = std::make_unique<EnemyTank1>(posX, posY, dir, texture); // Copy constructor
-return clone;
-    }
     void switchFrame(int i) {
         int codeTexture = 12 - dir;
         if(i == 0) {
@@ -111,7 +106,9 @@ return clone;
 
     bool shouldKillPlayer = false;
 
-
+    bool isWalkableOrWater(int code) {
+        return code == 10 || code == 1 || code == 8 || code == 50 || code == 20 || code == 21 || code == 22 || code == 23;
+    }
     bool killPlayer(const std::vector<std::vector<std::unique_ptr<Tile>>>& tileMap, int playerPosX, int playerPosY) override {
         
         switch(dir) {
@@ -123,8 +120,8 @@ return clone;
                 for(int j = posX/tileSize - 1; j > playerPosX/tileSize; j--) {
                     int gPosY = posY/tileSize;
 
-
-                    if(!(tileMap[gPosY][j]->isWalkable() || tileMap[gPosY][j]->isWater())) {
+                    int code = tileMap[gPosY][j] -> code();
+                    if(!isWalkableOrWater(code)) {
                             return false;
                         }
                 }
@@ -139,9 +136,8 @@ return clone;
                 for(int j = posX/tileSize + 1; j < playerPosX/tileSize; j++) {
                     int gPosY = posY/tileSize;
             
-
-                    if(!(tileMap[gPosY][j]->isWalkable() || tileMap[gPosY][j]->isWater())) {
-                            
+                    int code = tileMap[gPosY][j] -> code();
+                    if(!isWalkableOrWater(code)) {
                             return false;
                         }
                 }
@@ -153,8 +149,8 @@ return clone;
                 for(int j = posY/tileSize - 1; j > playerPosY/tileSize; j--) {
                     int gPosX = posX/tileSize;
             
-
-                    if(!(tileMap[j][gPosX]->isWalkable() || tileMap[j][gPosX]->isWater())) {
+                    int code = tileMap[j][gPosX] -> code();
+                    if(!isWalkableOrWater(code)) {
                             return false;
                         }
                 }
@@ -165,8 +161,8 @@ return clone;
                 for(int j = posY/tileSize + 1; j < playerPosY/tileSize; j++) {
                     int gPosX = posX/tileSize;
             
-
-                    if(!(tileMap[j][gPosX]->isWalkable() || tileMap[j][gPosX]->isWater())) {
+                    int code = tileMap[j][gPosX] -> code();
+                    if(!isWalkableOrWater(code)) {
                             return false;
                         }
                 }
@@ -203,51 +199,9 @@ return clone;
     }
 
 
-    bool isUnderWater(const std::vector<std::pair<int, int>>& waterTileCoords) override {
-        return false;
-    }
-    bool isUndestructibleBlock() override {
-        return false;
-    }
     void setAlpha(int alpha) override {
         sf::Color color = sprite.getColor();
         color.a = alpha;
         sprite.setColor(color);
-    }
-    bool isWalkable() override {
-        return false;
-    }
-    bool isBulletDestroyable() override {
-        return false;
-    }
-    bool isBulletMovable() override {
-        return true;
-    }
-    void interactWithBullet(Direction dir) override {
-        return;
-    }
-    bool isMirror1() override {
-        return false;
-    }
-    bool isMirror2() override {
-        return false;
-    }
-    bool isMirror3() override {
-        return false;
-    }
-    bool isMirror4() override {
-        return false;
-    }
-    bool isOverlappled() override {
-        return false;
-    }
-    int getMirrorType() override {
-        return -1;
-    }
-    virtual bool killPlayerTile(int playerPosX, int playerPosY) override {
-        return false;
-    }
-    bool isWater() override {
-        return false;
     }
 };

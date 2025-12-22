@@ -23,64 +23,16 @@ const sf::Texture& texture;
         return TileSignal :: DESTROY_BULLET;
     }
     
+    bool killPlayer(const std::vector<std::vector<std::unique_ptr<Tile>>>& tileMap,
+                        int playerPosX, int playerPosY) override { return false; }
+    bool fireBullet() override { return false; }
+
     PlayerTileSignal sendSignal() const override {
         return PlayerTileSignal :: BLOCK_PLAYER;
-    }
-    std::unique_ptr<Tile> clone() const override {
-        auto clone = std::make_unique<UndestructableBlock>(posX, posY, texture); // Copy constructor
-    clone->sprite = this->sprite; // Copy the sprite
-    return clone;
-    }
-    virtual bool isUnderWater(const std::vector<std::pair<int, int>>& waterTileCoords) {
-        return false;
-    }
-    bool isUndestructibleBlock() override {
-        return true;
-    }
-    virtual bool killPlayerTile(int playerPosX, int playerPosY) override {
-        return false;
     }
     void setAlpha(int alpha) override {
         sf::Color color = sprite.getColor();
         color.a = alpha;
         sprite.setColor(color);
-    }
-    bool isWalkable() override {
-        return false;
-    }
-    bool isBulletDestroyable() override {
-        return false;
-    }
-    void interactWithBullet(Direction dir) override {
-        return;
-    }
-    bool isBulletMovable() override {
-        return false;
-    }
-    virtual int getMirrorType() {
-        return 0;
-    }
-    bool isMirror1() override {
-        return false;
-    }
-    bool isMirror2() override {
-        return false;
-    }
-    bool isMirror3() override {
-        return false;
-    }bool isMirror4() override {
-        return false;
-    }
-    bool isOverlappled() override {
-        return false;
-    }
-    bool isWater() override {
-        return false;
-    }
-    bool killPlayer(const std::vector<std::vector<std::unique_ptr<Tile>>>& tileMap, int playerPosX, int playerPosY) override {
-        return false;
-    }
-    bool fireBullet() override {
-        return false;
     }
 };

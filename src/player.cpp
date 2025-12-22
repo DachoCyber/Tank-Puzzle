@@ -128,25 +128,25 @@ bool Tank :: deleteAdjBlockIfExists(Map& tileMap) {
 
     switch(dir) {
         case UP:
-            if(y - 1 >= 0 && tileMap.getTileMap()[y-1][x]->isBulletDestroyable()) {
+            if(y - 1 >= 0 && tileMap.getTileMap()[y-1][x]->code() == 3) {
                 tileMap.destroyTile(x, y - 1);
                 return true;
             }
             break;
         case DOWN:
-            if(y + 1 < tileMap.getTileMap().size() && tileMap.getTileMap()[y + 1][x]->isBulletDestroyable()) {
+            if(y + 1 < tileMap.getTileMap().size() && tileMap.getTileMap()[y + 1][x]->code() == 3) {
                 tileMap.destroyTile(x, y + 1);
                 return true;
             }
             break;
         case LEFT:
-            if(x - 1 >= 0 && tileMap.getTileMap()[y][x - 1]->isBulletDestroyable()) {
+            if(x - 1 >= 0 && tileMap.getTileMap()[y][x - 1]->code() == 3) {
                 tileMap.destroyTile(x - 1, y);
                 return true;
             }
             break;
         case RIGHT:
-            if(x + 1 < tileMap.getTileMap()[y].size() && tileMap.getTileMap()[y][x + 1]->isBulletDestroyable()) {
+            if(x + 1 < tileMap.getTileMap()[y].size() && tileMap.getTileMap()[y][x + 1]->code() == 3) {
                 tileMap.destroyTile(x + 1, y);
                 return true;
             }

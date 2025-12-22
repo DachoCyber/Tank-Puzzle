@@ -18,6 +18,9 @@ bool validMove(int x, int y) {
 
 void PlayerInteraction :: handleMovement () {
 
+    if (blockInput)
+        return;
+
     if (pressedKey == sf::Keyboard::Key::Unknown || pressedKey == sf::Keyboard::Key::Space)
         return;
 
@@ -93,8 +96,12 @@ void PlayerInteraction :: movePlayer (int newX, int newY) {
         code == 21 || code == 22 || code == 23 || code == 10)  {
 
         player.setGridPosition(sf::Vector2i(newX, newY));
+        blockInput = true;
+    } 
+    else 
+    {
+        blockInput = false;
     }
-
 }
 
 void PlayerInteraction :: handlePlayerTileSignal ()

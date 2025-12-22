@@ -12,6 +12,7 @@ private:
     Map& tileMap;
     sf::Keyboard :: Key pressedKey;
     const int tileSize = 32;
+    bool blockInput = false; // on conveyer
 public:
     PlayerInteraction(int windowSizeX, int windowSizeY, Tank& player, Map& map, sf::Keyboard::Key key);
     ~PlayerInteraction() = default;
