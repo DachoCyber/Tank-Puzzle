@@ -66,6 +66,10 @@ void PlayerInteraction :: handleMovement () {
     }
 }
 
+void PlayerInteraction::setBlockInput(bool block)
+{
+    blockInput = block;
+}
 void PlayerInteraction :: handleFire () {
 
     if(pressedKey == sf::Keyboard::Key::Space && !player.getBullet()) {  

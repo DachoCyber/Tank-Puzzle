@@ -379,4 +379,3 @@ void Map::undoMove(std::vector<std::vector<int>>* lastMapState) {
         }
     }
 }
-

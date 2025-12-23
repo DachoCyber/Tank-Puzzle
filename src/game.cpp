@@ -351,6 +351,8 @@ void MainGame::update() {
     
     if (bullets.size() == 0 || (player.getGridPosition().x != coordXKillerTank && player.getGridPosition().y != coordYKillerTank)) {
 
+        PlayerInteraction interaction(windowSizeX, windowSizeY, player, tileMap, sf::Keyboard::Unknown);
+        interaction.setBlockInput(true);
         shouldEnemyFireBullet();
     }
 

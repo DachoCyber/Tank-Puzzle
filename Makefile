@@ -3,8 +3,7 @@ CXXFLAGS := -std=c++17 -Wall -O2 -DNDEBUG -DSFML_STATIC -DCURL_STATICLIB -DWIN32
 
 INCLUDES := -I"SFML-2.6.2/include" \
             -I"CURL" \
-            -Iinclude \
-            -Itinyxml2
+            -Iinclude
 
 LIB_DIRS := -L"SFML-2.6.2/lib" \
             -L"CURL/lib"
@@ -33,14 +32,15 @@ LIBS := -lsfml-audio-s \
 
 SRC_DIR := src
 OBJ_DIR := obj
-BIN_DIR := bin
 
-SRC := $(wildcard $(SRC_DIR)/*.cpp)
-OBJ := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC)) tinyxml2/tinyxml2.o
+SRC := $(wildcard $(SRC_DIR)/*.cpp) \
+	tinyxml2/tinyxml2.cpp
+
+OBJ := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC))
 
 TARGET := LaserTank.exe
 
-all: dirs $(TARGET)
+all: $(TARGET)
 
 dirs:
 	@if not exist "$(OBJ_DIR)" (mkdir "$(OBJ_DIR)")

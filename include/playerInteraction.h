@@ -19,6 +19,8 @@ public:
     void handlTransportableTrack(int x, int y, bool retrunFromTrack);
     void handleMovement();
 
+    void setBlockInput(bool block); 
+
     void handlePlayerTileSignal();
     void movePlayer (int newX, int newY);
     void handleFire ();
