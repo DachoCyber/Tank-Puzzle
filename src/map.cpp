@@ -27,6 +27,8 @@
 Map::Map(int level) {
     readMapFromXML(tileMap, level);
 
+    std::cout << "Map read!";
+
     int mapWidth = 16;
     int mapHeight = 16;
 
@@ -136,6 +138,7 @@ void Map::loadTextures() {
     if(!secondFrameEnemyTank4Texture.loadFromFile("Images/tank4ThirdFrame.png")) {
         throw std::runtime_error("Failed to load tank1 third frame texture");
     }
+    std::cout << "Textures loaded!" << std::endl;
 
 }
 
@@ -144,6 +147,7 @@ void Map::buildMap() {
 
     waterTilesCoords.resize(mapHeight, std::vector<bool>(mapWidth, false));
     movableBlockInWater.resize(mapHeight, std::vector<bool>(mapWidth, false));
+    flagCoords.resize(mapHeight, std::vector<bool>(mapWidth, false));
 
     for (int y = 0; y < mapHeight; y++) {
         for (int x = 0; x < mapWidth; x++) {
@@ -155,6 +159,9 @@ void Map::buildMap() {
             if(tileMap[y][x] == 8) {
                 waterTilesCoords[y][x] = true;
             }
+            if(tileMap[y][x] == 10) {
+                flagCoords[y][x] = true;
+            }
             if(tileMap[y][x] == 20) {
                 trackTileCoords.push_back(std::make_tuple(y, x, LEFT));
             } else if(tileMap[y][x] == 21) {
@@ -165,9 +172,8 @@ void Map::buildMap() {
                 trackTileCoords.push_back(std::make_tuple(y, x, DOWN));
             }
             tiles[y][x] = TileFactory :: constructTile(tileMap[y][x], x, y, tileSize);
-        
         }
-
+        std::cout << "TILE BUILT!" << std::endl;
     }
 }
 
@@ -224,6 +230,12 @@ sf::Vector2f Map::getTilePosition(int x, int y) const {
     return sf::Vector2f(x * tileSize, y * tileSize);
 }
 
+
+void Map :: destroyTile(int gridPosX, int gridPosY) {
+    std::unique_ptr<Tile> tile = std::make_unique<WalkableGround>(gridPosX*tileSize, gridPosY*tileSize, walkableTexture);
+    tiles[gridPosY][gridPosX] = std::move(tile);
+    tileMap[gridPosY][gridPosX] = 1;
+}
 
 void Map::updateTransportTracks() {
     for (auto& coord : trackTileCoords) {
@@ -301,18 +313,21 @@ void Map :: moveTile(int newGridPosY, int newGridPosX, int oldGridPosY, int oldG
             tileMap[newGridPosY][newGridPosX] == 20 ||
             tileMap[newGridPosY][newGridPosX] == 21 ||
             tileMap[newGridPosY][newGridPosX] == 22 ||
-            tileMap[newGridPosY][newGridPosX] == 23 ))
+            tileMap[newGridPosY][newGridPosX] == 23 ||
+            tileMap[newGridPosY][newGridPosX] == 10 ))
     {
 
         return;
     }
+
+    
         
     if (tileMap[oldGridPosY][oldGridPosX] != 9) {
 
         tileMap[newGridPosY][newGridPosX] = waterTilesCoords[newGridPosY][newGridPosX] ? 8 : tileMap[oldGridPosY][oldGridPosX];
         tileMap[oldGridPosY][oldGridPosX] = 1;
     }
-    else {
+    else if (tileMap[oldGridPosY][oldGridPosX] == 9) {
 
         if (tileMap[newGridPosY][newGridPosX] == 8) {
             tileMap[newGridPosY][newGridPosX] = 50;
@@ -326,8 +341,10 @@ void Map :: moveTile(int newGridPosY, int newGridPosX, int oldGridPosY, int oldG
         } else {
             tileMap[oldGridPosY][oldGridPosX] = 1;
         }
-    }
 
+        
+    }
+    
     waterTilesCoords[oldGridPosY][oldGridPosX] = tileMap[oldGridPosY][oldGridPosX] == 8;
     waterTilesCoords[newGridPosY][newGridPosX] = tileMap[newGridPosY][newGridPosX] == 8;
 
@@ -373,6 +390,7 @@ void Map::undoMove(std::vector<std::vector<int>>* lastMapState) {
 
             waterTilesCoords[y][x] = code == 8;
             movableBlockInWater[y][x] = code == 50;
+            flagCoords[y][x] = code == 10;
 
             tileRow[x] = std::move(tile);
             mapRow[x] = code;

@@ -18,16 +18,13 @@ public:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override ;
     bool isWalkable(int x, int y) const;
     sf::Vector2f getTilePosition(int x, int y) const;
-    int getTileSize() const { return tileSize; }
-    const std::vector<std::vector<std::unique_ptr<Tile>>>& getTileMap() const {return tiles;}
-    const std::vector<std::vector<int>> getTileMapInt() const {return tileMap;}
-    void destroyTile(int gridPosX, int gridPosY) {
-        std::unique_ptr<Tile> tile = std::make_unique<WalkableGround>(gridPosX*tileSize, gridPosY*tileSize, walkableTexture);
-        tiles[gridPosY][gridPosX] = std::move(tile);
-        tileMap[gridPosY][gridPosX] = 1;
-    }
-
+    
+    void destroyTile(int gridPosX, int gridPosY);
     void sendSignal(int x, int y, Direction dir);
+
+    int getTileSize() const { return tileSize; }
+    const std::vector<std::vector<std::unique_ptr<Tile>>>& getTileMap() const { return tiles; }
+    const std::vector<std::vector<int>> getTileMapInt() const { return tileMap; }
 
     void switchFramesWaterTiles(int i);
     void switchFramesEnemyTank(int i);
@@ -78,6 +75,7 @@ private:
     
     std::vector<std::vector<bool>> waterTilesCoords; // done
     std::vector<std::vector<bool>> movableBlockInWater;
+    std::vector<std::vector<bool>> flagCoords;
 
     int level;
 

@@ -7,16 +7,10 @@ class MovableBlock : public Tile {
 public:
     const sf::Texture& texture;
     MovableBlock(int x, int y, const sf::Texture& texture) : Tile(x, y), texture(texture) {
-        try {
-            walkable = false;
-            sprite.setTexture(texture);
-            sprite.setPosition(x, y);
-            posX = x;
-            posY = y;
-        }
-        catch(const std::string& what) {
-            std::cerr << what << std::endl;
-        }
+        sprite.setTexture(texture);
+        sprite.setPosition(x, y);
+        posX = x;
+        posY = y;
     }
     TileSignal sendSignal(const BulletHitInfo& h) const override {
         if (h.dx < 0) return TileSignal::MOVE_TILE_RIGHT; // from left

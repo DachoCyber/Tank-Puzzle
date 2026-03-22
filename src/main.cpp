@@ -128,10 +128,7 @@ int main() {
     bool getIsClosed = false;
     MainMenu menu(levelCount);
     menu.run();
-
-    if(menu.getWinClose()) {
-        return 0;
-    }
+    std::cout << "menu run" << std::endl;
 
     bool backClicked = false;
     bool enterAnotherLevel = false;
@@ -143,8 +140,10 @@ int main() {
         //std::cout << chosenLevel << std::endl;
         if (!enterAnotherLevel) {
             chosenLevel = menu.getChosenLevel();
+            std::cout << "here" << std::endl;
         }
         if(backClicked) {
+            std::cout << "Back is clicked!" << std::endl;
             MainMenu menu(levelCount);
             menu.run();
             menuWindowClose = menu.getWinClose();

@@ -14,14 +14,11 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
         sf::VideoMode(screenSizeX, screenSizeY),
         "LaserTank",
         sf::Style::Close | sf::Style::Resize)),
+
     tileMap (level),
-    player (tileMap.getPlayerPositionX(), tileMap.getPlayerPositionY(), constwindowSizeX, constwindowSizeY),
-    windowSizeX (constwindowSizeX),
-    windowSizeY (constwindowSizeY),
-    bullets (0, nullptr),
+    player  (tileMap.getPlayerPositionX(), tileMap.getPlayerPositionY(), windowSizeX, constwindowSizeY),
     padding (screenSizeX - constwindowSizeX, screenSizeY, constwindowSizeX)
 {
-    std::cout << "Loaded" << std::endl;
     this -> screenSizeX = screenSizeX;
     this -> screenSizeY = screenSizeY;
     padding.padding.setPosition(constwindowSizeX*1.f, 0.f);

@@ -1,59 +1,21 @@
 #pragma once
 
-#define SFML_STATIC
+#include <iostream>
+#include "bullet.h"
+#include "player.h"
+#include "gameFrameClock.h"
 
-#include "bulletInteraction.h"
-#include "paddingGame.h"
-#include "inputManager.h"
-#include "gameState.h"
-
-#include <SFML/Graphics.hpp>
-#include <memory>
-#include <SFML/Audio.hpp>
-#include <vector>
-#include <cmath>
-
-
-
-
-class MainGame {
+class GameState {
 public:
-    MainGame(int screenSizeX, int screenSizeY, int constwindowSizeY, int constwindowSizeX, int level);
-    ~MainGame() = default;
-    void run();
-    
-    bool getWindowClosedState() const;
 
-    bool gameEnd();
-    bool gameLost();
-    bool gameWon();
+    GameState (int screenSizeX, int screenSizeY, int constwindowSizeX, int constwindowSizeY, int level) :
+        windowSizeX (constwindowSizeX),
+        windowSizeY (constwindowSizeY),
+        bullets (0, nullptr)
+    {
 
-    std::string getInitials() const {return initials;}
-    
-    int getMovesCount() { return movesPlayed; }
-    bool isBackClicked() { return backClicked; }
+    }
 
-
-private:
-
-    bool isTransportTrack (int code);
-    void drawPadding();
-    void initPadding();
-    
-    void undoMove();
-
-    bool shouldEnemyFireBullet();
-    bool playerKilledByEnemy();
-
-    void handleInput();
-    void render();
-    void update();
-
-    Tank player;
-    Map tileMap;
-
-    std::unique_ptr<sf::RenderWindow> window;
-    
     std::vector<std::string> tankMovedOrBulletShot;
     
     bool isWindowClosed;
@@ -104,20 +66,8 @@ private:
     bool isRepeatMovEnabled = false;
     int movesPlayed = 0;
 
-    sf::Clock gameClock;
-    sf::Time timeSinceLastUpdate = sf::Time::Zero;
-    const sf::Time timePerFrame = sf::seconds(1.f/60.f);
-
-    sf::Time updateFramesWaterTile = sf::seconds(0.5);
-    sf::Time updateFramesEnemyTank = sf::seconds(0.33);
-
-    sf::Clock waterFramesClock;
-    sf::Clock enemyTankFramesClock;
-
     sf::Text backButtonText;
     float backButtonAbsPosX, backButtonAbsPosY;
     float backButtonSizeX, backButtonSizeY;
     bool backClicked;
-    PaddingGame padding;
 };
-

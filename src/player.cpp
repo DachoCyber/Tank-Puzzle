@@ -19,6 +19,8 @@ Tank::Tank(int gridPosX, int gridPosY, int windowSizeX, int windowSizeY)
     sprite.setPosition(sf::Vector2f(static_cast<float>(gridPosX * tileSize + tileSize/2), static_cast<float>(gridPosY*tileSize + tileSize/2)));
     updateSpritePosition();
 
+    std::cout << "Player initialized!" << std::endl;
+
     
     moveSoundBfr.loadFromFile("sounds/MOVE.MP3");
     moveSound.setBuffer(moveSoundBfr);

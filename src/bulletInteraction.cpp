@@ -4,7 +4,7 @@
 #include "../include/bulletHitInfo.h"
 
 
-BulletInteraction::BulletInteraction(int windowSizeX, int windowSizeY, Tank& tank, Map& map) 
+BulletInteraction :: BulletInteraction(int windowSizeX, int windowSizeY, Tank& tank, Map& map) 
 
     : windowSizeX(windowSizeX), windowSizeY(windowSizeY), player(tank), tileMap(map) {}
 
