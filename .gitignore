@@ -1,0 +1,4 @@
+*.dll
+*.exe
+obj/
+SFML-2.6.2/
