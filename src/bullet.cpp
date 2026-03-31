@@ -1,5 +1,6 @@
 #pragma once
 #include "../include/bullet.h"
+#include <iostream>
 
 
 Bullet :: Bullet() {

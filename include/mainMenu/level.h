@@ -24,7 +24,6 @@ private:
         menuWindowOpen = true;
 
         sf::RenderWindow menuWindow(sf::VideoMode(menuSizeX, 250), "Choose Level");
-        std::cout << levelCount << std::endl;
 
         std::vector<sf::RectangleShape> levelButtons(levelCount);
         std::vector<sf::Text> levelTexts(levelCount);
@@ -76,7 +75,6 @@ private:
                             menuWindow.close();
                             menuWindowOpen = false;
                             level = i + 1;
-                            std::cout << level << std::endl;
                             return i;
                         }
                     }

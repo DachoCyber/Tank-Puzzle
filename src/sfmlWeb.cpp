@@ -26,7 +26,6 @@ void sendScore(const std::string& name, int score, int level) {
     // Prepare POST data
     std::string post_fields = "name=" + std::string(escaped_name) + "&score=" + std::to_string(score) + "&level=" + std::to_string(level);
     curl_free(escaped_name);
-    std::cout << score << std::endl;
 
     std::string response;
 
@@ -43,12 +42,6 @@ void sendScore(const std::string& name, int score, int level) {
 
     // Execute request
     CURLcode res = curl_easy_perform(curl);
-    if (res != CURLE_OK) {
-        std::cerr << "CURL failed: " << curl_easy_strerror(res) << '\n';
-    }
-    else {
-        std::cout << "Server response: " << response << '\n';
-    }
 
     curl_easy_cleanup(curl);
 }

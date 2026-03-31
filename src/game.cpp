@@ -14,9 +14,9 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
         sf::VideoMode(screenSizeX, screenSizeY),
         "LaserTank",
         sf::Style::Close | sf::Style::Resize)),
-
+    windowSizeX(constwindowSizeX), windowSizeY(constwindowSizeY),
     tileMap (level),
-    player  (tileMap.getPlayerPositionX(), tileMap.getPlayerPositionY(), windowSizeX, constwindowSizeY),
+    player  (tileMap.getPlayerPositionX(), tileMap.getPlayerPositionY(), constwindowSizeX, constwindowSizeY),
     padding (screenSizeX - constwindowSizeX, screenSizeY, constwindowSizeX)
 {
     this -> screenSizeX = screenSizeX;

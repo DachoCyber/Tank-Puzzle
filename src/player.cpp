@@ -19,8 +19,6 @@ Tank::Tank(int gridPosX, int gridPosY, int windowSizeX, int windowSizeY)
     sprite.setPosition(sf::Vector2f(static_cast<float>(gridPosX * tileSize + tileSize/2), static_cast<float>(gridPosY*tileSize + tileSize/2)));
     updateSpritePosition();
 
-    std::cout << "Player initialized!" << std::endl;
-
     
     moveSoundBfr.loadFromFile("sounds/MOVE.MP3");
     moveSound.setBuffer(moveSoundBfr);
@@ -41,6 +39,7 @@ bool Tank::bulletInScreen() const {
         bullet->getPosition().x >= 0 &&
         bullet->getPosition().y <= windowSizeY &&
         bullet->getPosition().y >= 0) {
+        
         return true;
     } else {
         return false;
@@ -91,6 +90,7 @@ void Tank::update(sf::Time accTime, sf::Time updateInterval) {
 void Tank::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(sprite);
     if (bullet && bulletInScreen()) {
+
         target.draw(*bullet);
     }
 }

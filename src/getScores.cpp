@@ -83,10 +83,6 @@ std::vector<PlayerTable> getPlayerScores(int targetLevel) {
             std::string name  = extractStringValue(lines[nameIndex]);
             int score = extractIntValue(lines[scoreIndex]);
 
-            std::cout << "Match found:\n";
-            std::cout << "Name: " << name << "\n";
-            std::cout << "Score: " << score << "\n";
-
             PlayerTable player;
             player.score = score;
             player.name = name;

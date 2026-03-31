@@ -510,8 +510,6 @@ public:
             std::string folder = "maps/";
             std::string levelName = generateNextMapFilename(folder); // already includes .tmx
 
-            std::cout << levelName << std::endl;
-
             std::ofstream file(folder + levelName);
             if (!file.is_open()) {
                 std::cerr << "Failed to open file for writing!\n";
@@ -519,11 +517,6 @@ public:
             }
 
             int levelIndex = extractLevelIndex(levelName);
-            std::cout << "Creating level " << levelIndex << " with filename: " << levelName << std::endl;
-
-            // proceed to write to file...
-
-            // Replace .tmx if not present
             if (levelName.find(".tmx") == std::string::npos)
                 levelName += ".tmx";
 
@@ -536,8 +529,6 @@ public:
             file << "  </tileset>\n";
             file << "  <layer name=\"Tile Layer 1\" width=\"" << width << "\" height=\"" << height << "\">\n";
             file << "    <data encoding=\"csv\">\n";
-
-            std::cout << "TankPosY: " << tankPosY << " TankPosX: " << tankPosX << std::endl;
 
             for (int y = 0; y < height; ++y) {
                 for (int x = 0; x < width; ++x) {
@@ -611,7 +602,6 @@ public:
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // debug
 
-        std::cout << "Uploading " << fileName << " to " << url << std::endl;
 
         CURLcode res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
@@ -620,8 +610,6 @@ public:
         else {
             long response_code;
             curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-            std::cout << "HTTP Response Code: " << response_code << std::endl;
-            std::cout << "Server Response: " << response << std::endl;
         }
 
         curl_mime_free(form);

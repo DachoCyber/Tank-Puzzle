@@ -13,7 +13,6 @@ void BulletInteraction :: interact() {
     if (!player.getBullet()) {
         return;
     }
-
     bool playBulletBubbleSound = false;
     bool playBulletHitSound = false;
 
@@ -52,13 +51,6 @@ void BulletInteraction :: interact() {
     Tile* tile = tileMap.getTileMap()[y][x].get(); 
     TileSignal signal =  tile->sendSignal(hit);
 
-    if(signal == TileSignal :: MOVE_TILE_UP) {
-        std::cout << "Moving tile" << std::endl;
-    }
-    if(signal == TileSignal :: REFLECT_RIGHT) {
-        std::cout << "Reflecting right" << std::endl;
-    }
-        
     switch (signal) {
         
         case TileSignal::BLOCK_BULLET:

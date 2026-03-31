@@ -27,7 +27,6 @@
 Map::Map(int level) {
     readMapFromXML(tileMap, level);
 
-    std::cout << "Map read!";
 
     int mapWidth = 16;
     int mapHeight = 16;
@@ -138,7 +137,6 @@ void Map::loadTextures() {
     if(!secondFrameEnemyTank4Texture.loadFromFile("Images/tank4ThirdFrame.png")) {
         throw std::runtime_error("Failed to load tank1 third frame texture");
     }
-    std::cout << "Textures loaded!" << std::endl;
 
 }
 
@@ -173,7 +171,6 @@ void Map::buildMap() {
             }
             tiles[y][x] = TileFactory :: constructTile(tileMap[y][x], x, y, tileSize);
         }
-        std::cout << "TILE BUILT!" << std::endl;
     }
 }
 
@@ -313,8 +310,8 @@ void Map :: moveTile(int newGridPosY, int newGridPosX, int oldGridPosY, int oldG
             tileMap[newGridPosY][newGridPosX] == 20 ||
             tileMap[newGridPosY][newGridPosX] == 21 ||
             tileMap[newGridPosY][newGridPosX] == 22 ||
-            tileMap[newGridPosY][newGridPosX] == 23 ||
-            tileMap[newGridPosY][newGridPosX] == 10 ))
+            tileMap[newGridPosY][newGridPosX] == 23
+        ))
     {
 
         return;

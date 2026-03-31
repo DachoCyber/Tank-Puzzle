@@ -56,7 +56,6 @@ public:
               "Laser Tank",
               sf::Style::Default))
     {
-        // Load background
         if (!backgroundImage.loadFromFile("Images/mainMenuImage.png")) {
             throw std::runtime_error("Failed to load main menu background image!");
         }
@@ -197,11 +196,6 @@ public:
                 static_cast<sf::Uint8>(sumB / count)
             );
         }
-
-        std::cout << "Detected button color: "
-                  << (int)baseButtonColor.r << ", "
-                  << (int)baseButtonColor.g << ", "
-                  << (int)baseButtonColor.b << "\n";
     }
 
     // --------------------------------------------------------
