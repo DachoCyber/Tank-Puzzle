@@ -40,8 +40,6 @@ int main() {
     int levelCount = countMapFiles("src/levelCount.txt");
     scoreByLevels.resize(levelCount + 1);
 
-    printf("%d", levelCount);
-
     bool getIsClosed = false;
     MainMenu menu(levelCount);
     menu.run();

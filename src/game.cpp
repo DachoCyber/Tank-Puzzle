@@ -94,19 +94,20 @@ void MainGame::run() {
             sf::Event event;
             while (window->pollEvent(event)) {
                 if (event.type == sf::Event::MouseButtonPressed &&
-                        event.mouseButton.button == sf::Mouse::Left)
+                    event.mouseButton.button == sf::Mouse::Left)
                 {
-                        sf::Vector2f mouse(event.mouseButton.x, event.mouseButton.y);
+                    sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
 
-                        if (padding.undoButton.getGlobalBounds().contains(mouse))
-                            undoMove();
-                            
-                        if(padding.backButton.getGlobalBounds().contains(mouse)) {
-                            backClicked = true;
-                            window -> close();
-                        }
-                
+                    // koristi default view ili HUD view ako ga imaš
+                    sf::Vector2f mouse = window->mapPixelToCoords(mousePixel, window->getView());
 
+                    if (padding.undoButton.getGlobalBounds().contains(mouse))
+                        undoMove();
+
+                    if (padding.backButton.getGlobalBounds().contains(mouse)) {
+                        backClicked = true;
+                        window->close();
+                    }
                 }
                 if (event.type == sf::Event::Closed) {
 
