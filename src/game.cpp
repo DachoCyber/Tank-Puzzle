@@ -95,6 +95,15 @@ void MainGame::run() {
 
             sf::Event event;
             while (window->pollEvent(event)) {
+                
+                if (event.type == sf::Event::Closed) {
+
+                    window->close();
+                    isWindowClosed = true;
+                }
+                if (event.type == sf::Event::KeyPressed) {
+                    handleInput();
+                }
                 if (event.type == sf::Event::MouseButtonPressed &&
                     event.mouseButton.button == sf::Mouse::Left)
                 {
@@ -111,14 +120,6 @@ void MainGame::run() {
                         window->close();
                     }
                 }
-                if (event.type == sf::Event::Closed) {
-
-                    window->close();
-                    isWindowClosed = true;
-                }
-                if (event.type == sf::Event::KeyPressed) {
-                    handleInput();
-                }
             }
 
             PlayerInteraction interaction (windowSizeX, windowSizeY, player, tileMap, sf::Keyboard::Unknown);
@@ -133,8 +134,6 @@ void MainGame::run() {
         }
         else {
 
-            sf::Time gameEndShownTime = sf::seconds(3);
-            sf::Clock clock;
             while (window->isOpen() && !undoMoveEndGame) {
                 sf::Event event;
                 while (window->pollEvent(event)) {
