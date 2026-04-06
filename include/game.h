@@ -97,6 +97,9 @@ private:
     bool playerMoved = false;
     int moveCount = 0;
     std::vector<std::pair<int, int>> playerPositions;
+
+    int playerBeginPosX, playerBeginPosY;
+
     int coordXKillerTank, coordYKillerTank;
 
     sf::Clock windowEnableRepeatMovement;

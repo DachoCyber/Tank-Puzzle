@@ -16,6 +16,8 @@ MainGame::MainGame(int screenSizeX, int screenSizeY, int constwindowSizeX, int c
         sf::Style::Close | sf::Style::Resize)),
     windowSizeX(constwindowSizeX), windowSizeY(constwindowSizeY),
     tileMap (level),
+    playerBeginPosX(tileMap.getPlayerPositionX()),
+    playerBeginPosY(tileMap.getPlayerPositionY()),
     player  (tileMap.getPlayerPositionX(), tileMap.getPlayerPositionY(), constwindowSizeX, constwindowSizeY),
     padding (screenSizeX - constwindowSizeX, screenSizeY, constwindowSizeX)
 {
@@ -309,14 +311,22 @@ void MainGame::handleInput() {
     }
 
     if (pressedKey != sf::Keyboard::Unknown) {
-        if(tankMovedOrBulletShot.back() == "bullet shot")  {
+        PlayerInteraction interaction(windowSizeX, windowSizeY, player, tileMap, pressedKey);
+        interaction.handlePlayerTileSignal();
+        interaction.handleMovement();
+        interaction.handleFire();
 
+        if (tankMovedOrBulletShot.back() == "bullet shot" && interaction.getBulletFired()) {
             mapStates.push_back(tileMap.getMapState());
+        } else {
+            if (!interaction.getPlayerMoved() && !interaction.getPlayerTurned()) {
+
+                movesPlayed--;
+                tankMovedOrBulletShot.pop_back();
+            }
+
         }
-        PlayerInteraction interaction (windowSizeX, windowSizeY, player, tileMap, pressedKey);
-        interaction.handlePlayerTileSignal ();
-        interaction.handleMovement ();
-        interaction.handleFire ();  
+
         padding.movesText.setString("Moves: " + std::to_string(movesPlayed));
     }
 

@@ -48,6 +48,8 @@ void BulletInteraction :: interact() {
     hit.dx = lastBulletGridPosX - bulletGridPosX;
     hit.dy = lastBulletGridPosY - bulletGridPosY;
 
+    int code = tileMap.getTileMapInt()[y][x];
+
     Tile* tile = tileMap.getTileMap()[y][x].get(); 
     TileSignal signal =  tile->sendSignal(hit);
 
@@ -127,6 +129,10 @@ void BulletInteraction :: interact() {
             break;
     }
 
+    int newCode = tileMap.getTileMapInt()[y][x];
+
+    if (newCode != code)
+        mapChanged = true;
 }
 
 

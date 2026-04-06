@@ -44,7 +44,15 @@ void PlayerInteraction :: handleMovement () {
     if (newDir != dir) {
         player.setDir(newDir);
         player.turnSound.play();
-        player.getPlayerStates().push_back({dir, pos});
+        if (newDir != dir) {
+            player.setDir(newDir);
+            player.turnSound.play();
+            player.getPlayerStates().push_back({dir, pos});
+            playerTurned = true;  // <-- dodaj ovo
+            return;
+        }
+
+
         
         return;
     }
@@ -61,9 +69,22 @@ void PlayerInteraction :: handleMovement () {
     {
 
         player.setGridPosition(sf::Vector2i(newX, newY));
-        player.getPlayerStates().push_back({dir, newPos});
+        player.getPlayerStates().push_back({dir, pos});
         player.moveSound.play();
+        playerMoved = true;
     }
+}
+
+// playerInteraction.cpp
+bool PlayerInteraction::getPlayerTurned() const {
+    return playerTurned;
+}
+
+// u handleMovement(), umesto return posle okreta:
+
+
+bool PlayerInteraction :: getPlayerMoved() const {
+    return playerMoved;
 }
 
 void PlayerInteraction::setBlockInput(bool block)
@@ -75,11 +96,16 @@ void PlayerInteraction :: handleFire () {
     if(pressedKey == sf::Keyboard::Key::Space && !player.getBullet()) {  
         if(!player.deleteAdjBlockIfExists(tileMap)) {
             player.fireBullet();
+            bulletFired = true;
         }
 
         player.fireSound.play();
     }
 
+}
+
+bool PlayerInteraction :: getBulletFired() const {
+    return bulletFired;
 }
 
 void PlayerInteraction :: movePlayer (int newX, int newY) {
