@@ -2,22 +2,19 @@
 
 void PaddingGame::initPadding()
 {
-    float hudX = 512;       // 512
-    float hudWidth = 188; // 188
+    float hudX = 512;      
+    float hudWidth = 188;
     float hudY = 0;
-    float hudHeight = 512; // 512
+    float hudHeight = 512;
 
-    // ============ HUD BACKGROUND ============
     rightPad.setSize(sf::Vector2f(hudWidth, hudHeight));
     rightPad.setFillColor(sf::Color(30, 50, 30));
     rightPad.setPosition(hudX, hudY);
 
-    // ============ BORDER LINE ============
     borderLine.setSize(sf::Vector2f(3, hudHeight));
     borderLine.setFillColor(sf::Color(70, 120, 70));
     borderLine.setPosition(hudX - 3, 0);
 
-    // ============ CLEAN CORNERS ============
     hudCorners.clear();
     float r = 12.f;
 
