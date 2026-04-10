@@ -3,39 +3,28 @@
 #include <algorithm>
 #include <SFML/Graphics.hpp>
 
-// TOP 3 BOJE
 static const sf::Color GOLD   (255, 215,   0);
 static const sf::Color SILVER (192, 192, 192);
 static const sf::Color BRONZE (205, 127,  50);
 
 void sfmlUi(std::string initials, int chosenLevel, int score) {
 
-    // get players for that level
     std::vector<PlayerTable> players = getPlayerScores(chosenLevel);
 
-    if(players.empty()) {
-
-    }
-
-    // Sort ascending by score
     std::sort(players.begin(), players.end(), [](const PlayerTable& a, const PlayerTable& b) {
         return a.score < b.score;
     });
 
     auto it = std::unique(players.begin(), players.end());
 
-    // Erase the duplicate elements
     players.erase(it, players.end());
 
-    // create window
     sf::RenderWindow window(sf::VideoMode(600, 400),
         "Score Table - Level " + std::to_string(chosenLevel));
     window.setFramerateLimit(60);
 
-    // enable mouse wheel
     window.setMouseCursorVisible(true);
 
-    // table layout
     const float margin = 20.f;
     const float headerH = 30.f;
     const float rowH = 28.f;
@@ -44,7 +33,6 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
     const float startX = margin;
     const float startY = margin;
 
-    // prepare header texts
     sf::Text headerName("Name", globalFont, 18);
     headerName.setPosition(startX + 5, startY + 4);
     headerName.setFillColor(sf::Color::Black);
@@ -53,7 +41,6 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
     headerScore.setPosition(startX + colNameW + 5, startY + 4);
     headerScore.setFillColor(sf::Color::Black);
 
-    // prepare rows text
     std::vector<sf::Text> nameTexts;
     std::vector<sf::Text> scoreTexts;
 
@@ -79,7 +66,6 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
         scoreTexts.push_back(tScore);
     }
 
-    // limit visible rows to fit window
     const int visibleRows =
         static_cast<int>((window.getSize().y - startY - headerH - margin) / rowH);
 
@@ -93,7 +79,6 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            // keyboard scroll
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Down) {
                     if (offset + visibleRows < (int)players.size()) offset++;
@@ -102,13 +87,10 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
                 }
             }
 
-            // MOUSE WHEEL SCROLL
             if (event.type == sf::Event::MouseWheelScrolled) {
                 if (event.mouseWheelScroll.delta < 0) {
-                    // scroll down
                     if (offset + visibleRows < (int)players.size()) offset++;
                 } else if (event.mouseWheelScroll.delta > 0) {
-                    // scroll up
                     if (offset > 0) offset--;
                 }
             }
@@ -116,32 +98,25 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
 
         window.clear(sf::Color(160, 32, 240));
 
-        // draw header background
         sf::RectangleShape headerBg(sf::Vector2f(colNameW + colScoreW, headerH));
         headerBg.setPosition(startX, startY);
         headerBg.setFillColor(sf::Color(220, 220, 220));
         window.draw(headerBg);
-
-
-
-        // draw header texts
+        
             window.draw(headerName);
             window.draw(headerScore);
 
         if (noInternetConnection) {
 
-            // Tamna pozadina ispod headera
             sf::RectangleShape rowBg(sf::Vector2f(colNameW + colScoreW, 200));
             rowBg.setPosition(startX, startY + headerH);
             rowBg.setFillColor(sf::Color(100, 0, 150)); // tamno ljubičasta
             window.draw(rowBg);
 
-            // Veliki centrirani tekst
             sf::Text offline("No internet connection\nCan not load results", globalFont, 24);
             offline.setFillColor(sf::Color::White);
             offline.setStyle(sf::Text::Bold);
-
-            // centriranje horiznotalno
+            
             float textX = startX + (colNameW + colScoreW) / 2 - offline.getLocalBounds().width / 2;
             float textY = startY + headerH + 60;
 
@@ -149,21 +124,17 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
             window.draw(offline);
         }
         else {
-                // draw rows
             for (int r = 0; r < visibleRows; ++r) {
 
                 int idx = offset + r;
                 if (idx >= (int)players.size()) break;
 
                 float y = startY + headerH + r * rowH;
-
-                // highlight initials
                 bool isInitials = (players[idx].name == initials);
 
                 sf::RectangleShape rowBg(sf::Vector2f(colNameW + colScoreW, rowH));
                 rowBg.setPosition(startX, y);
 
-                // *** TOP 3 COLORING ***
                 if (idx == 0)      rowBg.setFillColor(GOLD);
                 else if (idx == 1) rowBg.setFillColor(SILVER);
                 else if (idx == 2) rowBg.setFillColor(BRONZE);
@@ -174,13 +145,11 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
 
                 window.draw(rowBg);
 
-                // dividing line
                 sf::RectangleShape line(sf::Vector2f(colNameW + colScoreW, 1.f));
                 line.setPosition(startX, y + rowH - 1);
                 line.setFillColor(sf::Color(200, 200, 200));
                 window.draw(line);
 
-                // update text positions
                 sf::Text nameT = nameTexts[idx];
                 nameT.setPosition(startX + 5, y + 4);
                 window.draw(nameT);
@@ -191,8 +160,6 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
             }
         }
         
-
-        // instructions text
         sf::Text instr("Scroll mouse or Up/Down. Highlighted = " + initials,
             globalFont, 12);
         instr.setPosition(startX, window.getSize().y - margin);
