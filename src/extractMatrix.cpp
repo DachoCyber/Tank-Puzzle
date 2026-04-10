@@ -40,14 +40,13 @@ void readMapFromXML(std::vector<std::vector<int>>& map, int level) {
                 int currElCount = 0;
 
                 while (std::getline(iss, token, ',')) {
-                    if (currElCount >= N * N) break;  // prevent overflow
+                    if (currElCount >= N * N) break;
                     
                     try {
                         int value = std::stoi(token);
                         map[currElCount / N][currElCount % N] = value;
                         currElCount++;
                     } catch(const std::exception& e) {
-                        // Handle or log conversion error
                         continue;
                     }
                 }
