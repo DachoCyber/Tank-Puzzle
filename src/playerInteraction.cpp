@@ -75,13 +75,9 @@ void PlayerInteraction :: handleMovement () {
     }
 }
 
-// playerInteraction.cpp
 bool PlayerInteraction::getPlayerTurned() const {
     return playerTurned;
 }
-
-// u handleMovement(), umesto return posle okreta:
-
 
 bool PlayerInteraction :: getPlayerMoved() const {
     return playerMoved;
