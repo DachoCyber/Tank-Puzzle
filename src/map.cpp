@@ -207,9 +207,6 @@ void Map::draw(sf::RenderTarget& target, sf::RenderStates states) const {
             if (!tiles[y][x]) continue;
 
             target.draw(*tiles[y][x]);
-               
-
-
         }
     }
 
@@ -275,8 +272,6 @@ void Map::switchFramesWaterTiles(int i) {
             }
 		}
     }
-
-        
 }
 
 void Map::switchFramesEnemyTank(int i) {
@@ -357,10 +352,10 @@ Tile* Map :: getTileFromUniquePtr(std::unique_ptr<Tile> tile) const {
 }
 
 std::vector<std::vector<int>> Map::getMapState() const {
-    std::vector<std::vector<int>> mapState(mapHeight); // Initialize outer vector with mapHeight empty vectors
+    std::vector<std::vector<int>> mapState(mapHeight);
     
     for(int i = 0; i < mapHeight; i++) {
-        mapState[i].reserve(mapWidth); // Optional but recommended for performance
+        mapState[i].reserve(mapWidth);
         for(int j = 0; j < mapWidth; j++) {
             mapState[i].push_back(tiles[i][j] -> code());
         }
