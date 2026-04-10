@@ -11,7 +11,6 @@ GameWonWindow::GameWonWindow()
 
     window->setFramerateLimit(60);
 
-    // ------------------- TITLE -------------------
     gameWonText.setFont(globalFont);
     gameWonText.setString("GAME WON!");
     gameWonText.setCharacterSize(26);
@@ -25,21 +24,18 @@ GameWonWindow::GameWonWindow()
     initialsConstText.setFillColor(sf::Color(40, 40, 40));
     initialsConstText.setPosition(sf::Vector2f(100.f, 85.f));
 
-    // ------------------- INPUT BOX -------------------
     inputBox.setSize(sf::Vector2f(180, 35));
     inputBox.setFillColor(sf::Color(240, 240, 240));
     inputBox.setOutlineColor(sf::Color(100, 100, 100));
     inputBox.setOutlineThickness(2);
     inputBox.setPosition(70.f, 120.f);
 
-    // Initials text inside the box
     initialsField.initialsText.setFont(globalFont);
     initialsField.initialsText.setCharacterSize(20);
     initialsField.initialsText.setFillColor(sf::Color::Black);
     initialsField.initialsText.setPosition(80.f, 125.f);
     initialsField.initialsText.setString("");
 
-    // ------------------- OK BUTTON -------------------
     okButton.setSize(sf::Vector2f(80, 35));
     okButton.setPosition(120.f, 170.f);
     okButton.setFillColor(sf::Color(80, 150, 80)); // green button
@@ -72,7 +68,6 @@ void GameWonWindow::handleInput()
             mainWinShouldClose = true;
         }
 
-        // --- Typing initials ---
         if (event.type == sf::Event::TextEntered)
         {
             if (std::isalpha(event.text.unicode) && initialsField.initials.size() < 3)
@@ -88,7 +83,6 @@ void GameWonWindow::handleInput()
             }
         }
 
-        // --- OK button click ---
         if (event.type == sf::Event::MouseButtonPressed &&
             event.mouseButton.button == sf::Mouse::Left)
         {
@@ -101,7 +95,6 @@ void GameWonWindow::handleInput()
         }
     }
 
-    // --- Hover effect for OK button ---
     sf::Vector2i mousePos = sf::Mouse::getPosition(*window);
     if (okButton.getGlobalBounds().contains((float)mousePos.x, (float)mousePos.y))
         okButton.setFillColor(sf::Color(100, 180, 100));     // lighter green
@@ -111,7 +104,7 @@ void GameWonWindow::handleInput()
 
 void GameWonWindow::render()
 {
-    window->clear(sf::Color(220, 220, 220)); // soft gray background
+    window->clear(sf::Color(220, 220, 220));
 
     window->draw(winSprite);
     window->draw(gameWonText);
