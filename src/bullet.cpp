@@ -2,131 +2,87 @@
 #include "../include/bullet.h"
 #include <iostream>
 
+namespace {
+    sf::Vector2f getSize(Direction dir) {
+        if (dir == LEFT || dir == RIGHT)
+            return {20.f, 3.f};
+        return {3.f, 20.f};
+    }
 
-Bullet :: Bullet() {
-    shape.setSize(sf::Vector2f(0.f, 0.f));
-    velocity = sf::Vector2f(0.f, 0.f);
-    dir = UP;
+    sf::Vector2f getVelocity(Direction dir) {
+        switch (dir) {
+            case UP:    return {0.f, -1.f};
+            case DOWN:  return {0.f, 1.f};
+            case LEFT:  return {-1.f, 0.f};
+            case RIGHT: return {1.f, 0.f};
+        }
+        return {0.f, 0.f};
+    }
 }
 
-Bullet :: Bullet(sf::Vector2f position, Direction dir) : dir(dir), enemysBullet(false) {
-    switch(dir) {
-        case RIGHT : case LEFT :
-            shape.setSize(sf::Vector2f(20.f, 3.f));
-            break;
-        case UP : case DOWN:
-            shape.setSize(sf::Vector2f(3.f, 20.f));
-    }
+Bullet::Bullet() : velocity(0.f, 0.f), dir(UP), enemysBullet(false) {
+    shape.setSize({0.f, 0.f});
+}
+
+Bullet::Bullet(sf::Vector2f position, Direction d)
+    : dir(d), enemysBullet(false) {
+    shape.setSize(getSize(dir));
     shape.setFillColor(sf::Color(159, 43, 104));
     shape.setOutlineThickness(1.f);
     shape.setPosition(position);
-    setVelocity();
+    velocity = getVelocity(dir);
 }
 
-Bullet ::Bullet(sf::Vector2f position, Direction dir, bool enemysTank) : dir(dir), enemysBullet(true) {
-    switch(dir) {
-        case RIGHT : case LEFT :
-            shape.setSize(sf::Vector2f(20.f, 3.f));
-            break;
-        case UP : case DOWN:
-            shape.setSize(sf::Vector2f(3.f, 20.f));
-    }
+Bullet::Bullet(sf::Vector2f position, Direction d, bool enemy)
+    : dir(d), enemysBullet(enemy) {
+    shape.setSize(getSize(dir));
     shape.setFillColor(sf::Color::Red);
     shape.setOutlineThickness(1.f);
     shape.setPosition(position);
-    setVelocity();
+    velocity = getVelocity(dir);
 }
 
-void Bullet :: changeVelocity(Direction dir, int mirrorType) {
-    switch(dir) {
-        case RIGHT : case LEFT :
-            shape.setSize(sf::Vector2f(20.f, 3.f));
-            break;
-        case UP : case DOWN:
-            shape.setSize(sf::Vector2f(3.f, 20.f));
-    }
-    switch(dir) {
-        case UP:
-            velocity = sf::Vector2f(0.f, -1.f); dir = UP; break;
-        case DOWN:
-            velocity = sf::Vector2f(0.f, 1.f); dir = DOWN; break;
-        case LEFT:
-            velocity = sf::Vector2f(-1.f, 0.f); dir = LEFT;
-            /*if(mirrorType == 1) {
-
-                shape.setPosition(sf::Vector2f(shape.getPosition().x - 10.f, shape.getPosition().y - 10.f));
-                
-            }*/
-            break;
-        case RIGHT:
-            velocity = sf::Vector2f(1.f, 0.f);
-            dir = RIGHT;
-            /*if(mirrorType == 1 || mirrorType == 3) {
-                shape.setPosition(sf::Vector2f(shape.getPosition().x + 10.f, shape.getPosition().y - 10.f));
-            } */
-            break;
-    }
+void Bullet::changeVelocity(Direction newDir, int /*mirrorType*/) {
+    dir = newDir;
+    shape.setSize(getSize(dir));
+    velocity = getVelocity(dir);
 }
 
-void Bullet :: setVelocity() {
-    switch(dir) {
-        case UP:
-            velocity = sf::Vector2f(0.f, -1.f); break;
-        case DOWN:
-            velocity = sf::Vector2f(0.f, 1.f); break;
-        case LEFT:
-            velocity = sf::Vector2f(-1.f, 0.f); break;
-        case RIGHT:
-            velocity = sf::Vector2f(1.f, 0.f); break;
-    }
+void Bullet::setVelocity() {
+    velocity = getVelocity(dir);
 }
 
-void Bullet :: setVelocity(Direction bulletDir) {
-    switch(bulletDir) {
-        case RIGHT : case LEFT :
-            shape.setSize(sf::Vector2f(20.f, 3.f));
-            break;
-        case UP : case DOWN:
-            shape.setSize(sf::Vector2f(3.f, 20.f));
-    }
-    switch(bulletDir) {
-        case UP:
-            velocity = sf::Vector2f(0.f, -1.f); break;
-        case DOWN:
-            velocity = sf::Vector2f(0.f, 1.f); break;
-        case LEFT:
-            velocity = sf::Vector2f(-1.f, 0.f); break;
-        case RIGHT:
-            velocity = sf::Vector2f(1.f, 0.f); break;
-    }
+void Bullet::setVelocity(Direction newDir) {
+    dir = newDir;
+    shape.setSize(getSize(dir));
+    velocity = getVelocity(dir);
 }
 
-void Bullet :: setTransparentColor() {
+void Bullet::setTransparentColor() {
     shape.setFillColor(sf::Color(255, 0, 0, 0));
 }
 
-void Bullet :: returnOldColor() {
+void Bullet::returnOldColor() {
     shape.setFillColor(sf::Color::Red);
 }
 
-void Bullet :: update(sf::Time updateTime) {
-    if(enemysBullet) {
-        shape.move(velocity * static_cast<float>(updateTime.asMilliseconds()));
-        
-    }
-    shape.move(velocity * static_cast<float>(updateTime.asMilliseconds()/1.5));
-
+void Bullet::update(sf::Time dt) {
+    float factor = enemysBullet ? 1.f : (1.f / 1.5f);
+    shape.move(velocity * dt.asMilliseconds() * factor);
 }
- 
-sf::Vector2f Bullet :: getDimensions() const {
+
+sf::Vector2f Bullet::getDimensions() const {
     return shape.getSize();
 }
 
-Direction Bullet :: getDirection() const {
+Direction Bullet::getDirection() const {
     return dir;
 }
 
-void Bullet :: setPosition(float x, float y) { shape.setPosition(x, y); }
+void Bullet::setPosition(float x, float y) {
+    shape.setPosition(x, y);
+}
 
-
-sf::Vector2f Bullet :: getPosition() const { return shape.getPosition(); }
+sf::Vector2f Bullet::getPosition() const {
+    return shape.getPosition();
+}
