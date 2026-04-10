@@ -295,7 +295,6 @@ void Map :: updateWaterTiles() {
 }
 
 void Map :: moveTile(int newGridPosY, int newGridPosX, int oldGridPosY, int oldGridPosX) {
-    // 1. Check bounds and validity
     if (oldGridPosY < 0 || oldGridPosY >= 16 ||
         oldGridPosX < 0 || oldGridPosX >= 16 ||
         newGridPosY < 0 || newGridPosY >= 16 ||
