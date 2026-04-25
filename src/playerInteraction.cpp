@@ -48,7 +48,7 @@ void PlayerInteraction :: handleMovement () {
             player.setDir(newDir);
             player.turnSound.play();
             player.getPlayerStates().push_back({dir, pos});
-            playerTurned = true;  // <-- dodaj ovo
+            playerTurned = true;
             return;
         }
 
