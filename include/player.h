@@ -53,7 +53,7 @@ public:
     void updateSpritePosition();
     void deleteBullet();
 
-    bool deleteAdjBlockIfExists(Map& tileMap); /// Do not fire bullet
+    bool deleteOrMoveAdjBlockIfExists(Map& tileMap); /// Do not fire bullet
     void fireBullet();
     Bullet* getBullet() const {return  bullet;}
     bool bulletInScreen() const;

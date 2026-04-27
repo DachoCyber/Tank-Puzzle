@@ -2,18 +2,20 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-// Allow both GET and POST methods
-if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+$method = $_SERVER['REQUEST_METHOD'];
+if ($method !== 'GET' && $method !== 'POST') {
     http_response_code(405);
     die(json_encode(['error' => 'Only GET or POST methods are allowed']));
 }
 
 $file = 'data.json';
 
-// Security checks
+// Ako fajl ne postoji → napravi ga kao []
 if (!file_exists($file)) {
-    http_response_code(404);
-    die(json_encode(['error' => 'Score data not found']));
+    if (file_put_contents($file, '[]') === false) {
+        http_response_code(500);
+        die(json_encode(['error' => 'Cannot create data file']));
+    }
 }
 
 if (!is_readable($file)) {
@@ -27,16 +29,20 @@ if ($json === false) {
     die(json_encode(['error' => 'Failed to read data']));
 }
 
+// Ako je prazan ili nevalidan → []
 $data = json_decode($json, true);
-if (json_last_error() !== JSON_ERROR_NONE) {
-    http_response_code(500);
-    die(json_encode(['error' => 'Invalid data format']));
+if (!is_array($data)) {
+    $data = [];
 }
 
-// Return sorted data (highest scores first)
+// Sortiranje (najveći score prvi)
 usort($data, function($a, $b) {
-    return $a['score'] - $b['score'];
+    return ($a['score'] ?? 0) - ($b['score'] ?? 0);
 });
 
+// Uzmi top 10
+$data = array_slice($data, 0, 10);
+
+// Reset indeksa i vrati
 echo json_encode(array_values($data), JSON_PRETTY_PRINT);
 ?>

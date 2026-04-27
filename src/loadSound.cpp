@@ -1,7 +1,6 @@
 #define SFML_STATIC
-#include "../include/loadSound.h"
+#include "../../include/loadSound.h"
 #include <iostream>
-#include "loadSound.h"
 
 sf::SoundBuffer mirrorSoundBuffer;
 sf::Sound mirrorSound;
@@ -37,7 +36,6 @@ void loadWonSound(const std::string &path) {
         return;
     }
     levelWonSound.setBuffer(levelWonSoundBfr);
-
 }
 
 void loadGameOverSound(const std::string& path) {

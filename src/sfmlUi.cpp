@@ -11,6 +11,11 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
 
     std::vector<PlayerTable> players = getPlayerScores(chosenLevel);
 
+<<<<<<< HEAD
+=======
+    std::cout << players.size() << std::endl;
+
+>>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
     std::sort(players.begin(), players.end(), [](const PlayerTable& a, const PlayerTable& b) {
         return a.score < b.score;
     });
@@ -69,7 +74,8 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
     const int visibleRows =
         static_cast<int>((window.getSize().y - startY - headerH - margin) / rowH);
 
-    int offset = 0; // scroll offset
+    int offset = 0; 
+
 
     while (window.isOpen()) {
 
@@ -102,21 +108,31 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
         headerBg.setPosition(startX, startY);
         headerBg.setFillColor(sf::Color(220, 220, 220));
         window.draw(headerBg);
+<<<<<<< HEAD
         
             window.draw(headerName);
             window.draw(headerScore);
+=======
+
+        window.draw(headerName);
+        window.draw(headerScore);
+>>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
 
         if (noInternetConnection) {
 
             sf::RectangleShape rowBg(sf::Vector2f(colNameW + colScoreW, 200));
             rowBg.setPosition(startX, startY + headerH);
-            rowBg.setFillColor(sf::Color(100, 0, 150)); // tamno ljubičasta
+            rowBg.setFillColor(sf::Color(100, 0, 150));
             window.draw(rowBg);
 
             sf::Text offline("No internet connection\nCan not load results", globalFont, 24);
             offline.setFillColor(sf::Color::White);
             offline.setStyle(sf::Text::Bold);
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
             float textX = startX + (colNameW + colScoreW) / 2 - offline.getLocalBounds().width / 2;
             float textY = startY + headerH + 60;
 
@@ -130,6 +146,10 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
                 if (idx >= (int)players.size()) break;
 
                 float y = startY + headerH + r * rowH;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
                 bool isInitials = (players[idx].name == initials);
 
                 sf::RectangleShape rowBg(sf::Vector2f(colNameW + colScoreW, rowH));
@@ -139,7 +159,7 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
                 else if (idx == 1) rowBg.setFillColor(SILVER);
                 else if (idx == 2) rowBg.setFillColor(BRONZE);
                 else if (isInitials)
-                    rowBg.setFillColor(sf::Color(180, 210, 250));  // highlighted player
+                    rowBg.setFillColor(sf::Color(180, 210, 250));
                 else
                     rowBg.setFillColor(sf::Color(245, 245, 245));
 
@@ -160,8 +180,12 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
             }
         }
         
+<<<<<<< HEAD
         sf::Text instr("Scroll mouse or Up/Down. Highlighted = " + initials,
             globalFont, 12);
+=======
+        sf::Text instr("Scroll mouse or Up/Down. Highlighted = " + initials, globalFont, 12);
+>>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
         instr.setPosition(startX, window.getSize().y - margin);
         instr.setFillColor(sf::Color(80, 80, 80));
         window.draw(instr);

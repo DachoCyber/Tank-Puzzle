@@ -12,7 +12,7 @@ PlayerInteraction :: PlayerInteraction(int windowSizeX, int windowSizeY, Tank& p
 }
 
 bool validMove(int x, int y) {
-    return x >= 0 && x < 16  && 
+    return x >= 0 && x < 16 && 
            y >= 0 && y < 16;
 }
 
@@ -34,26 +34,28 @@ void PlayerInteraction :: handleMovement () {
     Direction newDir;
     
     switch (pressedKey) {
-        case sf::Keyboard::Key::Up    : newDir = UP;    newY += -1; break;
-        case sf::Keyboard::Key::Down  : newDir = DOWN;  newY +=  1; break;
-        case sf::Keyboard::Key::Left  : newDir = LEFT;  newX += -1; break;
-        case sf::Keyboard::Key::Right : newDir = RIGHT; newX +=  1; break;
+        case sf::Keyboard::Key::Up     : newDir = UP;    newY += -1; break;
+        case sf::Keyboard::Key::Down   : newDir = DOWN;  newY +=  1; break;
+        case sf::Keyboard::Key::Left   : newDir = LEFT;  newX += -1; break;
+        case sf::Keyboard::Key::Right  : newDir = RIGHT; newX +=  1; break;
         default : break;
     }
 
     if (newDir != dir) {
+
         player.setDir(newDir);
         player.turnSound.play();
+
         if (newDir != dir) {
             player.setDir(newDir);
             player.turnSound.play();
             player.getPlayerStates().push_back({dir, pos});
             playerTurned = true;
+<<<<<<< HEAD
             return;
+=======
+>>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
         }
-
-
-        
         return;
     }
 
@@ -83,18 +85,17 @@ bool PlayerInteraction :: getPlayerMoved() const {
     return playerMoved;
 }
 
-void PlayerInteraction::setBlockInput(bool block)
-{
+void PlayerInteraction::setBlockInput(bool block) {
     blockInput = block;
 }
+
 void PlayerInteraction :: handleFire () {
 
     if(pressedKey == sf::Keyboard::Key::Space && !player.getBullet()) {  
-        if(!player.deleteAdjBlockIfExists(tileMap)) {
+        if(!player.deleteOrMoveAdjBlockIfExists(tileMap)) {
             player.fireBullet();
             bulletFired = true;
         }
-
         player.fireSound.play();
     }
 
@@ -141,7 +142,6 @@ void PlayerInteraction :: handlePlayerTileSignal ()
 
     switch (signal) {
 
-        // transport track
         case PlayerTileSignal :: MOVE_PLAYER_DOWN :
             movePlayer(x, y + 1);
             break;
