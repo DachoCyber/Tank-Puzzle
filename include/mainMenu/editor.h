@@ -49,8 +49,7 @@ public:
     sf::Font tileInstructionTextFont;
     sf::Text tileInstructionText;
 
-    // Created lazily on first handleClick() — no window until user opens editor
-    std::unique_ptr<sf::RenderWindow> window;
+    sf::RenderWindow window;
 
     // Sidebar sprites (member variables, properly initialized in cpp)
     sf::Sprite destructibleBlockSprite;

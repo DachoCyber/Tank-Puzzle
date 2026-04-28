@@ -4,8 +4,8 @@
 // Constructor
 // ─────────────────────────────────────────────
 Editor::Editor(int menuWinSizeX, int menuWinSizeY, bool editorWinClose)
-    : button(menuWinSizeX, menuWinSizeY, editorWinClose)
-    // window se NE kreira ovde — kreira se tek u handleClick()
+    : button(menuWinSizeX, menuWinSizeY, editorWinClose),
+      window(sf::VideoMode(256 + 512, 512), "Editor", sf::Style::Default)
 {
     if (!tankTex.loadFromFile("Images/tank.png"))
         throw std::runtime_error("Failed to load tank texture");
@@ -38,7 +38,9 @@ Editor::Editor(int menuWinSizeX, int menuWinSizeY, bool editorWinClose)
 
     tankSprite.setTexture(tankTex);
     tankSprite.setScale(sf::Vector2f(0.65f, 0.65f));
-    // window se kreira u handleClick() — ovde ga nema
+
+    // Limit frame rate so the event loop doesn't pin a CPU core
+    window.setFramerateLimit(60);
 }
 
 // ─────────────────────────────────────────────
@@ -55,11 +57,6 @@ bool Editor::wasClicked()                                  { return button.wasCl
 void Editor::handleClick()
 {
     if (editorWinClose) return;
-
-    // ── Kreira se prozor OVDE, tek kad korisnik klikne na editor ──────
-    window = std::make_unique<sf::RenderWindow>(
-        sf::VideoMode(256 + 512, 512), "Editor", sf::Style::Default);
-    window->setFramerateLimit(60);
 
     // ── Instruction panel ──────────────────────────────────────────────
     sf::Sprite tankInstructionSprite(tankTex);
@@ -80,7 +77,7 @@ void Editor::handleClick()
     pressLbText.setCharacterSize(24);
     pressLbText.setFillColor(sf::Color::Black);
     pressLbText.setPosition(
-        tankInstructionSprite.getPosition().x + tankInstructionSprite.getGlobalBounds().width + 2,
+        tankInstructionSprite.getPosition().x + tankInstructionSprite.getGlobalBounds().width + 12,
         tankInstructionSprite.getPosition().y);
 
     sf::Text pressRbText;
@@ -112,6 +109,7 @@ void Editor::handleClick()
     int  tankPosX   = 0;
     int  tankPosY   = 0;
 
+    // placingCode[i] = true means "next left-click on the map places tile type i"
     bool placingCode[20] = {};
 
     tileInstructionBackground.setFillColor(sf::Color::White);
@@ -123,12 +121,14 @@ void Editor::handleClick()
     tankInstructionBackground.setPosition(sf::Vector2f(512, 96));
 
     // ── Event loop ─────────────────────────────────────────────────────
-    while (window->isOpen()) {
+    // setFramerateLimit(60) in the constructor keeps CPU usage low;
+    // the loop itself just processes events and redraws at that cap.
+    while (window.isOpen()) {
         sf::Event event;
-        while (window->pollEvent(event)) {
+        while (window.pollEvent(event)) {
 
             if (event.type == sf::Event::Closed) {
-                window->close();
+                window.close();
                 editorWinClose = true;
             }
 
@@ -136,7 +136,7 @@ void Editor::handleClick()
             if (event.type == sf::Event::MouseButtonPressed &&
                 event.mouseButton.button == sf::Mouse::Right)
             {
-                sf::Vector2i tileCoords = getTileCoords(*window);
+                sf::Vector2i tileCoords = getTileCoords(window);
                 tankPosX = tileCoords.x;
                 tankPosY = tileCoords.y;
                 tankSprite.setPosition(
@@ -149,43 +149,46 @@ void Editor::handleClick()
             if (event.type == sf::Event::MouseButtonPressed &&
                 event.mouseButton.button == sf::Mouse::Left)
             {
-                sf::Vector2f worldPos   = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
-                sf::Vector2i tileCoords = getTileCoords(*window);
+                sf::Vector2f worldPos  = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                sf::Vector2i tileCoords = getTileCoords(window);
                 int tileX = tileCoords.x;
                 int tileY = tileCoords.y;
                 bool inGrid = (tileX >= 0 && tileX < 16 && tileY >= 0 && tileY < 16);
 
+                // Helper lambda: select a sidebar item
                 auto selectTool = [&](int code) {
                     for (int i = 0; i < 20; ++i) placingCode[i] = false;
                     placingCode[code] = true;
                 };
 
-                if      (destructibleBlockSprite.getGlobalBounds().contains(worldPos))        { selectTool(3);  }
-                else if (mirror1Sprite.getGlobalBounds().contains(worldPos))                  { selectTool(4);  }
-                else if (mirror2Sprite.getGlobalBounds().contains(worldPos))                  { selectTool(5);  }
-                else if (mirror3Sprite.getGlobalBounds().contains(worldPos))                  { selectTool(6);  }
-                else if (mirror4Sprite.getGlobalBounds().contains(worldPos))                  { selectTool(7);  }
-                else if (waterSprite.getGlobalBounds().contains(worldPos))                    { selectTool(8);  }
-                else if (MovableBlockSprite.getGlobalBounds().contains(worldPos))             { selectTool(9);  }
-                else if (flagSprite.getGlobalBounds().contains(worldPos))                     { selectTool(10); flagPlaced = true; }
-                else if (undestructableBlockSprite.getGlobalBounds().contains(worldPos))      { selectTool(11); }
-                else if (tank1LeftSprite.getGlobalBounds().contains(worldPos))                { selectTool(12); }
-                else if (tank1RightSprite.getGlobalBounds().contains(worldPos))               { selectTool(13); }
-                else if (tank1UpSprite.getGlobalBounds().contains(worldPos))                  { selectTool(14); }
-                else if (tank1DownSprite.getGlobalBounds().contains(worldPos))                { selectTool(15); }
-                else if (transportDownSprite.getGlobalBounds().contains(worldPos))            { selectTool(16); }
-                else if (transportUpSprite.getGlobalBounds().contains(worldPos))              { selectTool(17); }
-                else if (transportLeftSprite.getGlobalBounds().contains(worldPos))            { selectTool(18); }
-                else if (transportRightSprite.getGlobalBounds().contains(worldPos))           { selectTool(19); }
+                // ── Sidebar hit-tests (only when click is in sidebar) ─
+                if (destructibleBlockSprite.getGlobalBounds().contains(worldPos))   { selectTool(3);  }
+                else if (mirror1Sprite.getGlobalBounds().contains(worldPos))        { selectTool(4);  }
+                else if (mirror2Sprite.getGlobalBounds().contains(worldPos))        { selectTool(5);  }
+                else if (mirror3Sprite.getGlobalBounds().contains(worldPos))        { selectTool(6);  }
+                else if (mirror4Sprite.getGlobalBounds().contains(worldPos))        { selectTool(7);  }
+                else if (waterSprite.getGlobalBounds().contains(worldPos))          { selectTool(8);  }
+                else if (MovableBlockSprite.getGlobalBounds().contains(worldPos))   { selectTool(9);  }
+                else if (flagSprite.getGlobalBounds().contains(worldPos))           { selectTool(10); flagPlaced = true; }
+                else if (undestructableBlockSprite.getGlobalBounds().contains(worldPos)) { selectTool(11); }
+                else if (tank1LeftSprite.getGlobalBounds().contains(worldPos))      { selectTool(12); }
+                else if (tank1RightSprite.getGlobalBounds().contains(worldPos))     { selectTool(13); }
+                else if (tank1UpSprite.getGlobalBounds().contains(worldPos))        { selectTool(14); }
+                else if (tank1DownSprite.getGlobalBounds().contains(worldPos))      { selectTool(15); }
+                else if (transportDownSprite.getGlobalBounds().contains(worldPos))  { selectTool(16); }
+                else if (transportUpSprite.getGlobalBounds().contains(worldPos))    { selectTool(17); }
+                else if (transportLeftSprite.getGlobalBounds().contains(worldPos))  { selectTool(18); }
+                else if (transportRightSprite.getGlobalBounds().contains(worldPos)) { selectTool(19); }
+                // ── Map placement (click landed inside the 16×16 grid) ─
                 else if (inGrid) {
-                    if      (placingCode[3])  placeOrRemoveTile<DestructibleBlock> (tileX, tileY,  3,  1, tiles, tileMap, destructibleTexture);
-                    else if (placingCode[4])  placeOrRemoveTile<Mirror1Tile>       (tileX, tileY,  4,  1, tiles, tileMap, mirror1Texture);
-                    else if (placingCode[5])  placeOrRemoveTile<Mirror2Tile>       (tileX, tileY,  5,  1, tiles, tileMap, mirror2Texture);
-                    else if (placingCode[6])  placeOrRemoveTile<Mirror3Tile>       (tileX, tileY,  6,  1, tiles, tileMap, mirror3Texture);
-                    else if (placingCode[7])  placeOrRemoveTile<Mirror4Tile>       (tileX, tileY,  7,  1, tiles, tileMap, mirror4Texture);
-                    else if (placingCode[8])  placeOrRemoveWaterTile               (tileX, tileY,       tiles, tileMap);
-                    else if (placingCode[9])  placeOrRemoveTile<MovableBlock>      (tileX, tileY,  9,  1, tiles, tileMap, movableBlockTexture);
-                    else if (placingCode[10]) placeOrRemoveTile<Flag>              (tileX, tileY, 10,  1, tiles, tileMap, flagTexture);
+                    if      (placingCode[3])  placeOrRemoveTile<DestructibleBlock>(tileX, tileY,  3,  1, tiles, tileMap, destructibleTexture);
+                    else if (placingCode[4])  placeOrRemoveTile<Mirror1Tile>      (tileX, tileY,  4,  1, tiles, tileMap, mirror1Texture);
+                    else if (placingCode[5])  placeOrRemoveTile<Mirror2Tile>      (tileX, tileY,  5,  1, tiles, tileMap, mirror2Texture);
+                    else if (placingCode[6])  placeOrRemoveTile<Mirror3Tile>      (tileX, tileY,  6,  1, tiles, tileMap, mirror3Texture);
+                    else if (placingCode[7])  placeOrRemoveTile<Mirror4Tile>      (tileX, tileY,  7,  1, tiles, tileMap, mirror4Texture);
+                    else if (placingCode[8])  placeOrRemoveWaterTile              (tileX, tileY,       tiles, tileMap);
+                    else if (placingCode[9])  placeOrRemoveTile<MovableBlock>     (tileX, tileY,  9,  1, tiles, tileMap, movableBlockTexture);
+                    else if (placingCode[10]) placeOrRemoveTile<Flag>             (tileX, tileY, 10,  1, tiles, tileMap, flagTexture);
                     else if (placingCode[11]) placeOrRemoveTile<UndestructableBlock>(tileX, tileY, 11, 1, tiles, tileMap, undestructableBlockTex);
                     else if (placingCode[12]) placeOrRemoveTank (tileX, tileY, 12, 1, tiles, tileMap, LEFT,  EnemyTank1LeftTexture);
                     else if (placingCode[13]) placeOrRemoveTank (tileX, tileY, 13, 1, tiles, tileMap, RIGHT, EnemyTank1RightTexture);
@@ -200,42 +203,39 @@ void Editor::handleClick()
         }
 
         // ── Render ────────────────────────────────────────────────────
-        window->clear();
+        window.clear();
 
         for (int y = 0; y < 16; ++y)
             for (int x = 0; x < 16; ++x)
-                window->draw(*tiles[y][x]);
+                window.draw(*tiles[y][x]);
 
-        window->draw(destructibleBlockSprite);
-        window->draw(mirror1Sprite);
-        window->draw(mirror2Sprite);
-        window->draw(mirror3Sprite);
-        window->draw(mirror4Sprite);
-        window->draw(waterSprite);
-        window->draw(MovableBlockSprite);
-        window->draw(flagSprite);
-        window->draw(undestructableBlockSprite);
-        window->draw(tank1LeftSprite);
-        window->draw(tank1DownSprite);
-        window->draw(tank1UpSprite);
-        window->draw(tank1RightSprite);
-        window->draw(transportDownSprite);
-        window->draw(transportLeftSprite);
-        window->draw(transportRightSprite);
-        window->draw(transportUpSprite);
-        window->draw(instructionPanel);
-        window->draw(tankInstructionSprite);
-        window->draw(pressLbText);
-        window->draw(pressRbText);
+        window.draw(destructibleBlockSprite);
+        window.draw(mirror1Sprite);
+        window.draw(mirror2Sprite);
+        window.draw(mirror3Sprite);
+        window.draw(mirror4Sprite);
+        window.draw(waterSprite);
+        window.draw(MovableBlockSprite);
+        window.draw(flagSprite);
+        window.draw(undestructableBlockSprite);
+        window.draw(tank1LeftSprite);
+        window.draw(tank1DownSprite);
+        window.draw(tank1UpSprite);
+        window.draw(tank1RightSprite);
+        window.draw(transportDownSprite);
+        window.draw(transportLeftSprite);
+        window.draw(transportRightSprite);
+        window.draw(transportUpSprite);
+        window.draw(instructionPanel);
+        window.draw(tankInstructionSprite);
+        window.draw(pressLbText);
+        window.draw(pressRbText);
 
         if (tankPlaced)
-            window->draw(tankSprite);
+            window.draw(tankSprite);
 
-        window->display();
+        window.display();
     }
-
-    // Oslobodi prozor čim se zatvori — spreman za sledeće otvaranje
-    window.reset();
 
     // ── Save map after window closes ──────────────────────────────────
     if (tankPlaced && flagPlaced) {

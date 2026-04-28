@@ -1,5 +1,5 @@
 #include "MainMenu.h"
-#include <cmath>
+
 
 MainMenu::MainMenu(int levelCount)
     : levels(menuWindowSizeX, menuWindowSizeY, levelCount),
@@ -11,50 +11,40 @@ MainMenu::MainMenu(int levelCount)
           "Laser Tank",
           sf::Style::Default))
 {
-    if (!backgroundImage.loadFromFile("Images/mainMenuImage.png"))
+    if (!backgroundImage.loadFromFile("Images/mainMenuImage.png")) {
         throw std::runtime_error("Failed to load main menu background image!");
+    }
 
-    if (!backgroundImageTexture.loadFromImage(backgroundImage))
+    if (!backgroundImageTexture.loadFromImage(backgroundImage)) {
         throw std::runtime_error("Failed to load texture!");
+    }
 
     backgroundImageSprite.setTexture(backgroundImageTexture);
 
     sf::Vector2u imageSize = backgroundImageTexture.getSize();
-    backgroundImageSprite.setScale(794.f / imageSize.x, 800.f / imageSize.y);
+    float scaleX = 794.f / imageSize.x;
+    float scaleY = 800.f / imageSize.y;
+    backgroundImageSprite.setScale(scaleX, scaleY);
 
     detectButtonColor();
+
     levels.level = 1;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Editor launch  — runs handleClick() in a background thread so the main menu
-// stays responsive.  A guard prevents opening two editor windows at once.
-// ─────────────────────────────────────────────────────────────────────────────
-void MainMenu::launchEditor()
+void MainMenu::setChosenLevel(int lvl)
 {
-    // Don't open a second editor if one is already running
-    if (editorRunning.load())
-        return;
-
-    // If a previous thread finished, join it before spawning a new one
-    if (editorThread.joinable())
-        editorThread.join();
-
-    editorRunning.store(true);
-    editorWinClose = false;
-
-    editorThread = std::thread([this]() {
-        editor.handleClick();
-        editorRunning.store(false);
-    });
+    level = lvl;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Accessors
-// ─────────────────────────────────────────────────────────────────────────────
-void MainMenu::setChosenLevel(int lvl) { level = lvl; }
-bool MainMenu::getWinClose()    const  { return !winClose; }
-int  MainMenu::getChosenLevel() const  { return level; }
+bool MainMenu::getWinClose() const
+{
+    return !winClose;
+}
+
+int MainMenu::getChosenLevel() const
+{
+    return level;
+}
 
 void MainMenu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
@@ -63,9 +53,6 @@ void MainMenu::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(start);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main loop
-// ─────────────────────────────────────────────────────────────────────────────
 void MainMenu::run()
 {
     sf::Time  updateLevelTextTime = sf::seconds(0.25f);
@@ -95,60 +82,49 @@ void MainMenu::run()
                 start.handleClick(mousePos);
                 editor.button.handleClick(mousePos);
             }
+            
+        }
+        if (winClose) {
+            break;
         }
 
-        if (winClose)
-            break;
-
-        // ── Hover animations ──────────────────────────────────────────
         sf::Vector2f mousePos =
             window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 
-        updateHover(hoverStart,  start.getButton().getGlobalBounds().contains(mousePos),  dt);
-        updateHover(hoverEditor, editor.getButton().getGlobalBounds().contains(mousePos), dt);
-        updateHover(hoverLevels, levels.getButton().getGlobalBounds().contains(mousePos), dt);
+        bool hoveringStartNow  = start.getButton().getGlobalBounds().contains(mousePos);
+        bool hoveringEditorNow = editor.getButton().getGlobalBounds().contains(mousePos);
+        bool hoveringLevelsNow = levels.getButton().getGlobalBounds().contains(mousePos);
 
-        // ── "Choose a level first" blink ──────────────────────────────
+        updateHover(hoverStart,  hoveringStartNow,  dt);
+        updateHover(hoverEditor, hoveringEditorNow, dt);
+        updateHover(hoverLevels, hoveringLevelsNow, dt);
+
         if (start.wasClicked() && levels.level == -1) {
-            float elapsed = levelTextClock.getElapsedTime().asSeconds();
-            if (elapsed >= updateLevelTextTime.asSeconds() / 2)
+            if (levelTextClock.getElapsedTime().asSeconds() >=
+                updateLevelTextTime.asSeconds() / 2)
+            {
                 levels.setTextColor(sf::Color::Red);
-            if (elapsed >= updateLevelTextTime.asSeconds()) {
+            }
+            if (levelTextClock.getElapsedTime().asSeconds() >=
+                updateLevelTextTime.asSeconds())
+            {
                 levels.setTextColor(sf::Color::Black);
                 levelTextClock.restart();
             }
         }
 
-        // ── Start game ────────────────────────────────────────────────
         if (start.wasClicked() && levels.level != -1) {
             level = levels.level;
             window->close();
             winClose = true;
         }
 
-        // ── Open editor in background thread ──────────────────────────
-        if (editor.button.wasClicked())
-            launchEditor();
+        if (editor.button.wasClicked()) {
+            editor.handleClick();
+        }
 
         render();
     }
-
-    // Wait for editor thread to finish before destroying objects
-    if (editorThread.joinable())
-        editorThread.join();
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Rendering helpers
-// ─────────────────────────────────────────────────────────────────────────────
-void MainMenu::render()
-{
-    window->clear(sf::Color::Black);
-    window->draw(backgroundImageSprite);
-    drawGlowForButton(start.getButton(),  hoverStart);
-    drawGlowForButton(editor.getButton(), hoverEditor);
-    drawGlowForButton(levels.getButton(), hoverLevels);
-    window->display();
 }
 
 void MainMenu::detectButtonColor()
@@ -157,11 +133,16 @@ void MainMenu::detectButtonColor()
     long count = 0;
 
     sf::Vector2u size = backgroundImage.getSize();
+
     for (unsigned y = 0; y < size.y; y += 2) {
         for (unsigned x = 0; x < size.x; x += 2) {
             sf::Color c = backgroundImage.getPixel(x, y);
+
             if (c.r > c.g && c.g > c.b) {
-                sumR += c.r; sumG += c.g; sumB += c.b; ++count;
+                sumR += c.r;
+                sumG += c.g;
+                sumB += c.b;
+                ++count;
             }
         }
     }
@@ -170,7 +151,8 @@ void MainMenu::detectButtonColor()
         baseButtonColor = sf::Color(
             static_cast<sf::Uint8>(sumR / count),
             static_cast<sf::Uint8>(sumG / count),
-            static_cast<sf::Uint8>(sumB / count));
+            static_cast<sf::Uint8>(sumB / count)
+        );
     }
 }
 
@@ -179,16 +161,20 @@ void MainMenu::updateHover(HoverState& h, bool isHovering, float dt)
     const float fadeSpeed = 6.f;
     float target = isHovering ? 1.f : 0.f;
 
-    if      (h.alpha < target) h.alpha = std::min(target, h.alpha + fadeSpeed * dt);
-    else if (h.alpha > target) h.alpha = std::max(target, h.alpha - fadeSpeed * dt);
+    if (h.alpha < target)
+        h.alpha = std::min(target, h.alpha + fadeSpeed * dt);
+    else if (h.alpha > target)
+        h.alpha = std::max(target, h.alpha - fadeSpeed * dt);
 }
 
 void MainMenu::drawGlowForButton(const sf::RectangleShape& button, const HoverState& h)
 {
-    if (h.alpha <= 0.f) return;
+    if (h.alpha <= 0.f)
+        return;
 
     float t     = hoverAnimClock.getElapsedTime().asSeconds();
     float pulse = 0.5f * (1.f + std::sin(t * 4.f));
+
     float intensity = h.alpha * pulse;
 
     sf::RectangleShape glow(button.getSize());
@@ -199,6 +185,7 @@ void MainMenu::drawGlowForButton(const sf::RectangleShape& button, const HoverSt
     glowColor.g = std::min<sf::Uint8>(255, glowColor.g + 40);
     glowColor.b = std::min<sf::Uint8>(255, glowColor.b + 20);
     glowColor.a = static_cast<sf::Uint8>(120 * intensity);
+
     glow.setFillColor(glowColor);
 
     sf::Color outline = glowColor;
@@ -207,4 +194,17 @@ void MainMenu::drawGlowForButton(const sf::RectangleShape& button, const HoverSt
     glow.setOutlineColor(outline);
 
     window->draw(glow);
+}
+
+void MainMenu::render()
+{
+    window->clear(sf::Color::Black);
+
+    window->draw(backgroundImageSprite);
+
+    drawGlowForButton(start.getButton(),  hoverStart);
+    drawGlowForButton(editor.getButton(), hoverEditor);
+    drawGlowForButton(levels.getButton(), hoverLevels);
+
+    window->display();
 }
