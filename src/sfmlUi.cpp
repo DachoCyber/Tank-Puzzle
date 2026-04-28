@@ -11,11 +11,6 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
 
     std::vector<PlayerTable> players = getPlayerScores(chosenLevel);
 
-<<<<<<< HEAD
-=======
-    std::cout << players.size() << std::endl;
-
->>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
     std::sort(players.begin(), players.end(), [](const PlayerTable& a, const PlayerTable& b) {
         return a.score < b.score;
     });
@@ -108,15 +103,12 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
         headerBg.setPosition(startX, startY);
         headerBg.setFillColor(sf::Color(220, 220, 220));
         window.draw(headerBg);
-<<<<<<< HEAD
-        
+
             window.draw(headerName);
             window.draw(headerScore);
-=======
 
         window.draw(headerName);
         window.draw(headerScore);
->>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
 
         if (noInternetConnection) {
 
@@ -128,11 +120,8 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
             sf::Text offline("No internet connection\nCan not load results", globalFont, 24);
             offline.setFillColor(sf::Color::White);
             offline.setStyle(sf::Text::Bold);
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
+
             float textX = startX + (colNameW + colScoreW) / 2 - offline.getLocalBounds().width / 2;
             float textY = startY + headerH + 60;
 
@@ -146,10 +135,9 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
                 if (idx >= (int)players.size()) break;
 
                 float y = startY + headerH + r * rowH;
-<<<<<<< HEAD
-=======
 
->>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
+
+
                 bool isInitials = (players[idx].name == initials);
 
                 sf::RectangleShape rowBg(sf::Vector2f(colNameW + colScoreW, rowH));
@@ -179,13 +167,9 @@ void sfmlUi(std::string initials, int chosenLevel, int score) {
                 window.draw(scoreT);
             }
         }
-        
-<<<<<<< HEAD
-        sf::Text instr("Scroll mouse or Up/Down. Highlighted = " + initials,
-            globalFont, 12);
-=======
+
         sf::Text instr("Scroll mouse or Up/Down. Highlighted = " + initials, globalFont, 12);
->>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
+
         instr.setPosition(startX, window.getSize().y - margin);
         instr.setFillColor(sf::Color(80, 80, 80));
         window.draw(instr);

@@ -68,7 +68,7 @@ void Bullet::returnOldColor() {
 
 void Bullet::update(sf::Time dt) {
     float factor = enemysBullet ? 1.f : (1.f / 1.5f);
-    shape.move(velocity * dt.asMilliseconds() * factor);
+    shape.move(velocity * static_cast<float>(dt.asMilliseconds()) * factor);
 }
 
 sf::Vector2f Bullet::getDimensions() const {

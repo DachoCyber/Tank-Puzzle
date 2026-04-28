@@ -23,6 +23,7 @@ public:
     void sendSignal(int x, int y, Direction dir);
 
     int getTileSize() const { return tileSize; }
+
     const std::vector<std::vector<std::unique_ptr<Tile>>>& getTileMap() const { return tiles; }
     const std::vector<std::vector<int>> getTileMapInt() const { return tileMap; }
 
@@ -54,7 +55,6 @@ public:
     void clearWaterTiles();
 
 private:
-    void loadTextures();
     void buildMap();
 
     const int tileSize = 32;
@@ -64,16 +64,13 @@ private:
     int playerPosX;
     int playerPosY;
     
-    
     std::vector<std::vector<int>> tileMap;
     std::vector<std::vector<sf::Sprite>> sprites;
     std::vector<std::vector<std::unique_ptr<Tile>>> tiles;
     
-    
-    
     std::vector<std::tuple<int, int, Direction>> trackTileCoords;
     
-    std::vector<std::vector<bool>> waterTilesCoords; // done
+    std::vector<std::vector<bool>> waterTilesCoords;
     std::vector<std::vector<bool>> movableBlockInWater;
     std::vector<std::vector<bool>> flagCoords;
 

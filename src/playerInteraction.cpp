@@ -51,10 +51,7 @@ void PlayerInteraction :: handleMovement () {
             player.turnSound.play();
             player.getPlayerStates().push_back({dir, pos});
             playerTurned = true;
-<<<<<<< HEAD
             return;
-=======
->>>>>>> 7643d9f (Code for game.cpp refactored in folder game/ . Updated Makefile)
         }
         return;
     }

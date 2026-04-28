@@ -11,7 +11,6 @@ public:
 
 private:
     void handleLevelWon(int chosenLevel, const std::string& initials, int moves);
-
     std::vector<LevelTable> scoreByLevels;
     int levelCount = 0;
 };

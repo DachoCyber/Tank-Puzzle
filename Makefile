@@ -60,7 +60,7 @@ dirs:
 
 $(TARGET): $(OBJ)
 	@echo [LINK] Linking $(TARGET)
-	$(CXX) $(OBJ) -o $(TARGET) $(LIB_DIRS) $(LIBS) -mwindows
+	$(CXX) $(OBJ) -o $(TARGET) $(LIB_DIRS) $(LIBS)
 
 $(OBJ_DIR)/%.o: %.cpp
 	@echo [C++] Compiling $

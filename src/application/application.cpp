@@ -6,6 +6,8 @@
 #include "../../include/sfmlScoreUI.h"
 #include "../../include/movesProcessor.h"
 #include "../game/mainGame.h"
+#include "../include/textures.h"
+#include "../include/loadTextures.h"
 
 #include <curl/curl.h>
 #include <iostream>
@@ -15,6 +17,7 @@ Application::Application() {
     downloadAllLevels();
 
     loadGlobalFont();
+    loadTextures();
 
     levelCount = countMapFiles("maps");
     scoreByLevels.resize(levelCount + 1);
