@@ -10,6 +10,7 @@ if ($method !== 'GET' && $method !== 'POST') {
 
 $file = 'data.json';
 
+
 // Ako fajl ne postoji → napravi ga kao []
 if (!file_exists($file)) {
     if (file_put_contents($file, '[]') === false) {
