@@ -1,7 +1,5 @@
 #include "../include/map.h"
 #include "../include/extractMatrix.h"
-
-
 #include "../include/tile.h"
 #include "../include/destructibleBlock.h"
 #include "../include/mirror1Tile.h"
@@ -15,11 +13,8 @@
 #include "../include/destroyedTank.h"
 #include "../include/transportTrack.h"
 #include "../include/tileInWater.h"
-
 #include "../include/flag.h"
-
 #include "../include/tileFactory.h"
-
 #include <stdexcept>
 #include <fstream>
 #include <sstream>
