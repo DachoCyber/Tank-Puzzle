@@ -5,7 +5,8 @@
 .vscode
 generated_tiles/
 obj/
-SFML-2.6.2
+SFML-2.6.2/
 maps/
 tinyxml2/tinyxml2.o
+CURL/
 STABLE_BINARY/
