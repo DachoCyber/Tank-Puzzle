@@ -81,6 +81,7 @@ else
 endif
 
 OBJ_DIR := obj
+BUILD_LOG := build.log
 
 SRC := $(wildcard src/*.cpp)              \
        $(wildcard src/game/*.cpp)         \
@@ -92,11 +93,14 @@ SRC := $(wildcard src/*.cpp)              \
 
 OBJ := $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRC))
 
-.PHONY: all clean run deps dirs
+.PHONY: all clean run deps dirs logstart
 
-all: deps dirs $(TARGET)
+all: deps dirs logstart $(TARGET)
 
 ifeq ($(PLATFORM),windows)
+
+logstart:
+	@echo Build log %DATE% %TIME% > "$(BUILD_LOG)"
 
 deps:
 	@if not exist "$(SFML_DIR)\include" echo Downloading $(SFML_ARCHIVE)
@@ -125,8 +129,12 @@ clean:
 	@echo Cleaning...
 	-rmdir /S /Q "$(OBJ_DIR)" 2>nul || exit 0
 	-del /Q "$(TARGET)"       2>nul || exit 0
+	-del /Q "$(BUILD_LOG)"    2>nul || exit 0
 
 else
+
+logstart:
+	@echo "Build log $$(date)" > "$(BUILD_LOG)"
 
 deps:
 	@if [ ! -d "$(SFML_DIR)" ]; then \
@@ -144,16 +152,19 @@ clean:
 	@echo Cleaning...
 	-rm -rf $(OBJ_DIR)
 	-rm -f $(TARGET)
+	-rm -f $(BUILD_LOG)
 
 endif
 
 $(TARGET): $(OBJ)
 	@echo [LINK] Linking $(TARGET)
-	$(CXX) $(OBJ) -o $(TARGET) $(LIB_DIRS) $(LIBS)
+	@echo ===== Linking $(TARGET) ===== >> "$(BUILD_LOG)"
+	@$(CXX) $(OBJ) -o $(TARGET) $(LIB_DIRS) $(LIBS) >> "$(BUILD_LOG)" 2>&1
 
 $(OBJ_DIR)/%.o: %.cpp
 	@echo [C++] Compiling $<
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+	@echo ===== Compiling $< ===== >> "$(BUILD_LOG)"
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@ >> "$(BUILD_LOG)" 2>&1
 
 run: all
 	@echo Running...

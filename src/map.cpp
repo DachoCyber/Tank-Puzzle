@@ -20,7 +20,10 @@
 #include <sstream>
 
 Map::Map(int level) {
+    std::cout << "here";
     readMapFromXML(tileMap, level);
+
+    std::cout << "here";
 
 
     int mapWidth = 16;
