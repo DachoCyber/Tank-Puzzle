@@ -104,12 +104,12 @@ logstart:
 
 deps:
 	@if not exist "$(SFML_DIR)\include" echo Downloading $(SFML_ARCHIVE)
-	@if not exist "$(SFML_DIR)\include" curl -L -o sfml.zip "$(SFML_URL)"
+	@if not exist "$(SFML_DIR)\include" curl -fL -o sfml.zip "$(SFML_URL)"
 	@if not exist "$(SFML_DIR)\include" tar -xf sfml.zip
 	@if exist sfml.zip del /Q sfml.zip
 	@if not exist "$(CURL_DIR)\lib" echo Downloading libcurl
 	@if not exist "$(CURL_DIR)" mkdir "$(CURL_DIR)"
-	@if not exist "$(CURL_DIR)\lib" curl -L -o curlpkg.zip "$(CURL_URL)"
+	@if not exist "$(CURL_DIR)\lib" curl -fL -o curlpkg.zip "$(CURL_URL)"
 	@if not exist "$(CURL_DIR)\lib" tar -xf curlpkg.zip -C "$(CURL_DIR)"
 	@if exist curlpkg.zip del /Q curlpkg.zip
 	@if not exist openal32.dll copy "$(SFML_DIR)\bin\openal32.dll" . >nul
@@ -139,7 +139,7 @@ logstart:
 deps:
 	@if [ ! -d "$(SFML_DIR)" ]; then \
 	  echo "Downloading $(SFML_ARCHIVE)"; \
-	  curl -L -o sfml.tar.gz "$(SFML_URL)"; \
+	  curl -fL -o sfml.tar.gz "$(SFML_URL)"; \
 	  tar -xf sfml.tar.gz; \
 	  rm -f sfml.tar.gz; \
 	fi
