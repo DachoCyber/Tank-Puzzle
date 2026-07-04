@@ -10,3 +10,4 @@ maps/
 tinyxml2/tinyxml2.o
 CURL/
 STABLE_BINARY/
+get-score.php
