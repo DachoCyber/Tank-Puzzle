@@ -10,39 +10,33 @@ This project was created for learning, experimentation, and fun - while carefull
 
 
 ## Build Instructions
-Windows (MinGW + SFML Static Build)
+Windows (MinGW, static SFML build)
 
-Install MinGW-w64 (UCRT) - choose 32-bit or 64-bit depending on your desired build target.
+This is a 32-bit build, so you need a 32-bit MinGW-w64 toolchain. You can confirm the target with:
 
-Download SFML 2.6.2 (static) that exactly matches your GCC version.
+gcc -dumpmachine
 
-You can check version of your GCC with:
+It should report an i686 target, for example i686-w64-mingw32.
 
-gcc --version
+You do not need to install or download SFML or libcurl yourself. On the first build the Makefile detects your system, downloads SFML 2.6.2 from the official site and libcurl from the project release page, and copies the required runtime DLLs next to the executable.
 
-Clone this repository:
+Clone the repository:
 
 git clone https://github.com/DachoCyber/Tank-Puzzle.git
 
-Extract SFML into the root of the project so that the folder structure looks like this:
+Build the game:
 
-Tank-Puzzle/
-    SFML-2.6.2/
-        SFML-2.6.2/
-            include/
-            lib/
+mingw32-make
 
-These libraries are required for the online high-score system and HTTP requests.
+Run it:
 
-Build the game by running:
-  
-  mingw32-make
+mingw32-make run
 
-  You will also have to download libcurl.dll and openal32.dll to run:
-    
-  mingw32-make run
-    
-  mingw32-make clean
+Clean the build:
+
+mingw32-make clean
+
+The first build takes a bit longer because it downloads SFML, which is about 18 MB. Later builds reuse the libraries that were already downloaded.
 
 ## Main Menu
 Below is a preview of the main menu, redesigned in a retro-pixel style:

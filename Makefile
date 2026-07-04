@@ -52,15 +52,9 @@ endif
 
 SFML_URL := https://www.sfml-dev.org/files/$(SFML_ARCHIVE)
 
-# Prebuilt libcurl for MinGW is no longer published upstream, so we host a slim
-# build as a release asset on the project repo and pull the matching one.
-CURL_BASE := https://github.com/DachoCyber/LaserTankVSCode/releases/download/deps
-ifeq ($(ARCH),64)
-    CURL_ARCHIVE := curl-win64-mingw.zip
-else
-    CURL_ARCHIVE := curl-win32-mingw.zip
-endif
-CURL_URL := $(CURL_BASE)/$(CURL_ARCHIVE)
+# A prebuilt libcurl for 32-bit MinGW is no longer published upstream, so a slim
+# one is hosted as a release asset on the project repo. The build is 32-bit.
+CURL_URL := https://github.com/DachoCyber/Tank-Puzzle/releases/download/deps/curl-win32-mingw.zip
 
 CXXFLAGS := -std=c++17 -Wall -O2 -DNDEBUG -pipe
 
