@@ -3,6 +3,7 @@
 *.py
 *.json
 *.zip
+*.log
 .vscode
 generated_tiles/
 obj/
