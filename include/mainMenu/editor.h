@@ -12,6 +12,7 @@
 
 #include "../walkableGround.h"
 #include "../tile.h"
+#include "../tileCode.h"
 #include "../destructibleBlock.h"
 #include "../mirror1Tile.h"
 #include "../mirror2Tile.h"
@@ -124,7 +125,7 @@ public:
             tiles[tileY][tileX] = std::make_unique<WalkableGround>(tileX * tileSize, tileY * tileSize, walkableTexture);
         } else {
             tileMap[tileY][tileX] = placeID;
-            if (placeID == 8) {
+            if (placeID == WATER) {
                 tiles[tileY][tileX] = std::make_unique<WaterTile>(
                     tileX * tileSize, tileY * tileSize,
                     tileInWaterTex, waterSecondFrameTexture);

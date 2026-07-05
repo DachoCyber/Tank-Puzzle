@@ -102,7 +102,7 @@ void Editor::handleClick()
         tileMap[y].resize(16);
         for (int x = 0; x < 16; ++x) {
             tiles[y][x] = std::make_unique<WalkableGround>(x * tileSize, y * tileSize, walkableTexture);
-            tileMap[y][x] = 1;
+            tileMap[y][x] = WALKABLE_GROUND;
         }
     }
 
@@ -178,23 +178,23 @@ void Editor::handleClick()
                 else if (transportLeftSprite.getGlobalBounds().contains(worldPos))            { selectTool(18); }
                 else if (transportRightSprite.getGlobalBounds().contains(worldPos))           { selectTool(19); }
                 else if (inGrid) {
-                    if      (placingCode[3])  placeOrRemoveTile<DestructibleBlock> (tileX, tileY,  3,  1, tiles, tileMap, destructibleTexture);
-                    else if (placingCode[4])  placeOrRemoveTile<Mirror1Tile>       (tileX, tileY,  4,  1, tiles, tileMap, mirror1Texture);
-                    else if (placingCode[5])  placeOrRemoveTile<Mirror2Tile>       (tileX, tileY,  5,  1, tiles, tileMap, mirror2Texture);
-                    else if (placingCode[6])  placeOrRemoveTile<Mirror3Tile>       (tileX, tileY,  6,  1, tiles, tileMap, mirror3Texture);
-                    else if (placingCode[7])  placeOrRemoveTile<Mirror4Tile>       (tileX, tileY,  7,  1, tiles, tileMap, mirror4Texture);
+                    if      (placingCode[3])  placeOrRemoveTile<DestructibleBlock> (tileX, tileY, DESTRUCTIBLE_BLOCK,   WALKABLE_GROUND, tiles, tileMap, destructibleTexture);
+                    else if (placingCode[4])  placeOrRemoveTile<Mirror1Tile>       (tileX, tileY, MIRROR_1,             WALKABLE_GROUND, tiles, tileMap, mirror1Texture);
+                    else if (placingCode[5])  placeOrRemoveTile<Mirror2Tile>       (tileX, tileY, MIRROR_2,             WALKABLE_GROUND, tiles, tileMap, mirror2Texture);
+                    else if (placingCode[6])  placeOrRemoveTile<Mirror3Tile>       (tileX, tileY, MIRROR_3,             WALKABLE_GROUND, tiles, tileMap, mirror3Texture);
+                    else if (placingCode[7])  placeOrRemoveTile<Mirror4Tile>       (tileX, tileY, MIRROR_4,             WALKABLE_GROUND, tiles, tileMap, mirror4Texture);
                     else if (placingCode[8])  placeOrRemoveWaterTile               (tileX, tileY,       tiles, tileMap);
-                    else if (placingCode[9])  placeOrRemoveTile<MovableBlock>      (tileX, tileY,  9,  1, tiles, tileMap, movableBlockTexture);
-                    else if (placingCode[10]) placeOrRemoveTile<Flag>              (tileX, tileY, 10,  1, tiles, tileMap, flagTexture);
-                    else if (placingCode[11]) placeOrRemoveTile<UndestructableBlock>(tileX, tileY, 11, 1, tiles, tileMap, undestructableBlockTex);
-                    else if (placingCode[12]) placeOrRemoveTank (tileX, tileY, 12, 1, tiles, tileMap, LEFT,  EnemyTank1LeftTexture);
-                    else if (placingCode[13]) placeOrRemoveTank (tileX, tileY, 13, 1, tiles, tileMap, RIGHT, EnemyTank1RightTexture);
-                    else if (placingCode[14]) placeOrRemoveTank (tileX, tileY, 14, 1, tiles, tileMap, UP,    EnemyTank1UpTexture);
-                    else if (placingCode[15]) placeOrRemoveTank (tileX, tileY, 15, 1, tiles, tileMap, DOWN,  EnemyTank1DownTexture);
-                    else if (placingCode[16]) placeOrRemoveTrack(tileX, tileY, 23, 1, tiles, tileMap, DOWN,  transportTrackDownTex);
-                    else if (placingCode[17]) placeOrRemoveTrack(tileX, tileY, 22, 1, tiles, tileMap, UP,    transportTrackUpTex);
-                    else if (placingCode[18]) placeOrRemoveTrack(tileX, tileY, 20, 1, tiles, tileMap, LEFT,  transportTrackLeftTex);
-                    else if (placingCode[19]) placeOrRemoveTrack(tileX, tileY, 21, 1, tiles, tileMap, RIGHT, transportTrackRightTex);
+                    else if (placingCode[9])  placeOrRemoveTile<MovableBlock>      (tileX, tileY, MOVABLE_BLOCK,        WALKABLE_GROUND, tiles, tileMap, movableBlockTexture);
+                    else if (placingCode[10]) placeOrRemoveTile<Flag>              (tileX, tileY, FLAG,                 WALKABLE_GROUND, tiles, tileMap, flagTexture);
+                    else if (placingCode[11]) placeOrRemoveTile<UndestructableBlock>(tileX, tileY, UNDESTRUCTABLE_BLOCK, WALKABLE_GROUND, tiles, tileMap, undestructableBlockTex);
+                    else if (placingCode[12]) placeOrRemoveTank (tileX, tileY, ENEMY_TANK_LEFT,  WALKABLE_GROUND, tiles, tileMap, LEFT,  EnemyTank1LeftTexture);
+                    else if (placingCode[13]) placeOrRemoveTank (tileX, tileY, ENEMY_TANK_RIGHT, WALKABLE_GROUND, tiles, tileMap, RIGHT, EnemyTank1RightTexture);
+                    else if (placingCode[14]) placeOrRemoveTank (tileX, tileY, ENEMY_TANK_UP,    WALKABLE_GROUND, tiles, tileMap, UP,    EnemyTank1UpTexture);
+                    else if (placingCode[15]) placeOrRemoveTank (tileX, tileY, ENEMY_TANK_DOWN,  WALKABLE_GROUND, tiles, tileMap, DOWN,  EnemyTank1DownTexture);
+                    else if (placingCode[16]) placeOrRemoveTrack(tileX, tileY, TRANSPORT_TRACK_DOWN,  WALKABLE_GROUND, tiles, tileMap, DOWN,  transportTrackDownTex);
+                    else if (placingCode[17]) placeOrRemoveTrack(tileX, tileY, TRANSPORT_TRACK_UP,    WALKABLE_GROUND, tiles, tileMap, UP,    transportTrackUpTex);
+                    else if (placingCode[18]) placeOrRemoveTrack(tileX, tileY, TRANSPORT_TRACK_LEFT,  WALKABLE_GROUND, tiles, tileMap, LEFT,  transportTrackLeftTex);
+                    else if (placingCode[19]) placeOrRemoveTrack(tileX, tileY, TRANSPORT_TRACK_RIGHT, WALKABLE_GROUND, tiles, tileMap, RIGHT, transportTrackRightTex);
                 }
             }
         }
@@ -352,11 +352,11 @@ void Editor::placeOrRemoveWaterTile(
     std::vector<std::vector<int>>& tileMap)
 {
     if (dynamic_cast<WaterTile*>(tiles[tileY][tileX].get())) {
-        tileMap[tileY][tileX] = 1;
+        tileMap[tileY][tileX] = WALKABLE_GROUND;
         tiles[tileY][tileX] = std::make_unique<WalkableGround>(
             tileX * tileSize, tileY * tileSize, walkableTexture);
     } else {
-        tileMap[tileY][tileX] = 8;
+        tileMap[tileY][tileX] = WATER;
         tiles[tileY][tileX] = std::make_unique<WaterTile>(
             tileX * tileSize, tileY * tileSize,
             waterTileTexture, waterSecondFrameTexture);

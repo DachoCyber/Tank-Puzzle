@@ -4,6 +4,11 @@
 #include "player.h"
 
 #include "playerTileSignal.h"
+#include "tileCode.h"
+
+inline bool validMove(int x, int y) {
+    return tileMapPositionInBounds(x, y);
+}
 
 class PlayerInteraction {
 private:

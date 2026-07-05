@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tile.h"
+#include "tileCode.h"
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -20,7 +21,7 @@ public:
         }
     }
     int code() override {
-        return 1;
+        return WALKABLE_GROUND;
     }
     void setAlpha(int alpha) override {
         sf::Color color = sprite.getColor();

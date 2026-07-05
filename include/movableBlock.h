@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tile.h"
+#include "tileCode.h"
 
 
 class MovableBlock : public Tile {
@@ -20,7 +21,7 @@ public:
         return TileSignal::NONE;
     }
     int code() override {
-        return 9;
+        return MOVABLE_BLOCK;
     }
     void setAlpha(int alpha) override {
         sf::Color color = sprite.getColor();

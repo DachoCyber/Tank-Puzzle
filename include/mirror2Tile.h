@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tile.h"
+#include "tileCode.h"
 #include <iostream>
 
 
@@ -27,7 +28,7 @@ class Mirror2Tile : public Tile {
         return PlayerTileSignal::BLOCK_PLAYER;
     }
     int code() override {
-        return 5;
+        return MIRROR_2;
     }
     void setAlpha(int alpha) override {
         sf::Color color = sprite.getColor();

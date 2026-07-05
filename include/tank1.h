@@ -3,6 +3,7 @@
 #include "tile.h"
 #include "bullet.h"
 #include "textures.h"
+#include "tileCode.h"
 
 #include <memory>
 
@@ -97,7 +98,7 @@ public:
         }
     }
     int code() override {
-        return 12 + dir;
+        return ENEMY_TANK_LEFT + dir;
     }
 
     Bullet* enemysTankBullet;
@@ -107,7 +108,7 @@ public:
     bool shouldKillPlayer = false;
 
     bool isWalkableOrWater(int code) {
-        return code == 10 || code == 1 || code == 8 || code == 50 || code == 20 || code == 21 || code == 22 || code == 23;
+        return tileIsPlayerWalkable(code);
     }
     bool killPlayer(const std::vector<std::vector<std::unique_ptr<Tile>>>& tileMap, int playerPosX, int playerPosY) override {
         

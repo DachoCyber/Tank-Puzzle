@@ -7,6 +7,7 @@
 
 #include "bulletHitInfo.h"
 #include "tileSignal.h"
+#include "tileCode.h"
 
 class DestructibleBlock : public Tile {
 private:
@@ -32,7 +33,7 @@ public:
         return PlayerTileSignal::BLOCK_PLAYER;
     }
     int code() override {
-        return 3;
+        return DESTRUCTIBLE_BLOCK;
     }
     void setAlpha(int alpha) override {
         sf::Color color = sprite.getColor();

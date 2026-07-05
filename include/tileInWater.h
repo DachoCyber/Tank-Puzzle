@@ -3,6 +3,7 @@
 #include "tile.h"
 #include "bulletHitInfo.h"  // MUST include argument type
 #include "tileSignal.h"     // if TileSignal is separate
+#include "tileCode.h"
 
 
 
@@ -21,7 +22,7 @@ public:
             std::cerr << what << std::endl;
         }
     }
-    int code() override { return 50; }
+    int code() override { return TILE_IN_WATER; }
 
     void setAlpha(int alpha) override {
         sf::Color color = sprite.getColor();

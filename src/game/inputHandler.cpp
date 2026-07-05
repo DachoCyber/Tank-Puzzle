@@ -1,6 +1,7 @@
 #include "inputHandler.h"
 #include "../include/playerInteraction.h"
 #include "../include/paddingGame.h"
+#include "../include/tileCode.h"
 
 InputHandler::InputHandler(Tank& player, Map& tileMap,
                            UndoManager& undoManager, BulletManager& bulletManager,
@@ -18,7 +19,7 @@ InputHandler::InputHandler(Tank& player, Map& tileMap,
       isRepeatMovEnabled(isRepeatMovEnabled) {}
 
 bool InputHandler::isTransportTrack(int code) const {
-    return code == 20 || code == 21 || code == 22 || code == 23;
+    return tileIsTransportTrack(code);
 }
 
 void InputHandler::handleInput() {

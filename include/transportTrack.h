@@ -4,7 +4,8 @@
 #include <iostream>
 
 #include "bulletHitInfo.h"
-    #include "tileSignal.h" 
+    #include "tileSignal.h"
+#include "tileCode.h"
 
 
 class TransportTrack : public Tile {
@@ -34,13 +35,13 @@ class TransportTrack : public Tile {
     int code() override {
         switch(dir) {
             case LEFT:
-                return 20;
+                return TRANSPORT_TRACK_LEFT;
             case RIGHT:
-                return 21;
+                return TRANSPORT_TRACK_RIGHT;
             case UP:
-                return 22;
+                return TRANSPORT_TRACK_UP;
             case DOWN:
-                return 23;
+                return TRANSPORT_TRACK_DOWN;
         }
         return -1;
     }

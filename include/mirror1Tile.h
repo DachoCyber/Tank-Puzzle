@@ -4,7 +4,8 @@
 #include <iostream>
 
 #include "bulletHitInfo.h"
-#include "tileSignal.h" 
+#include "tileSignal.h"
+#include "tileCode.h"
 
 
 class Mirror1Tile : public Tile {
@@ -33,7 +34,7 @@ class Mirror1Tile : public Tile {
     }
 
     int code() override {
-        return 4;
+        return MIRROR_1;
     }
     void setAlpha(int alpha) override {
         sf::Color color = sprite.getColor();

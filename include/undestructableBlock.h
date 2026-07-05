@@ -2,6 +2,7 @@
 
 #include "tile.h"
 #include "tileSignal.h"
+#include "tileCode.h"
 
 class UndestructableBlock : public Tile {
 public:
@@ -17,7 +18,7 @@ const sf::Texture& texture;
         }
     }
     int code() override {
-        return 11;
+        return UNDESTRUCTABLE_BLOCK;
     }
     TileSignal sendSignal(const BulletHitInfo& h) const override {
         return TileSignal :: DESTROY_BULLET;

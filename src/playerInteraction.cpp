@@ -11,11 +11,6 @@ PlayerInteraction :: PlayerInteraction(int windowSizeX, int windowSizeY, Tank& p
     
 }
 
-bool validMove(int x, int y) {
-    return x >= 0 && x < 16 && 
-           y >= 0 && y < 16;
-}
-
 void PlayerInteraction :: handleMovement () {
 
     if (blockInput)
@@ -61,10 +56,7 @@ void PlayerInteraction :: handleMovement () {
 
     int code = tileMap.getTileMapInt()[newY][newX];
 
-    // if next tile code is not walkable ground, water, tile in water etc.
-    // we can not move, otherwise move player
-    if (code == 1  || code == 8  || code == 50 || code == 20 ||
-        code == 21 || code == 22 || code == 23 || code == 10 || code == 0)
+    if (tileIsPlayerWalkable(code) || code == PLAYER_START)
     {
 
         player.setGridPosition(sf::Vector2i(newX, newY));
@@ -108,20 +100,11 @@ void PlayerInteraction :: movePlayer (int newX, int newY) {
     if (!validMove(newX, newY))
         return;
 
-    /*
-        Player can move on the tile if it is:
-        1) Walkable ground (1)
-        2) Water tile      (8)
-        3) TileInWater     (50)
-        4) Transport track (UP, LEFT, RIGHT, DOWN)
-        5) If it is a flag (10)
-    */
-    if (code == 1  || code == 8  || code == 50 || code == 20 ||
-        code == 21 || code == 22 || code == 23 || code == 10)  {
+    if (tileIsPlayerWalkable(code))  {
 
         player.setGridPosition(sf::Vector2i(newX, newY));
         blockInput = true;
-    } 
+    }
     else 
     {
         blockInput = false;

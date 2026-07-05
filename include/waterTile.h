@@ -3,8 +3,9 @@
 #include "tile.h"
 #include <iostream>
 #include "bulletHitInfo.h"
-#include "tileSignal.h" 
-#include "playerTileSignal.h"  
+#include "tileSignal.h"
+#include "playerTileSignal.h"
+#include "tileCode.h"
 
 class WaterTile : public Tile {
 
@@ -45,7 +46,7 @@ class WaterTile : public Tile {
     }
     
     int code() override {
-        return 8;
+        return WATER;
     }
     void setAlpha(int alpha) override {
         sf::Color waterColor = sprite.getColor();

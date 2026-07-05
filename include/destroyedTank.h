@@ -4,7 +4,8 @@
 #include "bullet.h"
 
 #include "bulletHitInfo.h"
-#include "tileSignal.h" 
+#include "tileSignal.h"
+#include "tileCode.h"
 
 #include <memory>
 
@@ -36,7 +37,7 @@ public:
 
 
     int code() override {
-        return 16 + dir;
+        return DESTROYED_TANK_LEFT + dir;
     }
     void setAlpha(int alpha) override {
         sf::Color color = sprite.getColor();

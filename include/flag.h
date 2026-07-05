@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tile.h"
+#include "tileCode.h"
 
 class Flag : public Tile {
 public:
@@ -16,7 +17,7 @@ public:
         //sprite.setScale(32.f/571.f, 32.f/574.f);
     }
     int code() override {
-        return 10;
+        return FLAG;
     }
     void setAlpha(int alpha) override {
         sf::Color color = sprite.getColor();

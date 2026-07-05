@@ -78,6 +78,8 @@ OBJ_DIR := obj
 BUILD_LOG := build.log
 
 SRC := $(wildcard src/*.cpp)              \
+       $(wildcard src/map/*.cpp)          \
+       $(wildcard src/player/*.cpp)       \
        $(wildcard src/game/*.cpp)         \
        $(wildcard src/network/*.cpp)      \
        $(wildcard src/utils/*.cpp)        \
@@ -87,7 +89,22 @@ SRC := $(wildcard src/*.cpp)              \
 
 OBJ := $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRC))
 
-.PHONY: all clean run deps dirs logstart
+TEST_SRC := $(wildcard tests/*.cpp) \
+            src/tileFactory.cpp     \
+            src/tile.cpp            \
+            src/textures.cpp        \
+            src/bullet.cpp
+
+ifeq ($(PLATFORM),windows)
+    TEST_TARGET := run_tests.exe
+    TEST_LIBS := -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lfreetype \
+                 -lopengl32 -lwinmm -lgdi32 -static-libgcc -static-libstdc++
+else
+    TEST_TARGET := run_tests
+    TEST_LIBS := -lsfml-graphics -lsfml-window -lsfml-system
+endif
+
+.PHONY: all clean run deps dirs logstart tests
 
 all: deps dirs logstart $(TARGET)
 
@@ -112,6 +129,8 @@ deps:
 dirs:
 	@if not exist "$(OBJ_DIR)"                  mkdir "$(OBJ_DIR)"
 	@if not exist "$(OBJ_DIR)\src"              mkdir "$(OBJ_DIR)\src"
+	@if not exist "$(OBJ_DIR)\src\map"          mkdir "$(OBJ_DIR)\src\map"
+	@if not exist "$(OBJ_DIR)\src\player"       mkdir "$(OBJ_DIR)\src\player"
 	@if not exist "$(OBJ_DIR)\src\game"         mkdir "$(OBJ_DIR)\src\game"
 	@if not exist "$(OBJ_DIR)\src\network"      mkdir "$(OBJ_DIR)\src\network"
 	@if not exist "$(OBJ_DIR)\src\utils"        mkdir "$(OBJ_DIR)\src\utils"
@@ -139,7 +158,8 @@ deps:
 	fi
 
 dirs:
-	@mkdir -p $(OBJ_DIR)/src/game $(OBJ_DIR)/src/network $(OBJ_DIR)/src/utils \
+	@mkdir -p $(OBJ_DIR)/src/map $(OBJ_DIR)/src/player $(OBJ_DIR)/src/game \
+	         $(OBJ_DIR)/src/network $(OBJ_DIR)/src/utils \
 	         $(OBJ_DIR)/src/application $(OBJ_DIR)/tinyxml2 $(OBJ_DIR)/include/mainMenu
 
 clean:
@@ -163,3 +183,9 @@ $(OBJ_DIR)/%.o: %.cpp
 run: all
 	@echo Running...
 	./$(TARGET)
+
+tests: deps
+	@echo [C++] Building $(TEST_TARGET)
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(TEST_SRC) -o $(TEST_TARGET) $(LIB_DIRS) $(TEST_LIBS)
+	@echo Running tests...
+	./$(TEST_TARGET)
