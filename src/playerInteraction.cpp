@@ -37,17 +37,10 @@ void PlayerInteraction :: handleMovement () {
     }
 
     if (newDir != dir) {
-
+        player.getPlayerStates().push_back({dir, pos});
         player.setDir(newDir);
         player.turnSound.play();
-
-        if (newDir != dir) {
-            player.setDir(newDir);
-            player.turnSound.play();
-            player.getPlayerStates().push_back({dir, pos});
-            playerTurned = true;
-            return;
-        }
+        playerTurned = true;
         return;
     }
 
@@ -95,10 +88,10 @@ bool PlayerInteraction :: getBulletFired() const {
 }
 
 void PlayerInteraction :: movePlayer (int newX, int newY) {
-    int code = tileMap.getTileMapInt()[newY][newX];
-
     if (!validMove(newX, newY))
         return;
+
+    int code = tileMap.getTileMapInt()[newY][newX];
 
     if (tileIsPlayerWalkable(code))  {
 

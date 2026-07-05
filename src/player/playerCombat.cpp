@@ -2,23 +2,16 @@
 
 
 void Tank::fireBullet() {
-
-    sf::Vector2f tankPos = sprite.getPosition();
-    auto tankSize = tankImg.getSize();
-    float bulletStartPosX, bulletStartPosY;
-    switch (dir) {
-        case UP: bulletStartPosX = tankPos.x; bulletStartPosY = tankPos.y ;  break;
-        case DOWN: bulletStartPosX = tankPos.x ; bulletStartPosY = tankPos.y;  break;
-        case RIGHT: bulletStartPosX = tankPos.x; bulletStartPosY = tankPos.y ;  break;
-        case LEFT: bulletStartPosX = tankPos.x; bulletStartPosY = tankPos.y;  break;
+    if (bullet) {
+        delete bullet;
+        bullet = nullptr;
     }
-    bullet   = new Bullet(sf::Vector2f(bulletStartPosX, bulletStartPosY), dir);
-
+    bullet = new Bullet(sprite.getPosition(), dir);
 }
 
 void Tank::deleteBullet() {
     if(bullet) {
-
+        delete bullet;
         bullet = nullptr;
     }
 }
