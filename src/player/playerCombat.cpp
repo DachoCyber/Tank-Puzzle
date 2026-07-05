@@ -2,18 +2,11 @@
 
 
 void Tank::fireBullet() {
-    if (bullet) {
-        delete bullet;
-        bullet = nullptr;
-    }
-    bullet = new Bullet(sprite.getPosition(), dir);
+    bullet = std::make_unique<Bullet>(sprite.getPosition(), dir);
 }
 
 void Tank::deleteBullet() {
-    if(bullet) {
-        delete bullet;
-        bullet = nullptr;
-    }
+    bullet.reset();
 }
 
 bool Tank :: deleteOrMoveAdjBlockIfExists(Map& tileMap) {
@@ -37,7 +30,6 @@ bool Tank :: deleteOrMoveAdjBlockIfExists(Map& tileMap) {
     hit.dx = x - newX;
     hit.dy = y - newY;
 
-    int code = tileMap.getTileMapInt()[newY][newX];
     Tile* tile = tileMap.getTileMap()[newY][newX].get();
     TileSignal signal =  tile->sendSignal(hit);
 

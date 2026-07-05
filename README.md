@@ -1,5 +1,7 @@
 # Tank-Puzzle
 
+[![CI](https://github.com/DachoCyber/Tank-Puzzle/actions/workflows/ci.yml/badge.svg)](https://github.com/DachoCyber/Tank-Puzzle/actions/workflows/ci.yml)
+
 **Tank-Puzzle** is a reinterpretation of the classic puzzle game *LaserTank*, fully written in **C++** with **SFML 2.6.2**.  
 The goal is simple: navigate your tank through challenging levels, avoid obstacles, use mirrors to redirect your laser, and reach the finish tile.  
 Behind this simplicity hides a deep strategic puzzle system with undo mechanics, movable blocks, enemy tanks, and diverse terrain types.

@@ -3,6 +3,7 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 #include <chrono>
+#include <memory>
 #include "bullet.h"
 #include "direction.h" 
 #include "map.h"
@@ -55,7 +56,7 @@ public:
 
     bool deleteOrMoveAdjBlockIfExists(Map& tileMap); /// Do not fire bullet
     void fireBullet();
-    Bullet* getBullet() const {return  bullet;}
+    Bullet* getBullet() const {return  bullet.get();}
     bool bulletInScreen() const;
     bool getShouldFireBullet() const {return shouldFireBullet;}
 
@@ -80,7 +81,7 @@ private:
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     
-    Bullet* bullet = nullptr;
+    std::unique_ptr<Bullet> bullet;
 
     sf::Image tankImg;
     sf::Texture texture;
