@@ -2,96 +2,69 @@
 
 [![CI](https://github.com/DachoCyber/Tank-Puzzle/actions/workflows/ci.yml/badge.svg)](https://github.com/DachoCyber/Tank-Puzzle/actions/workflows/ci.yml)
 
-**Tank-Puzzle** is a reinterpretation of the classic puzzle game *LaserTank*, fully written in **C++** with **SFML 2.6.2**.  
-The goal is simple: navigate your tank through challenging levels, avoid obstacles, use mirrors to redirect your laser, and reach the finish tile.  
-Behind this simplicity hides a deep strategic puzzle system with undo mechanics, movable blocks, enemy tanks, and diverse terrain types.
+Tank-Puzzle is a puzzle game where you steer a tank that fires a laser through mirrors, pushes blocks, and destroys obstacles to reach the goal tile.
 
-This project was created for learning, experimentation, and fun - while carefully improving the visuals and gameplay experience of the original.
+## Screenshot
 
----
+![Example level](images_git/level.png)
 
+## How to play
 
-## Build Instructions
-Windows (MinGW, static SFML build)
+- Arrow keys move and turn the tank. Pressing a direction turns the tank to face that way, and pressing the same direction again moves it one tile.
+- Space fires the laser. If a block sits right in front of the tank, Space pushes or destroys it instead.
+- U undoes the last move and restores the previous tank position, block layout, and bullet state.
 
-This is a 32-bit build, so you need a 32-bit MinGW-w64 toolchain. You can confirm the target with:
+Reach the flag tile to finish the level.
 
-gcc -dumpmachine
+## How to build
 
-It should report an i686 target, for example i686-w64-mingw32.
+The build system downloads SFML 2.6.2 automatically on the first build. On Linux and macOS you provide libcurl through the system package manager.
 
-You do not need to install or download SFML or libcurl yourself. On the first build the Makefile detects your system, downloads SFML 2.6.2 from the official site and libcurl from the project release page, and copies the required runtime DLLs next to the executable.
+### Windows (MinGW)
 
-Clone the repository:
+This is a 32-bit build, so use a 32-bit MinGW-w64 toolchain (`gcc -dumpmachine` should report an `i686` target).
 
+```
 git clone https://github.com/DachoCyber/Tank-Puzzle.git
-
-Build the game:
-
+cd Tank-Puzzle
 mingw32-make
-
-Run it:
-
 mingw32-make run
+```
 
-Clean the build:
+### Linux
 
-mingw32-make clean
+```
+sudo apt install libsfml-dev libcurl4-openssl-dev
+make
+./LaserTank
+```
 
-The first build takes a bit longer because it downloads SFML, which is about 18 MB. Later builds reuse the libraries that were already downloaded.
+### macOS
 
-## Main Menu
-Below is a preview of the main menu, redesigned in a retro-pixel style:
+```
+brew install sfml curl
+make
+./LaserTank
+```
 
-![Main Menu](images_git/mainMenuImage.png)
+## Features
 
----
+- 42 levels
+- 4 types of mirrors
+- Movable blocks
+- Water tiles
+- Transport tracks
+- Enemy tanks
+- Undo system
+- Online score board
+- Level editor
 
-## Example Level
+## Running tests
 
-Here is a sample level demonstrating movement tracks, water tiles, mirrors, bricks, and multiple tanks:
+The unit tests are built and run with a single target:
 
-![Level Screenshot](images_git/level.png)
+```
+make tests
+```
 
-# Features
-
-# Gameplay
-- Fully functional **tank movement system**  
-- **Laser firing & bouncing** using 4 types of mirrors  
-- **Movable blocks** that interact with bullets  
-- **Enemy tanks** that can be destroyed  
-- **Water, grass, bricks, tracks, flags**, and more  
-- **Undo system (U key)** capable of restoring:
-  - tank position  
-  - block movement  
-  - bullet state  
-  - full map state  
-
-### Level System
-- Loads `.tmx` maps (Tiled Editor)  
-- Level selector with preview  
-- Built-in **Level Editor**
-
-###  Graphics
-- Custom **pixel-art tile set**  
-- Retro UI elements  
-- Smooth scaling with SFML  
-- Distinct visual appearance for each block type
-
-###  Audio
-- Mirror bounce sound  
-- Brick hit sound  
-- Game Over sound (`game-over.mp3`)  
-- Ambient and interaction effects using SFML Audio
-
-# Engine Architecture
-- Classes:
-  - `MainGame`, `Map`, `Player`, `Bullet`, `BulletInteraction` etc  
-- Clean separation of:
-  - Player interaction  
-  - Bullet physics  
-  - Tile logic  
-  - Rendering  
-- Cross-platform build system:
-  - Windows (MinGW / MSVC)  
-  - Linux (GCC / Clang)  
+This compiles the doctest suite in `tests/` and runs it, covering the tile factory and the tile and movement logic.
