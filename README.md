@@ -16,6 +16,10 @@ Tank-Puzzle is a puzzle game where you steer a tank that fires a laser through m
 
 Reach the flag tile to finish the level.
 
+## Documentation
+
+A technical overview of the source code in `src/` and `include/` is available in [doc.docx](doc.docx). It covers the architecture, the game loop, the tile and signal systems, the undo mechanism, and the `PlayerState` and `MapState` classes.
+
 ## How to build
 
 The build system downloads SFML 2.6.2 automatically on the first build. On Linux and macOS you provide libcurl through the system package manager.

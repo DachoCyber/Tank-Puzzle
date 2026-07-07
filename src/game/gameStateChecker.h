@@ -1,8 +1,9 @@
 #pragma once
 #include "../../include/player.h"
 #include "../../include/map.h"
-#include "../../include/tileCode.h"
 #include "bulletManager.h"
+#include "PlayerState.h"
+#include "MapState.h"
 
 class GameStateChecker {
 public:
@@ -14,9 +15,6 @@ public:
     bool gameEnd()  const;
 
 private:
-    Tank& player;
-    Map& tileMap;
-    BulletManager& bulletManager;
-
-    static constexpr int GOAL_TILE = FLAG;
+    state::PlayerState playerState;
+    state::MapState    mapState;
 };

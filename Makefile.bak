@@ -56,7 +56,7 @@ SFML_URL := https://www.sfml-dev.org/files/$(SFML_ARCHIVE)
 # one is hosted as a release asset on the project repo. The build is 32-bit.
 CURL_URL := https://github.com/DachoCyber/Tank-Puzzle/releases/download/deps/curl-win32-mingw.zip
 
-CXXFLAGS := -std=c++17 -Wall -O0 -g -pipe
+CXXFLAGS := -std=c++17 -Wall -O2 -DNDEBUG -pipe
 
 ifeq ($(PLATFORM),windows)
     CXXFLAGS += -DSFML_STATIC -DWIN32 -static

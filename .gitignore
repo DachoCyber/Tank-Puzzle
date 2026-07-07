@@ -4,6 +4,7 @@
 *.json
 *.zip
 *.log
+*.docx
 .vscode
 generated_tiles/
 obj/
@@ -12,3 +13,4 @@ tinyxml2/tinyxml2.o
 CURL/
 STABLE_BINARY/
 get-score.php
+

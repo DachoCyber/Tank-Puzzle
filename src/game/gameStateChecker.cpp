@@ -2,15 +2,14 @@
 
 GameStateChecker::GameStateChecker(Tank& player, Map& tileMap,
                                    BulletManager& bulletManager)
-    : player(player), tileMap(tileMap), bulletManager(bulletManager) {}
+    : playerState(player, bulletManager), mapState(player, tileMap) {}
 
 bool GameStateChecker::gameLost() const {
-    return player.getShouldKillPlayer() || bulletManager.isKillPlayer();
+    return playerState.isDead();
 }
 
 bool GameStateChecker::gameWon() const {
-    auto pos = player.getGridPosition();
-    return tileMap.getTileMapInt()[pos.y][pos.x] == GOAL_TILE;
+    return mapState.reachedGoal();
 }
 
 bool GameStateChecker::gameEnd() const {
